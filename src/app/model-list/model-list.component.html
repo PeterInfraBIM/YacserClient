@@ -1,0 +1,9 @@
+<div class="card" *ngFor="let model of models | async">
+  <div class="card-header">
+    <h5 class="card-title">{{model.name}}</h5>
+    <div class="card-body">
+      <p class="card-text">{{model.description}}</p>
+    </div>
+  </div>
+</div>
+

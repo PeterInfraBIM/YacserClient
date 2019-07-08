@@ -1,0 +1,28 @@
+<div class="card">
+  <div class="card-header">
+    <h5 class="card-title">Objects</h5>
+    <div class="card-body">
+      <table class="table table-hover table-sm">
+        <thead class="thead-light">
+        <tr>
+          <th>name</th>
+          <th>description</th>
+          <th>type</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let object of objects | async">
+          <td>{{object.name}}</td>
+          <td>
+            <span
+              class="description">{{object.description}}</span>
+          </td>
+          <td>
+            <span class="type">{{object.type}}</span>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
