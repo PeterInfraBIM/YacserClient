@@ -4,6 +4,9 @@ import {Query, YacserObject} from '../types';
 import {Apollo} from 'apollo-angular';
 import gql from 'graphql-tag';
 import {map} from 'rxjs/operators';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {ObjectDetailsComponent} from "./object-details/object-details.component";
+import {ObjectListService} from "./object-list.service";
 
 @Component({
   selector: 'app-object-list',
@@ -14,7 +17,10 @@ export class ObjectListComponent implements OnInit {
   @Input() modelId: string;
   objects: Observable<YacserObject[]>;
 
-  constructor(private apollo: Apollo) {
+  constructor(
+    private apollo: Apollo,
+    private modal: NgbModal,
+    private objectListService: ObjectListService) {
   }
 
   ngOnInit() {
@@ -35,4 +41,9 @@ export class ObjectListComponent implements OnInit {
     }).valueChanges.pipe(map(result => result.data.allObjects));
   }
 
+  openObjectDetails(object: YacserObject): void {
+    console.log('object:' + object.name);
+    this.objectListService.setSelectedObject(object);
+    const modal = this.modal.open(ObjectDetailsComponent);
+  }
 }

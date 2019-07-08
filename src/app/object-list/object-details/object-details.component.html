@@ -5,7 +5,28 @@
   </button>
 </div>
 <div class="modal-body">
-
+  <div *ngIf="selectedObject" class="card">
+    <div class="card-header">
+      <h3 class="card-title">{{selectedObject.name}}</h3>
+      <h5 class="card-subtitle">{{selectedObject.type}}</h5>
+    </div>
+    <div class="card-body">
+      <p class="card-text">description: {{selectedObject.description}}</p>
+      <div *ngIf="selectedObject.type==='Function'">
+        <p class="card-text">owner: {{getFunction(selectedObject).owner.name}}
+          ({{getFunction(selectedObject).owner.type}})</p>
+      </div>
+      <div *ngIf="selectedObject.type==='Requirement'">
+        <p class="card-text">owner: {{getRequirement(selectedObject).owner.name}}
+          ({{getRequirement(selectedObject).owner.type}})</p>
+      </div>
+      <div *ngIf="selectedObject.type==='SystemSlot'">
+        <p class="card-text">functions: <span
+          *ngFor="let function of getSystemSlot(selectedObject).functions">{{function.name}}</span>
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="modal-footer">
 

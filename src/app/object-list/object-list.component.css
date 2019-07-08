@@ -5,3 +5,7 @@
 .description {
   font-style: italic;
 }
+
+.select {
+  cursor: pointer;
+}

@@ -1,18 +1,49 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
+import {BrowserModule} from '@angular/platform-browser';
+import {FormsModule} from '@angular/forms';
+import {NgModule} from '@angular/core';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {HttpClientModule} from '@angular/common/http';
+import {ApolloModule, Apollo} from 'apollo-angular';
+import {HttpLinkModule, HttpLink} from 'apollo-angular-link-http';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {InMemoryCache} from 'apollo-cache-inmemory';
+import {ModelListComponent} from './model-list/model-list.component';
+import {ObjectListComponent} from './object-list/object-list.component';
+import {ObjectDetailsComponent} from './object-list/object-details/object-details.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ModelListComponent,
+    ObjectListComponent,
+    ObjectDetailsComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    FormsModule,
+    NgbModule,
+    AppRoutingModule,
+    HttpClientModule,
+    ApolloModule,
+    HttpLinkModule
+  ],
+  entryComponents: [
+    ObjectDetailsComponent
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(
+    apollo: Apollo,
+    httpLink: HttpLink
+  ) {
+    apollo.create({
+      link: httpLink.create({
+        uri: 'http://localhost:8080/graphql'
+      }),
+      cache: new InMemoryCache()
+    });
+  }
+}
