@@ -16,14 +16,36 @@
         <p class="card-text">owner: {{getFunction(selectedObject).owner.name}}
           ({{getFunction(selectedObject).owner.type}})</p>
       </div>
+      <div *ngIf="selectedObject.type==='Performance'">
+        <p class="card-text">owner: {{getPerformance(selectedObject).owner.name}}
+          ({{getPerformance(selectedObject).owner.type}})</p>
+        <p *ngIf="getPerformance(selectedObject).value" class="card-text">
+          value: {{getPerformance(selectedObject).value.name}}
+          ({{getPerformance(selectedObject).value.type}})</p>
+      </div>
+      <div *ngIf="selectedObject.type==='RealisationModule'">
+        <p class="card-text">performances: <span
+          *ngFor="let performance of getRealisationModule(selectedObject).performances">{{performance.name}}</span>
+        </p>
+      </div>
       <div *ngIf="selectedObject.type==='Requirement'">
         <p class="card-text">owner: {{getRequirement(selectedObject).owner.name}}
           ({{getRequirement(selectedObject).owner.type}})</p>
+        <p *ngIf="getRequirement(selectedObject).minValue" class="card-text">min
+          value: {{getRequirement(selectedObject).minValue.name}}
+          ({{getRequirement(selectedObject).minValue.type}})</p>
+        <p *ngIf="getRequirement(selectedObject).maxValue" class="card-text">max
+          value: {{getRequirement(selectedObject).maxValue.name}}
+          ({{getRequirement(selectedObject).maxValue.type}})</p>
       </div>
       <div *ngIf="selectedObject.type==='SystemSlot'">
         <p class="card-text">functions: <span
           *ngFor="let function of getSystemSlot(selectedObject).functions">{{function.name}}</span>
         </p>
+      </div>
+      <div *ngIf="selectedObject.type==='Value'">
+        <p class="card-text">unit: {{getValue(selectedObject).unit}}</p>
+        <p class="card-text">value: {{getValue(selectedObject).value}}</p>
       </div>
     </div>
   </div>

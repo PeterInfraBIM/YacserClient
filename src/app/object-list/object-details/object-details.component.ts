@@ -1,9 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ObjectListService} from '../object-list.service';
-import {YacserFunction, YacserObject, YacserRequirement, YacserSystemSlot} from '../../types';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {
+  YacserFunction,
+  YacserObject,
+  YacserPerformance, YacserRealisationModule,
+  YacserRequirement,
+  YacserSystemSlot,
+  YacserValue
+} from '../../types';
 
 @Component({
   selector: 'app-object-details',
@@ -26,11 +31,20 @@ export class ObjectDetailsComponent implements OnInit {
           case 'Function':
             this.selectedObject = result as YacserFunction;
             break;
+          case 'RealisationModule':
+            this.selectedObject = result as YacserRealisationModule;
+            break;
+          case 'Performance':
+            this.selectedObject = result as YacserPerformance;
+            break;
           case 'Requirement':
             this.selectedObject = result as YacserRequirement;
             break;
           case 'SystemSlot':
             this.selectedObject = result as YacserSystemSlot;
+            break;
+          case 'Value':
+            this.selectedObject = result as YacserValue;
             break;
         }
       }
@@ -41,11 +55,23 @@ export class ObjectDetailsComponent implements OnInit {
     return object as YacserFunction;
   }
 
+  getPerformance(object: YacserObject): YacserPerformance {
+    return object as YacserPerformance;
+  }
+
+  getRealisationModule(object: YacserObject): YacserRealisationModule {
+    return object as YacserRealisationModule;
+  }
+
   getRequirement(object: YacserObject): YacserRequirement {
     return object as YacserRequirement;
   }
 
   getSystemSlot(object: YacserObject): YacserSystemSlot {
     return object as YacserSystemSlot;
+  }
+
+  getValue(object: YacserObject): YacserValue {
+    return object as YacserValue;
   }
 }
