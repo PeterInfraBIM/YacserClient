@@ -3,9 +3,11 @@ import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ObjectListService} from '../object-list.service';
 import {
   YacserFunction,
+  YacserHamburger,
   YacserObject,
-  YacserPerformance, YacserRealisationModule,
-  YacserRequirement,
+  YacserPerformance,
+  YacserRealisationModule,
+  YacserRequirement, YacserSystemInterface,
   YacserSystemSlot,
   YacserValue
 } from '../../types';
@@ -31,6 +33,9 @@ export class ObjectDetailsComponent implements OnInit {
           case 'Function':
             this.selectedObject = result as YacserFunction;
             break;
+          case 'Hamburger':
+            this.selectedObject = result as YacserHamburger;
+            break;
           case 'RealisationModule':
             this.selectedObject = result as YacserRealisationModule;
             break;
@@ -39,6 +44,9 @@ export class ObjectDetailsComponent implements OnInit {
             break;
           case 'Requirement':
             this.selectedObject = result as YacserRequirement;
+            break;
+          case 'SystemInterface':
+            this.selectedObject = result as YacserSystemInterface;
             break;
           case 'SystemSlot':
             this.selectedObject = result as YacserSystemSlot;
@@ -55,6 +63,10 @@ export class ObjectDetailsComponent implements OnInit {
     return object as YacserFunction;
   }
 
+  getHamburger(object: YacserObject): YacserHamburger {
+    return object as YacserHamburger;
+  }
+
   getPerformance(object: YacserObject): YacserPerformance {
     return object as YacserPerformance;
   }
@@ -65,6 +77,10 @@ export class ObjectDetailsComponent implements OnInit {
 
   getRequirement(object: YacserObject): YacserRequirement {
     return object as YacserRequirement;
+  }
+
+  getSystemInterface(object: YacserObject): YacserSystemInterface {
+    return object as YacserSystemInterface;
   }
 
   getSystemSlot(object: YacserObject): YacserSystemSlot {

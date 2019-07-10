@@ -13,6 +13,14 @@ export interface YacserObject {
 
 export interface YacserFunction extends YacserObject {
   owner: YacserSystemSlot;
+  requirements: YacserRequirement[];
+  input: YacserSystemInterface;
+  output: YacserSystemInterface;
+}
+
+export interface YacserHamburger extends YacserObject {
+  functionalUnit: YacserSystemSlot;
+  technicalSolution: YacserRealisationModule;
 }
 
 export interface YacserPerformance extends YacserObject {
@@ -22,6 +30,7 @@ export interface YacserPerformance extends YacserObject {
 
 export interface YacserRealisationModule extends YacserObject {
   performances: YacserPerformance[];
+  hamburgers: YacserHamburger[];
 }
 export interface YacserRequirement extends YacserObject {
   owner: YacserObject;
@@ -29,8 +38,17 @@ export interface YacserRequirement extends YacserObject {
   maxValue: YacserValue;
 }
 
+export interface YacserSystemInterface extends YacserObject {
+  systemSlot0: YacserSystemSlot;
+  systemSlot1: YacserSystemSlot;
+  functionInputs: YacserFunction[];
+  functionOutputs: YacserFunction;
+}
+
 export interface YacserSystemSlot extends YacserObject {
   functions: YacserFunction[];
+  interfaces: YacserSystemInterface;
+  hamburgers: YacserHamburger[];
 }
 
 export interface YacserValue extends YacserObject {
@@ -42,9 +60,11 @@ export interface Query {
   allModels: YacserModel[];
   allObjects: YacserObject[];
   function: YacserFunction;
+  hamburger: YacserHamburger;
   performance: YacserPerformance;
   realisationModule: YacserRealisationModule;
   requirement: YacserRequirement;
+  systemInterface: YacserSystemInterface;
   systemSlot: YacserSystemSlot;
   value: YacserValue;
 }

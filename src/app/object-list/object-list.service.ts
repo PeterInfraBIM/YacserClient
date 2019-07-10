@@ -32,6 +32,24 @@ export class ObjectListService {
                     description
                     type
                   }
+                  requirements {
+                    id
+                    name
+                    description
+                    type
+                  }
+                  input {
+                    id
+                    name
+                    description
+                    type
+                  }
+                  output {
+                    id
+                    name
+                    description
+                    type
+                  }
                 }
               }
             `,
@@ -40,6 +58,35 @@ export class ObjectListService {
             }
           }
         ).valueChanges.pipe(map(result => result.data.function));
+      case ObjectType.Hamburger:
+        return this.apollo.watchQuery<Query>({
+            query: gql`
+              query hamburger($id: ID!){
+                hamburger (id: $id){
+                  id
+                  name
+                  description
+                  type
+                  functionalUnit {
+                    id
+                    name
+                    description
+                    type
+                  }
+                  technicalSolution {
+                    id
+                    name
+                    description
+                    type
+                  }
+                }
+              }
+            `,
+            variables: {
+              id: this.selectedObject.id
+            }
+          }
+        ).valueChanges.pipe(map(result => result.data.hamburger));
       case ObjectType.Performance:
         return this.apollo.watchQuery<Query>({
             query: gql`
@@ -79,6 +126,12 @@ export class ObjectListService {
                   description
                   type
                   performances {
+                    id
+                    name
+                    description
+                    type
+                  }
+                  hamburgers {
                     id
                     name
                     description
@@ -127,8 +180,51 @@ export class ObjectListService {
             }
           }
         ).valueChanges.pipe(map(result => result.data.requirement));
+      case ObjectType.SystemInterface:
+        return this.apollo.watchQuery<Query>(
+          {
+            query: gql`
+              query systemInterface($id: ID!){
+                systemInterface (id: $id){
+                  id
+                  name
+                  description
+                  type
+                  systemSlot0 {
+                    id
+                    name
+                    description
+                    type
+                  }
+                  systemSlot1 {
+                    id
+                    name
+                    description
+                    type
+                  }
+                  functionInputs {
+                    id
+                    name
+                    description
+                    type
+                  }
+                  functionOutputs {
+                    id
+                    name
+                    description
+                    type
+                  }
+                }
+              }
+            `,
+            variables: {
+              id: this.selectedObject.id
+            }
+          }
+        ).valueChanges.pipe(map(result => result.data.systemInterface));
       case ObjectType.SystemSlot:
-        return this.apollo.watchQuery<Query>({
+        return this.apollo.watchQuery<Query>(
+          {
             query: gql`
               query systemSlot($id: ID!){
                 systemSlot (id: $id){
@@ -137,6 +233,18 @@ export class ObjectListService {
                   description
                   type
                   functions {
+                    id
+                    name
+                    description
+                    type
+                  }
+                  interfaces {
+                    id
+                    name
+                    description
+                    type
+                  }
+                  hamburgers {
                     id
                     name
                     description
