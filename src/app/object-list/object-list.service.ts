@@ -1,9 +1,20 @@
 import {Injectable} from '@angular/core';
-import {Query, YacserObject} from '../types';
+import {Mutation, Query, YacserObject, YacserObjectType} from '../types';
 import {Apollo} from 'apollo-angular';
 import gql from 'graphql-tag';
 import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
+
+const ALL_OBJECTS = gql`
+  query allObjects ($modelId: ID!){
+    allObjects (modelId: $modelId) {
+      id
+      name
+      description
+      type
+    }
+  }
+`;
 
 @Injectable({
   providedIn: 'root'
@@ -14,10 +25,19 @@ export class ObjectListService {
   constructor(private apollo: Apollo) {
   }
 
+  getAllObjects$(modelId: string): Observable<YacserObject[]> {
+    return this.apollo.watchQuery<Query>({
+      query: ALL_OBJECTS,
+      variables: {
+        modelId
+      }
+    }).valueChanges.pipe(map(result => result.data.allObjects));
+  }
+
   getSelectedObject$(): Observable<YacserObject> {
-    const type = ObjectType[this.selectedObject.type];
+    const type = YacserObjectType[this.selectedObject.type];
     switch (type) {
-      case ObjectType.Function:
+      case YacserObjectType.Function:
         return this.apollo.watchQuery<Query>({
             query: gql`
               query function($id: ID!){
@@ -58,7 +78,7 @@ export class ObjectListService {
             }
           }
         ).valueChanges.pipe(map(result => result.data.function));
-      case ObjectType.Hamburger:
+      case YacserObjectType.Hamburger:
         return this.apollo.watchQuery<Query>({
             query: gql`
               query hamburger($id: ID!){
@@ -87,7 +107,7 @@ export class ObjectListService {
             }
           }
         ).valueChanges.pipe(map(result => result.data.hamburger));
-      case ObjectType.Performance:
+      case YacserObjectType.Performance:
         return this.apollo.watchQuery<Query>({
             query: gql`
               query performance($id: ID!){
@@ -116,7 +136,7 @@ export class ObjectListService {
             }
           }
         ).valueChanges.pipe(map(result => result.data.performance));
-      case ObjectType.RealisationModule:
+      case YacserObjectType.RealisationModule:
         return this.apollo.watchQuery<Query>({
             query: gql`
               query realisationModule($id: ID!){
@@ -145,7 +165,7 @@ export class ObjectListService {
             }
           }
         ).valueChanges.pipe(map(result => result.data.realisationModule));
-      case ObjectType.Requirement:
+      case YacserObjectType.Requirement:
         return this.apollo.watchQuery<Query>({
             query: gql`
               query requirement($id: ID!){
@@ -180,7 +200,7 @@ export class ObjectListService {
             }
           }
         ).valueChanges.pipe(map(result => result.data.requirement));
-      case ObjectType.SystemInterface:
+      case YacserObjectType.SystemInterface:
         return this.apollo.watchQuery<Query>(
           {
             query: gql`
@@ -222,7 +242,7 @@ export class ObjectListService {
             }
           }
         ).valueChanges.pipe(map(result => result.data.systemInterface));
-      case ObjectType.SystemSlot:
+      case YacserObjectType.SystemSlot:
         return this.apollo.watchQuery<Query>(
           {
             query: gql`
@@ -258,7 +278,7 @@ export class ObjectListService {
             }
           }
         ).valueChanges.pipe(map(result => result.data.systemSlot));
-      case ObjectType.Value:
+      case YacserObjectType.Value:
         return this.apollo.watchQuery<Query>({
             query: gql`
               query value($id: ID!){
@@ -286,17 +306,28 @@ export class ObjectListService {
   setSelectedObject(object: YacserObject): void {
     this.selectedObject = object;
   }
+
+  public createObject$(modelId: string, type: YacserObjectType, name: string, description: string): Observable<YacserObject> {
+    return this.apollo.mutate<Mutation>(
+      {
+        mutation: gql`
+          mutation createObject($modelId: ID!, $type: YacserObjectType!, $name: String, $description: String) {
+            createObject(modelId: $modelId, type: $type, name: $name, description: $description){
+              id
+              name
+              description
+              type
+            }
+          }
+        `,
+        variables: {
+          modelId,
+          type,
+          name,
+          description
+        }
+      }).pipe(map(
+      (result) => result.data.createObject));
+  }
 }
 
-enum ObjectType {
-  Function,
-  Hamburger,
-  Performance,
-  PortRealisation,
-  RealisationModule,
-  RealisationPort,
-  Requirement,
-  SystemInterface,
-  SystemSlot,
-  Value
-}

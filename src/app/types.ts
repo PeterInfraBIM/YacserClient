@@ -32,6 +32,7 @@ export interface YacserRealisationModule extends YacserObject {
   performances: YacserPerformance[];
   hamburgers: YacserHamburger[];
 }
+
 export interface YacserRequirement extends YacserObject {
   owner: YacserObject;
   minValue: YacserValue;
@@ -67,4 +68,22 @@ export interface Query {
   systemInterface: YacserSystemInterface;
   systemSlot: YacserSystemSlot;
   value: YacserValue;
+}
+
+export interface Mutation {
+  createModel: YacserModel;
+  createObject: YacserObject;
+}
+
+export enum YacserObjectType {
+  Function = 'Function',
+  Hamburger = 'Hamburger',
+  Performance = 'Performance',
+  PortRealisation = 'PortRealisation',
+  RealisationModule = 'RealisationModule',
+  RealisationPort = 'RealisationPort',
+  Requirement = 'Requirement',
+  SystemInterface = 'SystemInterface',
+  SystemSlot = 'SystemSlot',
+  Value = 'Value'
 }

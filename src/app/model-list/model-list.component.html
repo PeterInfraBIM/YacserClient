@@ -5,5 +5,7 @@
       <p class="card-text">{{model.description}}</p>
     </div>
   </div>
+  <button (click)="onCreateModel()">Create model</button>
+  <p *ngIf="newModel">{{newModel | async}}</p>
 </div>
 
