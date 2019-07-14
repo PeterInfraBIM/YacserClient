@@ -26,11 +26,9 @@ export class ObjectListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getAllObjects();
-  }
-
-  private getAllObjects(): void {
-    this.objectListService.getAllObjects$(this.modelId).subscribe((result) => this.objects = result);
+    this.objectListService.allObjectsUpdated.subscribe(
+      (result) => this.objects = result);
+    this.objectListService.getAllObjects$(this.modelId);
   }
 
   openObjectDetails(object: YacserObject): void {
@@ -44,7 +42,8 @@ export class ObjectListComponent implements OnInit {
       .subscribe((result) => {
         this.newObject = result;
         console.log('New object: ' + this.newObject.name);
-        this.objects.push(this.newObject);
+        this.newObjectName = null;
+        this.newObjectDescription = null;
       });
   }
 

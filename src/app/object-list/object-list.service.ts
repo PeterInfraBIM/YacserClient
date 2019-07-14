@@ -1,37 +1,38 @@
-import {Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {Mutation, Query, YacserObject, YacserObjectType} from '../types';
 import {Apollo} from 'apollo-angular';
-import gql from 'graphql-tag';
 import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
-
-const ALL_OBJECTS = gql`
-  query allObjects ($modelId: ID!){
-    allObjects (modelId: $modelId) {
-      id
-      name
-      description
-      type
-    }
-  }
-`;
+import {
+  ALL_OBJECTS,
+  CREATE_OBJECT,
+  FUNCTION,
+  HAMBURGER,
+  PERFORMANCE,
+  REALISATION_MODULE,
+  REQUIREMENT,
+  SYSTEM_INTERFACE,
+  SYSTEM_SLOT,
+  VALUE
+} from '../graphql';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ObjectListService {
+  public allObjectsUpdated = new EventEmitter<YacserObject[]>();
   private selectedObject: YacserObject;
 
   constructor(private apollo: Apollo) {
   }
 
-  getAllObjects$(modelId: string): Observable<YacserObject[]> {
-    return this.apollo.watchQuery<Query>({
+  getAllObjects$(modelId: string): void {
+    this.apollo.watchQuery<Query>({
       query: ALL_OBJECTS,
       variables: {
         modelId
       }
-    }).valueChanges.pipe(map(result => result.data.allObjects));
+    }).valueChanges.subscribe(result => this.allObjectsUpdated.emit(result.data.allObjects));
   }
 
   getSelectedObject$(): Observable<YacserObject> {
@@ -39,40 +40,7 @@ export class ObjectListService {
     switch (type) {
       case YacserObjectType.Function:
         return this.apollo.watchQuery<Query>({
-            query: gql`
-              query function($id: ID!){
-                function (id: $id){
-                  id
-                  name
-                  description
-                  type
-                  owner {
-                    id
-                    name
-                    description
-                    type
-                  }
-                  requirements {
-                    id
-                    name
-                    description
-                    type
-                  }
-                  input {
-                    id
-                    name
-                    description
-                    type
-                  }
-                  output {
-                    id
-                    name
-                    description
-                    type
-                  }
-                }
-              }
-            `,
+            query: FUNCTION,
             variables: {
               id: this.selectedObject.id
             }
@@ -80,28 +48,7 @@ export class ObjectListService {
         ).valueChanges.pipe(map(result => result.data.function));
       case YacserObjectType.Hamburger:
         return this.apollo.watchQuery<Query>({
-            query: gql`
-              query hamburger($id: ID!){
-                hamburger (id: $id){
-                  id
-                  name
-                  description
-                  type
-                  functionalUnit {
-                    id
-                    name
-                    description
-                    type
-                  }
-                  technicalSolution {
-                    id
-                    name
-                    description
-                    type
-                  }
-                }
-              }
-            `,
+            query: HAMBURGER,
             variables: {
               id: this.selectedObject.id
             }
@@ -109,28 +56,7 @@ export class ObjectListService {
         ).valueChanges.pipe(map(result => result.data.hamburger));
       case YacserObjectType.Performance:
         return this.apollo.watchQuery<Query>({
-            query: gql`
-              query performance($id: ID!){
-                performance (id: $id){
-                  id
-                  name
-                  description
-                  type
-                  owner {
-                    id
-                    name
-                    description
-                    type
-                  }
-                  value {
-                    id
-                    name
-                    description
-                    type
-                  }
-                }
-              }
-            `,
+            query: PERFORMANCE,
             variables: {
               id: this.selectedObject.id
             }
@@ -138,28 +64,7 @@ export class ObjectListService {
         ).valueChanges.pipe(map(result => result.data.performance));
       case YacserObjectType.RealisationModule:
         return this.apollo.watchQuery<Query>({
-            query: gql`
-              query realisationModule($id: ID!){
-                realisationModule (id: $id){
-                  id
-                  name
-                  description
-                  type
-                  performances {
-                    id
-                    name
-                    description
-                    type
-                  }
-                  hamburgers {
-                    id
-                    name
-                    description
-                    type
-                  }
-                }
-              }
-            `,
+            query: REALISATION_MODULE,
             variables: {
               id: this.selectedObject.id
             }
@@ -167,34 +72,7 @@ export class ObjectListService {
         ).valueChanges.pipe(map(result => result.data.realisationModule));
       case YacserObjectType.Requirement:
         return this.apollo.watchQuery<Query>({
-            query: gql`
-              query requirement($id: ID!){
-                requirement (id: $id){
-                  id
-                  name
-                  description
-                  type
-                  owner {
-                    id
-                    name
-                    description
-                    type
-                  }
-                  minValue {
-                    id
-                    name
-                    description
-                    type
-                  }
-                  maxValue {
-                    id
-                    name
-                    description
-                    type
-                  }
-                }
-              }
-            `,
+            query: REQUIREMENT,
             variables: {
               id: this.selectedObject.id
             }
@@ -203,40 +81,7 @@ export class ObjectListService {
       case YacserObjectType.SystemInterface:
         return this.apollo.watchQuery<Query>(
           {
-            query: gql`
-              query systemInterface($id: ID!){
-                systemInterface (id: $id){
-                  id
-                  name
-                  description
-                  type
-                  systemSlot0 {
-                    id
-                    name
-                    description
-                    type
-                  }
-                  systemSlot1 {
-                    id
-                    name
-                    description
-                    type
-                  }
-                  functionInputs {
-                    id
-                    name
-                    description
-                    type
-                  }
-                  functionOutputs {
-                    id
-                    name
-                    description
-                    type
-                  }
-                }
-              }
-            `,
+            query: SYSTEM_INTERFACE,
             variables: {
               id: this.selectedObject.id
             }
@@ -245,34 +90,7 @@ export class ObjectListService {
       case YacserObjectType.SystemSlot:
         return this.apollo.watchQuery<Query>(
           {
-            query: gql`
-              query systemSlot($id: ID!){
-                systemSlot (id: $id){
-                  id
-                  name
-                  description
-                  type
-                  functions {
-                    id
-                    name
-                    description
-                    type
-                  }
-                  interfaces {
-                    id
-                    name
-                    description
-                    type
-                  }
-                  hamburgers {
-                    id
-                    name
-                    description
-                    type
-                  }
-                }
-              }
-            `,
+            query: SYSTEM_SLOT,
             variables: {
               id: this.selectedObject.id
             }
@@ -280,18 +98,7 @@ export class ObjectListService {
         ).valueChanges.pipe(map(result => result.data.systemSlot));
       case YacserObjectType.Value:
         return this.apollo.watchQuery<Query>({
-            query: gql`
-              query value($id: ID!){
-                value (id: $id){
-                  id
-                  name
-                  description
-                  type
-                  unit
-                  value
-                }
-              }
-            `,
+            query: VALUE,
             variables: {
               id: this.selectedObject.id
             }
@@ -310,22 +117,14 @@ export class ObjectListService {
   public createObject$(modelId: string, type: YacserObjectType, name: string, description: string): Observable<YacserObject> {
     return this.apollo.mutate<Mutation>(
       {
-        mutation: gql`
-          mutation createObject($modelId: ID!, $type: YacserObjectType!, $name: String, $description: String) {
-            createObject(modelId: $modelId, type: $type, name: $name, description: $description){
-              id
-              name
-              description
-              type
-            }
-          }
-        `,
+        mutation: CREATE_OBJECT,
         variables: {
           modelId,
           type,
           name,
           description
-        }
+        },
+        refetchQueries: [{query: ALL_OBJECTS, variables: {modelId}}]
       }).pipe(map(
       (result) => result.data.createObject));
   }
