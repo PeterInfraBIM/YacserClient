@@ -26,7 +26,7 @@
           output: {{getFunction(selectedObject).output.name}}
           ({{getFunction(selectedObject).output.type}})</p>
       </div>
-        <div *ngIf="selectedObject.type==='Hamburger'">
+      <div *ngIf="selectedObject.type==='Hamburger'">
         <p *ngIf="getHamburger(selectedObject).functionalUnit" class="card-text">
           functional unit: {{getHamburger(selectedObject).functionalUnit.name}}
           ({{getHamburger(selectedObject).functionalUnit.type}})</p>
@@ -48,6 +48,12 @@
         </p>
         <p class="card-text">hamburgers: <span
           *ngFor="let hamburger of getRealisationModule(selectedObject).hamburgers">{{hamburger.name}}</span>
+        </p>
+        <p class="card-text">
+          assembly: {{getRealisationModule(selectedObject).assembly ? getRealisationModule(selectedObject).assembly.name : ''}}</p>
+        <p class="card-text">parts: <span
+          *ngFor="let part of getRealisationModule(selectedObject).parts; let lastItem = last">{{part.name}}<span
+          *ngIf="!lastItem">, </span></span>
         </p>
       </div>
       <div *ngIf="selectedObject.type==='Requirement'">

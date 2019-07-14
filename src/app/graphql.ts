@@ -122,6 +122,18 @@ export const REALISATION_MODULE = gql`
         description
         type
       }
+      assembly {
+        id
+        name
+        description
+        type
+      }
+      parts {
+        id
+        name
+        description
+        type
+      }
     }
   }
 `;

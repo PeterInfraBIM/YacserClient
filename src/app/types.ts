@@ -31,6 +31,8 @@ export interface YacserPerformance extends YacserObject {
 export interface YacserRealisationModule extends YacserObject {
   performances: YacserPerformance[];
   hamburgers: YacserHamburger[];
+  assembly: YacserRealisationModule;
+  parts: YacserRealisationModule[];
 }
 
 export interface YacserRequirement extends YacserObject {
