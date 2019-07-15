@@ -1,5 +1,5 @@
 import {EventEmitter, Injectable} from '@angular/core';
-import {Mutation, Query, YacserObject, YacserObjectType} from '../types';
+import {Mutation, Query, UpdateFunctionInput, YacserObject, YacserObjectType} from '../types';
 import {Apollo} from 'apollo-angular';
 import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
@@ -12,7 +12,7 @@ import {
   REALISATION_MODULE,
   REQUIREMENT,
   SYSTEM_INTERFACE,
-  SYSTEM_SLOT,
+  SYSTEM_SLOT, UPDATE_FUNCTION,
   VALUE
 } from '../graphql';
 
@@ -127,6 +127,26 @@ export class ObjectListService {
         refetchQueries: [{query: ALL_OBJECTS, variables: {modelId}}]
       }).pipe(map(
       (result) => result.data.createObject));
+  }
+
+  public updateObject(object: YacserObject, attribute: string, value: any) {
+    const type = YacserObjectType[object.type];
+    switch (type) {
+      case YacserObjectType.Function:
+        const updateFunctionInput = new UpdateFunctionInput(object.id);
+        switch (attribute) {
+          case 'description':
+            updateFunctionInput.updateDescription = value;
+            break;
+        }
+        this.apollo.mutate<Mutation>({
+          mutation: UPDATE_FUNCTION,
+          variables: {input: updateFunctionInput}
+        }).subscribe(
+          (result) => console.log(result.data.updateFunction),
+          (error) => console.log(error.toString()));
+        break;
+    }
   }
 }
 

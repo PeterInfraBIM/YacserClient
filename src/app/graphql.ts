@@ -53,6 +53,65 @@ export const FUNCTION = gql`
         description
         type
       }
+      assembly {
+        id
+        name
+        description
+        type
+      }
+      parts {
+        id
+        name
+        description
+        type
+      }
+    }
+  }
+`;
+
+export const UPDATE_FUNCTION = gql`
+  mutation updateFunction($input: UpdateFunctionInput!) {
+    updateFunction(input: $input){
+      id
+      name
+      description
+      type
+      owner {
+        id
+        name
+        description
+        type
+      }
+      requirements {
+        id
+        name
+        description
+        type
+      }
+      input {
+        id
+        name
+        description
+        type
+      }
+      output {
+        id
+        name
+        description
+        type
+      }
+      assembly {
+        id
+        name
+        description
+        type
+      }
+      parts {
+        id
+        name
+        description
+        type
+      }
     }
   }
 `;

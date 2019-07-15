@@ -12,6 +12,8 @@
     </div>
     <div class="card-body">
       <p class="card-text">description: {{selectedObject.description}}</p>
+      <app-string-editor [object]="selectedObject" attribute="description"
+                         (newValue)="onNewValue($event, 'description')"></app-string-editor>
       <div *ngIf="selectedObject.type==='Function'">
         <p *ngIf="getFunction(selectedObject).owner" class="card-text">
           owner: {{getFunction(selectedObject).owner.name}}
@@ -25,6 +27,12 @@
         <p *ngIf="getFunction(selectedObject).output" class="card-text">
           output: {{getFunction(selectedObject).output.name}}
           ({{getFunction(selectedObject).output.type}})</p>
+        <p class="card-text">
+          assembly: {{getFunction(selectedObject).assembly ? getFunction(selectedObject).assembly.name : ''}}</p>
+        <p class="card-text">parts: <span
+          *ngFor="let part of getFunction(selectedObject).parts; let lastItem = last">{{part.name}}<span
+          *ngIf="!lastItem">, </span></span>
+        </p>
       </div>
       <div *ngIf="selectedObject.type==='Hamburger'">
         <p *ngIf="getHamburger(selectedObject).functionalUnit" class="card-text">

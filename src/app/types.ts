@@ -16,6 +16,15 @@ export interface YacserFunction extends YacserObject {
   requirements: YacserRequirement[];
   input: YacserSystemInterface;
   output: YacserSystemInterface;
+  assembly: YacserFunction;
+  parts: YacserFunction[];
+}
+
+export class UpdateFunctionInput {
+  updateName: string;
+  updateDescription: string;
+  constructor(private functionId: string) {
+  }
 }
 
 export interface YacserHamburger extends YacserObject {

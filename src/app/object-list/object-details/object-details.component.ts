@@ -90,4 +90,8 @@ export class ObjectDetailsComponent implements OnInit {
   getValue(object: YacserObject): YacserValue {
     return object as YacserValue;
   }
+
+  onNewValue(newValue: any, attribute: string): void {
+    this.objectListService.updateObject(this.selectedObject, attribute, newValue);
+  }
 }

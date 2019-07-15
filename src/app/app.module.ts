@@ -11,13 +11,15 @@ import {InMemoryCache} from 'apollo-cache-inmemory';
 import {ModelListComponent} from './model-list/model-list.component';
 import {ObjectListComponent} from './object-list/object-list.component';
 import {ObjectDetailsComponent} from './object-list/object-details/object-details.component';
+import { StringEditorComponent } from './object-list/object-details/editors/string-editor/string-editor.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ModelListComponent,
     ObjectListComponent,
-    ObjectDetailsComponent
+    ObjectDetailsComponent,
+    StringEditorComponent
   ],
   imports: [
     BrowserModule,
