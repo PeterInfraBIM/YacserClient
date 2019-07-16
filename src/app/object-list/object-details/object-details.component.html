@@ -11,7 +11,9 @@
       <h5 class="card-subtitle">{{selectedObject.type}}</h5>
     </div>
     <div class="card-body">
-      <p class="card-text">description: {{selectedObject.description}}</p>
+      <app-string-editor [object]="selectedObject" attribute="name"
+                         (newValue)="onNewValue($event, 'name')"></app-string-editor>
+<!--      <p class="card-text">description: {{selectedObject.description}}</p>-->
       <app-string-editor [object]="selectedObject" attribute="description"
                          (newValue)="onNewValue($event, 'description')"></app-string-editor>
       <div *ngIf="selectedObject.type==='Function'">

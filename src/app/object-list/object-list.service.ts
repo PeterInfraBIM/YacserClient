@@ -1,5 +1,17 @@
-import {EventEmitter, Injectable} from '@angular/core';
-import {Mutation, Query, UpdateFunctionInput, YacserObject, YacserObjectType} from '../types';
+import {EventEmitter, Injectable, Input} from '@angular/core';
+import {
+  Mutation,
+  Query,
+  UpdateFunctionInput,
+  UpdateHamburgerInput,
+  UpdatePerformanceInput,
+  UpdateRealisationModuleInput,
+  UpdateRequirementInput,
+  UpdateSystemInterfaceInput,
+  UpdateSystemSlotInput, UpdateValueInput,
+  YacserObject,
+  YacserObjectType
+} from '../types';
 import {Apollo} from 'apollo-angular';
 import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
@@ -12,7 +24,13 @@ import {
   REALISATION_MODULE,
   REQUIREMENT,
   SYSTEM_INTERFACE,
-  SYSTEM_SLOT, UPDATE_FUNCTION,
+  SYSTEM_SLOT,
+  UPDATE_FUNCTION,
+  UPDATE_HAMBURGER,
+  UPDATE_PERFORMANCE,
+  UPDATE_REALISATION_MODULE,
+  UPDATE_REQUIREMENT,
+  UPDATE_SYSTEM_INTERFACE, UPDATE_SYSTEM_SLOT, UPDATE_VALUE,
   VALUE
 } from '../graphql';
 
@@ -135,6 +153,9 @@ export class ObjectListService {
       case YacserObjectType.Function:
         const updateFunctionInput = new UpdateFunctionInput(object.id);
         switch (attribute) {
+          case 'name':
+            updateFunctionInput.updateName = value;
+            break;
           case 'description':
             updateFunctionInput.updateDescription = value;
             break;
@@ -146,7 +167,125 @@ export class ObjectListService {
           (result) => console.log(result.data.updateFunction),
           (error) => console.log(error.toString()));
         break;
+      case YacserObjectType.Hamburger:
+        const updateHamburgerInput = new UpdateHamburgerInput(object.id);
+        switch (attribute) {
+          case 'name':
+            updateHamburgerInput.updateName = value;
+            break;
+          case 'description':
+            updateHamburgerInput.updateDescription = value;
+            break;
+        }
+        this.apollo.mutate<Mutation>({
+          mutation: UPDATE_HAMBURGER,
+          variables: {input: updateHamburgerInput}
+        }).subscribe(
+          (result) => console.log(result.data.updateHamburger),
+          (error) => console.log(error.toString()));
+        break;
+      case YacserObjectType.Performance:
+        const updatePerformanceInput = new UpdatePerformanceInput(object.id);
+        switch (attribute) {
+          case 'name':
+            updatePerformanceInput.updateName = value;
+            break;
+          case 'description':
+            updatePerformanceInput.updateDescription = value;
+            break;
+        }
+        this.apollo.mutate<Mutation>({
+          mutation: UPDATE_PERFORMANCE,
+          variables: {input: updatePerformanceInput}
+        }).subscribe(
+          (result) => console.log(result.data.updateHamburger),
+          (error) => console.log(error.toString()));
+        break;
+      case YacserObjectType.RealisationModule:
+        const updateRealisationModuleInput = new UpdateRealisationModuleInput(object.id);
+        switch (attribute) {
+          case 'name':
+            updateRealisationModuleInput.updateName = value;
+            break;
+          case 'description':
+            updateRealisationModuleInput.updateDescription = value;
+            break;
+        }
+        this.apollo.mutate<Mutation>({
+          mutation: UPDATE_REALISATION_MODULE,
+          variables: {input: updateRealisationModuleInput}
+        }).subscribe(
+          (result) => console.log(result.data.updateHamburger),
+          (error) => console.log(error.toString()));
+        break;
+      case YacserObjectType.Requirement:
+        const updateRequirementInput = new UpdateRequirementInput(object.id);
+        switch (attribute) {
+          case 'name':
+            updateRequirementInput.updateName = value;
+            break;
+          case 'description':
+            updateRequirementInput.updateDescription = value;
+            break;
+        }
+        this.apollo.mutate<Mutation>({
+          mutation: UPDATE_REQUIREMENT,
+          variables: {input: updateRequirementInput}
+        }).subscribe(
+          (result) => console.log(result.data.updateRequirement),
+          (error) => console.log(error.toString()));
+        break;
+      case YacserObjectType.SystemInterface:
+        const updateSystemInterfaceInput = new UpdateSystemInterfaceInput(object.id);
+        switch (attribute) {
+          case 'name':
+            updateSystemInterfaceInput.updateName = value;
+            break;
+          case 'description':
+            updateSystemInterfaceInput.updateDescription = value;
+            break;
+        }
+        this.apollo.mutate<Mutation>({
+          mutation: UPDATE_SYSTEM_INTERFACE,
+          variables: {input: updateSystemInterfaceInput}
+        }).subscribe(
+          (result) => console.log(result.data.updateSystemInterface),
+          (error) => console.log(error.toString()));
+        break;
+      case YacserObjectType.SystemSlot:
+        const updateSystemSlotInput = new UpdateSystemSlotInput(object.id);
+        switch (attribute) {
+          case 'name':
+            updateSystemSlotInput.updateName = value;
+            break;
+          case 'description':
+            updateSystemSlotInput.updateDescription = value;
+            break;
+        }
+        this.apollo.mutate<Mutation>({
+          mutation: UPDATE_SYSTEM_SLOT,
+          variables: {input: updateSystemSlotInput}
+        }).subscribe(
+          (result) => console.log(result.data.updateSystemSlot),
+          (error) => console.log(error.toString()));
+        break;
+      case YacserObjectType.Value:
+        const updateValueInput = new UpdateValueInput(object.id);
+        switch (attribute) {
+          case 'name':
+            updateValueInput.updateName = value;
+            break;
+          case 'description':
+            updateValueInput.updateDescription = value;
+            break;
+        }
+        this.apollo.mutate<Mutation>({
+          mutation: UPDATE_VALUE,
+          variables: {input: updateValueInput}
+        }).subscribe(
+          (result) => console.log(result.data.updateValue),
+          (error) => console.log(error.toString()));
+        break;
     }
   }
 }
-

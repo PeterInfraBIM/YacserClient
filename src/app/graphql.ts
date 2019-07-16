@@ -1,304 +1,315 @@
 import gql from 'graphql-tag';
 
+export const OBJECT_FIELDS = gql`
+  fragment ObjectFields on YacserObject {
+    id
+    name
+    description
+    type
+  }
+`;
+
 export const ALL_OBJECTS = gql`
   query allObjects ($modelId: ID!){
     allObjects (modelId: $modelId) {
-      id
-      name
-      description
-      type
+      ...ObjectFields
     }
   }
+  ${OBJECT_FIELDS}
 `;
 
 export const CREATE_OBJECT = gql`
   mutation createObject($modelId: ID!, $type: YacserObjectType!, $name: String, $description: String) {
     createObject(modelId: $modelId, type: $type, name: $name, description: $description){
-      id
-      name
-      description
-      type
+      ...ObjectFields
     }
   }
+  ${OBJECT_FIELDS}
 `;
 
 export const FUNCTION = gql`
   query function($id: ID!){
     function (id: $id){
-      id
-      name
-      description
-      type
+      ...ObjectFields
       owner {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
       requirements {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
       input {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
       output {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
       assembly {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
       parts {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
     }
   }
+  ${OBJECT_FIELDS}
 `;
 
 export const UPDATE_FUNCTION = gql`
   mutation updateFunction($input: UpdateFunctionInput!) {
     updateFunction(input: $input){
-      id
-      name
-      description
-      type
+      ...ObjectFields
       owner {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
       requirements {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
       input {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
       output {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
       assembly {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
       parts {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
     }
   }
+  ${OBJECT_FIELDS}
 `;
 
 export const HAMBURGER = gql`
   query hamburger($id: ID!){
     hamburger (id: $id){
-      id
-      name
-      description
-      type
+      ...ObjectFields
       functionalUnit {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
       technicalSolution {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
     }
   }
+  ${OBJECT_FIELDS}
+`;
+
+export const UPDATE_HAMBURGER = gql`
+  mutation updateHamburger($input: UpdateHamburgerInput!) {
+    updateHamburger (input: $input){
+      ...ObjectFields
+      functionalUnit {
+        ...ObjectFields
+      }
+      technicalSolution {
+        ...ObjectFields
+      }
+    }
+  }
+  ${OBJECT_FIELDS}
 `;
 
 export const PERFORMANCE = gql`
   query performance($id: ID!){
     performance (id: $id){
-      id
-      name
-      description
-      type
+      ...ObjectFields
       owner {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
       value {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
     }
   }
+  ${OBJECT_FIELDS}
+`;
+
+export const UPDATE_PERFORMANCE = gql`
+  mutation updatePerformance($input: UpdatePerformanceInput!) {
+    updatePerformance (input: $input){
+      ...ObjectFields
+      owner {
+        ...ObjectFields
+      }
+      value {
+        ...ObjectFields
+      }
+    }
+  }
+  ${OBJECT_FIELDS}
 `;
 
 export const REALISATION_MODULE = gql`
   query realisationModule($id: ID!){
     realisationModule (id: $id){
-      id
-      name
-      description
-      type
+      ...ObjectFields
       performances {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
       hamburgers {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
       assembly {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
       parts {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
     }
   }
+  ${OBJECT_FIELDS}
 `;
+
+export const UPDATE_REALISATION_MODULE = gql`
+  mutation updateRealisationModule($input: UpdateRealisationModuleInput!) {
+    updateRealisationModule (input: $input){
+      ...ObjectFields
+      performances {
+        ...ObjectFields
+      }
+      hamburgers {
+        ...ObjectFields
+      }
+      assembly {
+        ...ObjectFields
+      }
+      parts {
+        ...ObjectFields
+      }
+    }
+  }
+  ${OBJECT_FIELDS}
+`;
+
 
 export const REQUIREMENT = gql`
   query requirement($id: ID!){
     requirement (id: $id){
-      id
-      name
-      description
-      type
+      ...ObjectFields
       owner {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
       minValue {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
       maxValue {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
     }
   }
+  ${OBJECT_FIELDS}
+`;
+
+export const UPDATE_REQUIREMENT = gql`
+  mutation updateRequirement($input: UpdateRequirementInput!) {
+    updateRequirement (input: $input){
+      ...ObjectFields
+      owner {
+        ...ObjectFields
+      }
+      minValue {
+        ...ObjectFields
+      }
+      maxValue {
+        ...ObjectFields
+      }
+    }
+  }
+  ${OBJECT_FIELDS}
 `;
 
 export const SYSTEM_INTERFACE = gql`
   query systemInterface($id: ID!){
     systemInterface (id: $id){
-      id
-      name
-      description
-      type
+      ...ObjectFields
       systemSlot0 {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
       systemSlot1 {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
       functionInputs {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
       functionOutputs {
-        id
-        name
-        description
-        type
+        ...ObjectFields
       }
     }
   }
+  ${OBJECT_FIELDS}
+`;
+
+export const UPDATE_SYSTEM_INTERFACE = gql`
+  mutation updateSystemInterface($input: UpdateSystemInterfaceInput!) {
+    updateSystemInterface (input: $input){
+      ...ObjectFields
+      systemSlot0 {
+        ...ObjectFields
+      }
+      systemSlot1 {
+        ...ObjectFields
+      }
+      functionInputs {
+        ...ObjectFields
+      }
+      functionOutputs {
+        ...ObjectFields
+      }
+    }
+  }
+  ${OBJECT_FIELDS}
 `;
 
 export const SYSTEM_SLOT = gql`
   query systemSlot($id: ID!){
     systemSlot (id: $id){
-      id
-      name
-      description
-      type
+      ...ObjectFields
       functions {
-        id
-        name
-        description
-        type
-      }
+        ...ObjectFields      }
       interfaces {
-        id
-        name
-        description
-        type
-      }
+        ...ObjectFields      }
       hamburgers {
-        id
-        name
-        description
-        type
-      }
+        ...ObjectFields      }
     }
   }
+  ${OBJECT_FIELDS}
+`;
+
+export const UPDATE_SYSTEM_SLOT = gql`
+  mutation updateSystemSlot($input: UpdateSystemSlotInput!) {
+    updateSystemSlot (input: $input){
+      ...ObjectFields
+      functions {
+        ...ObjectFields      }
+      interfaces {
+        ...ObjectFields      }
+      hamburgers {
+        ...ObjectFields      }
+    }
+  }
+  ${OBJECT_FIELDS}
 `;
 
 export const VALUE = gql`
   query value($id: ID!){
     value (id: $id){
-      id
-      name
-      description
-      type
+      ...ObjectFields
       unit
       value
     }
   }
+  ${OBJECT_FIELDS}
+`;
+
+export const UPDATE_VALUE = gql`
+  mutation updateValue($input: UpdateValueInput!) {
+    updateValue (input: $input){
+      ...ObjectFields
+      unit
+      value
+    }
+  }
+  ${OBJECT_FIELDS}
 `;
