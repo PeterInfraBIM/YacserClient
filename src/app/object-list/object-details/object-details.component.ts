@@ -11,6 +11,7 @@ import {
   YacserSystemSlot,
   YacserValue
 } from '../../types';
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-object-details',
@@ -19,6 +20,7 @@ import {
 })
 export class ObjectDetailsComponent implements OnInit {
   selectedObject: YacserObject;
+  modelId: string;
 
   constructor(private modal: NgbModal,
               public activeModal: NgbActiveModal,
@@ -55,9 +57,10 @@ export class ObjectDetailsComponent implements OnInit {
             this.selectedObject = result as YacserValue;
             break;
         }
+        this.modelId = this.selectedObject.id.substring(0, this.selectedObject.id.indexOf('#'));
       }
     );
-  }
+   }
 
   getFunction(object: YacserObject): YacserFunction {
     return object as YacserFunction;
@@ -93,5 +96,9 @@ export class ObjectDetailsComponent implements OnInit {
 
   onNewValue(newValue: any, attribute: string): void {
     this.objectListService.updateObject(this.selectedObject, attribute, newValue);
+  }
+
+  getLinks(modelId: string): Observable<YacserObject[]> {
+    return this.objectListService.getLinks$(modelId);
   }
 }

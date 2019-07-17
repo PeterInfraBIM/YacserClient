@@ -2,15 +2,16 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {YacserObject} from '../../../../types';
 
 @Component({
-  selector: 'app-string-editor',
-  templateUrl: './string-editor.component.html',
-  styleUrls: ['./string-editor.component.css']
+  selector: 'app-literal-editor',
+  templateUrl: './literal-editor.component.html',
+  styleUrls: ['./literal-editor.component.css']
 })
-export class StringEditorComponent implements OnInit {
+export class LiteralEditorComponent implements OnInit {
   isEditing: boolean;
   value: string;
   @Input() object: YacserObject;
   @Input() attribute: string;
+  @Input() inputType = 'text';
   @Output() newValue = new EventEmitter();
 
   constructor() {

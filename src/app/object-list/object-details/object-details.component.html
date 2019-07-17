@@ -11,11 +11,10 @@
       <h5 class="card-subtitle">{{selectedObject.type}}</h5>
     </div>
     <div class="card-body">
-      <app-string-editor [object]="selectedObject" attribute="name"
-                         (newValue)="onNewValue($event, 'name')"></app-string-editor>
-<!--      <p class="card-text">description: {{selectedObject.description}}</p>-->
-      <app-string-editor [object]="selectedObject" attribute="description"
-                         (newValue)="onNewValue($event, 'description')"></app-string-editor>
+      <app-literal-editor [object]="selectedObject" attribute="name"
+                          (newValue)="onNewValue($event, 'name')"></app-literal-editor>
+      <app-literal-editor [object]="selectedObject" attribute="description"
+                          (newValue)="onNewValue($event, 'description')"></app-literal-editor>
       <div *ngIf="selectedObject.type==='Function'">
         <p *ngIf="getFunction(selectedObject).owner" class="card-text">
           owner: {{getFunction(selectedObject).owner.name}}
@@ -61,6 +60,9 @@
         </p>
         <p class="card-text">
           assembly: {{getRealisationModule(selectedObject).assembly ? getRealisationModule(selectedObject).assembly.name : ''}}</p>
+        <p class="card-text">
+          <app-link-editor [object]="selectedObject" attribute="assembly" [links]="getLinks(modelId) | async"></app-link-editor>
+        </p>
         <p class="card-text">parts: <span
           *ngFor="let part of getRealisationModule(selectedObject).parts; let lastItem = last">{{part.name}}<span
           *ngIf="!lastItem">, </span></span>
@@ -105,8 +107,10 @@
         </p>
       </div>
       <div *ngIf="selectedObject.type==='Value'">
-        <p class="card-text">unit: {{getValue(selectedObject).unit}}</p>
-        <p class="card-text">value: {{getValue(selectedObject).value}}</p>
+        <app-literal-editor [object]="selectedObject" attribute="unit"
+                            (newValue)="onNewValue($event, 'unit')"></app-literal-editor>
+        <app-literal-editor [object]="selectedObject" attribute="value" inputType="number"
+                            (newValue)="onNewValue($event, 'value')"></app-literal-editor>
       </div>
     </div>
   </div>

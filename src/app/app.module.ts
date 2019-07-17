@@ -7,11 +7,18 @@ import {ApolloModule, Apollo} from 'apollo-angular';
 import {HttpLinkModule, HttpLink} from 'apollo-angular-link-http';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {InMemoryCache} from 'apollo-cache-inmemory';
+import {InMemoryCache, IntrospectionFragmentMatcher} from 'apollo-cache-inmemory';
+// @ts-ignore
+import introspectionQueryResultData from 'fragmentTypes.json';
 import {ModelListComponent} from './model-list/model-list.component';
 import {ObjectListComponent} from './object-list/object-list.component';
 import {ObjectDetailsComponent} from './object-list/object-details/object-details.component';
-import { StringEditorComponent } from './object-list/object-details/editors/string-editor/string-editor.component';
+import {LiteralEditorComponent} from './object-list/object-details/editors/literal-editor/literal-editor.component';
+import {LinkEditorComponent} from './object-list/object-details/editors/link-editor/link-editor.component';
+
+const fragmentMatcher = new IntrospectionFragmentMatcher({
+  introspectionQueryResultData
+});
 
 @NgModule({
   declarations: [
@@ -19,7 +26,8 @@ import { StringEditorComponent } from './object-list/object-details/editors/stri
     ModelListComponent,
     ObjectListComponent,
     ObjectDetailsComponent,
-    StringEditorComponent
+    LiteralEditorComponent,
+    LinkEditorComponent
   ],
   imports: [
     BrowserModule,
@@ -45,7 +53,7 @@ export class AppModule {
       link: httpLink.create({
         uri: 'http://localhost:8080/graphql'
       }),
-      cache: new InMemoryCache()
+      cache: new InMemoryCache({fragmentMatcher})
     });
   }
 }

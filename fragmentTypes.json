@@ -1,0 +1,36 @@
+{
+  "__schema": {
+    "types": [
+      {
+        "kind": "INTERFACE",
+        "name": "YacserObject",
+        "possibleTypes": [
+          {
+            "name": "Function"
+          },
+          {
+            "name": "SystemSlot"
+          },
+          {
+            "name": "SystemInterface"
+          },
+          {
+            "name": "Hamburger"
+          },
+          {
+            "name": "RealisationModule"
+          },
+          {
+            "name": "Performance"
+          },
+          {
+            "name": "Value"
+          },
+          {
+            "name": "Requirement"
+          }
+        ]
+      }
+    ]
+  }
+}

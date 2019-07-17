@@ -278,6 +278,12 @@ export class ObjectListService {
           case 'description':
             updateValueInput.updateDescription = value;
             break;
+          case 'unit':
+            updateValueInput.updateUnit = value;
+            break;
+          case 'value':
+            updateValueInput.updateValue = value;
+            break;
         }
         this.apollo.mutate<Mutation>({
           mutation: UPDATE_VALUE,
@@ -287,5 +293,12 @@ export class ObjectListService {
           (error) => console.log(error.toString()));
         break;
     }
+  }
+
+  public getLinks$(modelId: string): Observable<YacserObject[]> {
+    return this.apollo.query<Query>({
+      query: ALL_OBJECTS,
+      variables: {modelId}
+    }).pipe(map(value => value.data.allObjects));
   }
 }

@@ -135,6 +135,8 @@ export class UpdateValueInput {
   valueId: string
   updateName: string;
   updateDescription: string;
+  updateUnit: string;
+  updateValue: number;
 
   constructor(valueId: string) {
     this.valueId = valueId;

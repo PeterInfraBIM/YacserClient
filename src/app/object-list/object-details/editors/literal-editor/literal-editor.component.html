@@ -1,0 +1,12 @@
+<div>
+  <div *ngIf="isEditing">
+    <p>{{attribute}}: <input [type]="inputType" [placeholder]="'Enter ' + attribute" [(ngModel)]="value">
+      <button type='button' (click)="onClickEdit()">...</button>
+    </p>
+  </div>
+  <div *ngIf="!isEditing">
+    <p>{{attribute}}: {{object[attribute]}}
+      <button type='button' (click)="onClickEdit()">...</button>
+    </p>
+  </div>
+</div>

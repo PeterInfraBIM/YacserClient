@@ -1,11 +1,15 @@
 <div>
   <div *ngIf="isEditing">
-    <p>{{attribute}}: <input type="text" [placeholder]="'Enter ' + attribute" [(ngModel)]="value">
+    <p>{{attribute}}: <select>
+      <option *ngFor="let link of links">
+        {{link}}
+      </option>
+    </select>
       <button type='button' (click)="onClickEdit()">...</button>
     </p>
   </div>
   <div *ngIf="!isEditing">
-    <p>{{attribute}}: {{object[attribute]}}
+    <p>{{attribute}}: {{object[attribute] ? object[attribute].name : ''}}
       <button type='button' (click)="onClickEdit()">...</button>
     </p>
   </div>
