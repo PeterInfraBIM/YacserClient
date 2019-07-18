@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {YacserObject} from '../../../../types';
 
 @Component({
@@ -12,6 +12,7 @@ export class LinkEditorComponent implements OnInit {
   @Input() object: YacserObject;
   @Input() links: YacserObject[];
   @Input() attribute: string;
+  @Output() newValue = new EventEmitter<string>();
 
   constructor() {
   }
@@ -22,6 +23,9 @@ export class LinkEditorComponent implements OnInit {
 
   onClickEdit(): void {
     this.isEditing = !this.isEditing;
+    if (!this.isEditing && this.value !== this.object[this.attribute]) {
+      this.newValue.emit(this.value.id);
+    }
   }
 
   compareFn(c1: any, c2: any): boolean {

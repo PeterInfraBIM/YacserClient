@@ -61,7 +61,8 @@
         <p class="card-text">
           assembly: {{getRealisationModule(selectedObject).assembly ? getRealisationModule(selectedObject).assembly.name : ''}}</p>
         <p class="card-text">
-          <app-link-editor [object]="selectedObject" attribute="assembly" [links]="getLinks('RealisationModule')"></app-link-editor>
+          <app-link-editor [object]="selectedObject" attribute="assembly" [links]="getLinks('RealisationModule')"
+                           (newValue)="onNewValue($event, 'assembly')"></app-link-editor>
         </p>
         <p class="card-text">parts: <span
           *ngFor="let part of getRealisationModule(selectedObject).parts; let lastItem = last">{{part.name}}<span

@@ -71,6 +71,7 @@ export class UpdateRealisationModuleInput {
   realisationModuleId: string
   updateName: string;
   updateDescription: string;
+  updateAssembly: string;
 
   constructor(realisationModuleId: string) {
     this.realisationModuleId = realisationModuleId;

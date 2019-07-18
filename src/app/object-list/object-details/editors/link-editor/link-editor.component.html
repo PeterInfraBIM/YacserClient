@@ -1,5 +1,6 @@
 <div *ngIf="isEditing">
-  <p>{{attribute}}: <select [ngModel]="value" [compareWith]="compareFn">
+  <p>{{attribute}}: <select [(ngModel)]="value" [compareWith]="compareFn">
+    <option [ngValue]="null">null</option>
     <option *ngFor="let link of links" [ngValue]="link">
       {{link.name}}
     </option>

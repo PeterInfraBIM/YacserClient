@@ -202,7 +202,7 @@ export class ObjectListService {
           mutation: UPDATE_PERFORMANCE,
           variables: {input: updatePerformanceInput}
         }).subscribe(
-          (result) => console.log(result.data.updateHamburger),
+          (result) => console.log(result.data.updatePerformance),
           (error) => console.log(error.toString()));
         break;
       case YacserObjectType.RealisationModule:
@@ -214,12 +214,15 @@ export class ObjectListService {
           case 'description':
             updateRealisationModuleInput.updateDescription = value;
             break;
+          case 'assembly':
+            updateRealisationModuleInput.updateAssembly = value;
+            break;
         }
         this.apollo.mutate<Mutation>({
           mutation: UPDATE_REALISATION_MODULE,
           variables: {input: updateRealisationModuleInput}
         }).subscribe(
-          (result) => console.log(result.data.updateHamburger),
+          (result) => console.log(result.data.updateRealisationModule),
           (error) => console.log(error.toString()));
         break;
       case YacserObjectType.Requirement:
