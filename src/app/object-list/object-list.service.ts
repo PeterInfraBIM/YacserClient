@@ -39,6 +39,7 @@ import {
 })
 export class ObjectListService {
   public allObjectsUpdated = new EventEmitter<YacserObject[]>();
+  public allObjects: YacserObject[];
   private selectedObject: YacserObject;
 
   constructor(private apollo: Apollo) {
@@ -50,7 +51,10 @@ export class ObjectListService {
       variables: {
         modelId
       }
-    }).valueChanges.subscribe(result => this.allObjectsUpdated.emit(result.data.allObjects));
+    }).valueChanges.subscribe(result => {
+      this.allObjects = result.data.allObjects;
+      this.allObjectsUpdated.emit(this.allObjects);
+    });
   }
 
   getSelectedObject$(): Observable<YacserObject> {
@@ -295,10 +299,4 @@ export class ObjectListService {
     }
   }
 
-  public getLinks$(modelId: string): Observable<YacserObject[]> {
-    return this.apollo.query<Query>({
-      query: ALL_OBJECTS,
-      variables: {modelId}
-    }).pipe(map(value => value.data.allObjects));
-  }
 }

@@ -11,7 +11,6 @@ import {
   YacserSystemSlot,
   YacserValue
 } from '../../types';
-import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-object-details',
@@ -60,7 +59,11 @@ export class ObjectDetailsComponent implements OnInit {
         this.modelId = this.selectedObject.id.substring(0, this.selectedObject.id.indexOf('#'));
       }
     );
-   }
+  }
+
+  getLinks(filter: string): YacserObject[] {
+    return this.objectListService.allObjects.filter((object => object.type === filter));
+  }
 
   getFunction(object: YacserObject): YacserFunction {
     return object as YacserFunction;
@@ -98,7 +101,4 @@ export class ObjectDetailsComponent implements OnInit {
     this.objectListService.updateObject(this.selectedObject, attribute, newValue);
   }
 
-  getLinks(modelId: string): Observable<YacserObject[]> {
-    return this.objectListService.getLinks$(modelId);
-  }
 }
