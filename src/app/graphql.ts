@@ -66,12 +66,21 @@ export const UPDATE_FUNCTION = gql`
       }
       input {
         ...ObjectFields
+        functionInputs {
+          ...ObjectFields
+        }
       }
       output {
         ...ObjectFields
+        functionOutputs {
+          ...ObjectFields
+        }
       }
       assembly {
         ...ObjectFields
+        parts {
+          ...ObjectFields
+        }
       }
       parts {
         ...ObjectFields
@@ -242,6 +251,12 @@ export const SYSTEM_INTERFACE = gql`
       functionOutputs {
         ...ObjectFields
       }
+      assembly {
+        ...ObjectFields
+      }
+      parts {
+        ...ObjectFields
+      }
     }
   }
   ${OBJECT_FIELDS}
@@ -262,6 +277,18 @@ export const UPDATE_SYSTEM_INTERFACE = gql`
       }
       functionOutputs {
         ...ObjectFields
+      }
+      assembly {
+        ...ObjectFields
+        parts {
+          ...ObjectFields
+        }
+      }
+      parts {
+        ...ObjectFields
+        assembly {
+          ...ObjectFields
+        }
       }
     }
   }

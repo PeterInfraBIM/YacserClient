@@ -22,14 +22,18 @@
         <p class="card-text">requirements: <span
           *ngFor="let requirement of getFunction(selectedObject).requirements">{{requirement.name}}</span>
         </p>
-        <p *ngIf="getFunction(selectedObject).input" class="card-text">
-          input: {{getFunction(selectedObject).input.name}}
-          ({{getFunction(selectedObject).input.type}})</p>
-        <p *ngIf="getFunction(selectedObject).output" class="card-text">
-          output: {{getFunction(selectedObject).output.name}}
-          ({{getFunction(selectedObject).output.type}})</p>
         <p class="card-text">
-          assembly: {{getFunction(selectedObject).assembly ? getFunction(selectedObject).assembly.name : ''}}</p>
+          <app-link-editor [object]="selectedObject" attribute="input" [links]="getLinks('SystemInterface')"
+                           (newValue)="onNewValue($event, 'input')"></app-link-editor>
+        </p>
+        <p class="card-text">
+          <app-link-editor [object]="selectedObject" attribute="output" [links]="getLinks('SystemInterface')"
+                           (newValue)="onNewValue($event, 'output')"></app-link-editor>
+        </p>
+        <p class="card-text">
+          <app-link-editor [object]="selectedObject" attribute="assembly" [links]="getLinks('Function')"
+                           (newValue)="onNewValue($event, 'assembly')"></app-link-editor>
+        </p>
         <p class="card-text">parts: <span
           *ngFor="let part of getFunction(selectedObject).parts; let lastItem = last">{{part.name}}<span
           *ngIf="!lastItem">, </span></span>
@@ -58,8 +62,6 @@
         <p class="card-text">hamburgers: <span
           *ngFor="let hamburger of getRealisationModule(selectedObject).hamburgers">{{hamburger.name}}</span>
         </p>
-        <p class="card-text">
-          assembly: {{getRealisationModule(selectedObject).assembly ? getRealisationModule(selectedObject).assembly.name : ''}}</p>
         <p class="card-text">
           <app-link-editor [object]="selectedObject" attribute="assembly" [links]="getLinks('RealisationModule')"
                            (newValue)="onNewValue($event, 'assembly')"></app-link-editor>
@@ -94,6 +96,14 @@
         </p>
         <p *ngIf="getSystemInterface(selectedObject).functionOutputs" class="card-text">function outputs: <span
           *ngFor="let f of getSystemInterface(selectedObject).functionOutputs">{{f.name}}</span>
+        </p>
+        <p class="card-text">
+          <app-link-editor [object]="selectedObject" attribute="assembly" [links]="getLinks('SystemInterface')"
+                           (newValue)="onNewValue($event, 'assembly')"></app-link-editor>
+        </p>
+        <p class="card-text">parts: <span
+          *ngFor="let part of getSystemInterface(selectedObject).parts; let lastItem = last">{{part.name}}<span
+          *ngIf="!lastItem">, </span></span>
         </p>
       </div>
       <div *ngIf="selectedObject.type==='SystemSlot'">

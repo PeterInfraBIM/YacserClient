@@ -24,6 +24,9 @@ export class UpdateFunctionInput {
   functionId: string;
   updateName: string;
   updateDescription: string;
+  updateInput: string;
+  updateOutput: string;
+  updateAssembly: string;
 
   constructor(functionId: string) {
     this.functionId = functionId;
@@ -99,12 +102,15 @@ export interface YacserSystemInterface extends YacserObject {
   systemSlot1: YacserSystemSlot;
   functionInputs: YacserFunction[];
   functionOutputs: YacserFunction;
+  assembly: YacserSystemInterface;
+  parts: YacserSystemInterface[];
 }
 
 export class UpdateSystemInterfaceInput {
   systemInterfaceId: string
   updateName: string;
   updateDescription: string;
+  updateAssembly: string;
 
   constructor(systemInterfaceId: string) {
     this.systemInterfaceId = systemInterfaceId;
