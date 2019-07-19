@@ -268,15 +268,27 @@ export const UPDATE_SYSTEM_INTERFACE = gql`
       ...ObjectFields
       systemSlot0 {
         ...ObjectFields
+        interfaces {
+          ...ObjectFields
+        }
       }
       systemSlot1 {
         ...ObjectFields
+        interfaces {
+          ...ObjectFields
+        }
       }
       functionInputs {
         ...ObjectFields
+        input {
+          ...ObjectFields
+        }
       }
       functionOutputs {
         ...ObjectFields
+        output {
+          ...ObjectFields
+        }
       }
       assembly {
         ...ObjectFields
@@ -305,6 +317,12 @@ export const SYSTEM_SLOT = gql`
         ...ObjectFields      }
       hamburgers {
         ...ObjectFields      }
+      assembly {
+        ...ObjectFields
+      }
+      parts {
+        ...ObjectFields
+      }
     }
   }
   ${OBJECT_FIELDS}
@@ -320,6 +338,18 @@ export const UPDATE_SYSTEM_SLOT = gql`
         ...ObjectFields      }
       hamburgers {
         ...ObjectFields      }
+      assembly {
+        ...ObjectFields
+        parts {
+          ...ObjectFields
+        }
+      }
+      parts {
+        ...ObjectFields
+        assembly {
+          ...ObjectFields
+        }
+      }
     }
   }
   ${OBJECT_FIELDS}

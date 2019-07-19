@@ -110,6 +110,8 @@ export class UpdateSystemInterfaceInput {
   systemInterfaceId: string
   updateName: string;
   updateDescription: string;
+  updateSystemSlot0: string;
+  updateSystemSlot1: string;
   updateAssembly: string;
 
   constructor(systemInterfaceId: string) {
@@ -121,12 +123,16 @@ export interface YacserSystemSlot extends YacserObject {
   functions: YacserFunction[];
   interfaces: YacserSystemInterface;
   hamburgers: YacserHamburger[];
+  assembly: YacserSystemSlot;
+  parts: YacserSystemSlot[];
+
 }
 
 export class UpdateSystemSlotInput {
   systemSlotId: string
   updateName: string;
   updateDescription: string;
+  updateAssembly: string;
 
   constructor(systemSlotId: string) {
     this.systemSlotId = systemSlotId;

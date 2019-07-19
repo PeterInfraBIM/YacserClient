@@ -10,7 +10,7 @@ import {
   UpdateSystemInterfaceInput,
   UpdateSystemSlotInput, UpdateValueInput, YacserFunction,
   YacserObject,
-  YacserObjectType, YacserRealisationModule, YacserSystemInterface
+  YacserObjectType, YacserRealisationModule, YacserSystemInterface, YacserSystemSlot
 } from '../types';
 import {Apollo} from 'apollo-angular';
 import {map} from 'rxjs/operators';
@@ -291,6 +291,40 @@ export class ObjectListService {
           case 'description':
             updateSystemInterfaceInput.updateDescription = value;
             break;
+          case 'systemSlot0':
+            const oldSystemSlot0 = yacserSystemInterface.systemSlot0;
+            const newSystemSlot0 = value as YacserObject;
+            updateSystemInterfaceInput.updateSystemSlot0 = newSystemSlot0 ? newSystemSlot0.id : '';
+            if (newSystemSlot0) {
+              refetchQueries.push({
+                query: SYSTEM_SLOT,
+                variables: {id: newSystemSlot0.id}
+              });
+            }
+            if (oldSystemSlot0) {
+              refetchQueries.push({
+                query: SYSTEM_SLOT,
+                variables: {id: oldSystemSlot0.id}
+              });
+            }
+            break;
+          case 'systemSlot1':
+            const oldSystemSlot1 = yacserSystemInterface.systemSlot1;
+            const newSystemSlot1 = value as YacserObject;
+            updateSystemInterfaceInput.updateSystemSlot1 = newSystemSlot1 ? newSystemSlot1.id : '';
+            if (newSystemSlot1) {
+              refetchQueries.push({
+                query: SYSTEM_SLOT,
+                variables: {id: newSystemSlot1.id}
+              });
+            }
+            if (oldSystemSlot1) {
+              refetchQueries.push({
+                query: SYSTEM_SLOT,
+                variables: {id: oldSystemSlot1.id}
+              });
+            }
+            break;
           case 'assembly':
             const oldAssembly = yacserSystemInterface.assembly;
             const newAssembly = value as YacserObject;
@@ -312,6 +346,7 @@ export class ObjectListService {
         this.update(updateSystemInterfaceInput, UPDATE_SYSTEM_INTERFACE, 'updateSystemInterface', refetchQueries);
         break;
       case YacserObjectType.SystemSlot:
+        const yacserSystemSlot = object as YacserSystemSlot;
         const updateSystemSlotInput = new UpdateSystemSlotInput(object.id);
         switch (attribute) {
           case 'name':
@@ -320,8 +355,25 @@ export class ObjectListService {
           case 'description':
             updateSystemSlotInput.updateDescription = value;
             break;
+          case 'assembly':
+            const oldAssembly = yacserSystemSlot.assembly;
+            const newAssembly = value as YacserObject;
+            updateSystemSlotInput.updateAssembly = newAssembly ? newAssembly.id : '';
+            if (newAssembly) {
+              refetchQueries.push({
+                query: SYSTEM_SLOT,
+                variables: {id: newAssembly.id}
+              });
+            }
+            if (oldAssembly) {
+              refetchQueries.push({
+                query: SYSTEM_SLOT,
+                variables: {id: oldAssembly.id}
+              });
+            }
+            break;
         }
-        this.update(updateSystemSlotInput, UPDATE_SYSTEM_SLOT, 'updateSystemSlot', []);
+        this.update(updateSystemSlotInput, UPDATE_SYSTEM_SLOT, 'updateSystemSlot', refetchQueries);
         break;
       case YacserObjectType.Value:
         const updateValueInput = new UpdateValueInput(object.id);
@@ -339,7 +391,7 @@ export class ObjectListService {
             updateValueInput.updateValue = value;
             break;
         }
-        this.update(updateValueInput, UPDATE_VALUE, 'updateValue', []);
+        this.update(updateValueInput, UPDATE_VALUE, 'updateValue', refetchQueries);
         break;
     }
   }
