@@ -1,4 +1,4 @@
-import {EventEmitter, Injectable, Input} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {
   Mutation,
   Query,
@@ -10,7 +10,7 @@ import {
   UpdateSystemInterfaceInput,
   UpdateSystemSlotInput, UpdateValueInput,
   YacserObject,
-  YacserObjectType
+  YacserObjectType, YacserRealisationModule
 } from '../types';
 import {Apollo} from 'apollo-angular';
 import {map} from 'rxjs/operators';
@@ -164,12 +164,7 @@ export class ObjectListService {
             updateFunctionInput.updateDescription = value;
             break;
         }
-        this.apollo.mutate<Mutation>({
-          mutation: UPDATE_FUNCTION,
-          variables: {input: updateFunctionInput}
-        }).subscribe(
-          (result) => console.log(result.data.updateFunction),
-          (error) => console.log(error.toString()));
+        this.update(updateFunctionInput, UPDATE_FUNCTION, 'updateFunction', []);
         break;
       case YacserObjectType.Hamburger:
         const updateHamburgerInput = new UpdateHamburgerInput(object.id);
@@ -181,12 +176,7 @@ export class ObjectListService {
             updateHamburgerInput.updateDescription = value;
             break;
         }
-        this.apollo.mutate<Mutation>({
-          mutation: UPDATE_HAMBURGER,
-          variables: {input: updateHamburgerInput}
-        }).subscribe(
-          (result) => console.log(result.data.updateHamburger),
-          (error) => console.log(error.toString()));
+        this.update(updateHamburgerInput, UPDATE_HAMBURGER, 'updateHamburger', []);
         break;
       case YacserObjectType.Performance:
         const updatePerformanceInput = new UpdatePerformanceInput(object.id);
@@ -198,12 +188,7 @@ export class ObjectListService {
             updatePerformanceInput.updateDescription = value;
             break;
         }
-        this.apollo.mutate<Mutation>({
-          mutation: UPDATE_PERFORMANCE,
-          variables: {input: updatePerformanceInput}
-        }).subscribe(
-          (result) => console.log(result.data.updatePerformance),
-          (error) => console.log(error.toString()));
+        this.update(updatePerformanceInput, UPDATE_PERFORMANCE, 'updatePerformance', []);
         break;
       case YacserObjectType.RealisationModule:
         const updateRealisationModuleInput = new UpdateRealisationModuleInput(object.id);
@@ -215,15 +200,23 @@ export class ObjectListService {
             updateRealisationModuleInput.updateDescription = value;
             break;
           case 'assembly':
-            updateRealisationModuleInput.updateAssembly = value;
-            break;
+            updateRealisationModuleInput.updateAssembly = (value as YacserObject).id;
+            if ((object as YacserRealisationModule).assembly.id) {
+              this.update(updateRealisationModuleInput, UPDATE_REALISATION_MODULE, 'updateRealisationModule', [{
+                query: REALISATION_MODULE,
+                variables: {id: (value as YacserObject).id}
+              }, {
+                query: REALISATION_MODULE, variables: {id: (object as YacserRealisationModule).assembly.id}
+              }]);
+            } else {
+              this.update(updateRealisationModuleInput, UPDATE_REALISATION_MODULE, 'updateRealisationModule', [{
+                query: REALISATION_MODULE,
+                variables: {id: (value as YacserObject).id}
+              }]);
+            }
+            return;
         }
-        this.apollo.mutate<Mutation>({
-          mutation: UPDATE_REALISATION_MODULE,
-          variables: {input: updateRealisationModuleInput}
-        }).subscribe(
-          (result) => console.log(result.data.updateRealisationModule),
-          (error) => console.log(error.toString()));
+        this.update(updateRealisationModuleInput, UPDATE_REALISATION_MODULE, 'updateRealisationModule', []);
         break;
       case YacserObjectType.Requirement:
         const updateRequirementInput = new UpdateRequirementInput(object.id);
@@ -235,12 +228,7 @@ export class ObjectListService {
             updateRequirementInput.updateDescription = value;
             break;
         }
-        this.apollo.mutate<Mutation>({
-          mutation: UPDATE_REQUIREMENT,
-          variables: {input: updateRequirementInput}
-        }).subscribe(
-          (result) => console.log(result.data.updateRequirement),
-          (error) => console.log(error.toString()));
+        this.update(updateRequirementInput, UPDATE_REQUIREMENT, 'updateRequirement', []);
         break;
       case YacserObjectType.SystemInterface:
         const updateSystemInterfaceInput = new UpdateSystemInterfaceInput(object.id);
@@ -252,12 +240,7 @@ export class ObjectListService {
             updateSystemInterfaceInput.updateDescription = value;
             break;
         }
-        this.apollo.mutate<Mutation>({
-          mutation: UPDATE_SYSTEM_INTERFACE,
-          variables: {input: updateSystemInterfaceInput}
-        }).subscribe(
-          (result) => console.log(result.data.updateSystemInterface),
-          (error) => console.log(error.toString()));
+        this.update(updateSystemInterfaceInput, UPDATE_SYSTEM_INTERFACE, 'updateSystemInterface', []);
         break;
       case YacserObjectType.SystemSlot:
         const updateSystemSlotInput = new UpdateSystemSlotInput(object.id);
@@ -269,12 +252,7 @@ export class ObjectListService {
             updateSystemSlotInput.updateDescription = value;
             break;
         }
-        this.apollo.mutate<Mutation>({
-          mutation: UPDATE_SYSTEM_SLOT,
-          variables: {input: updateSystemSlotInput}
-        }).subscribe(
-          (result) => console.log(result.data.updateSystemSlot),
-          (error) => console.log(error.toString()));
+        this.update(updateSystemSlotInput, UPDATE_SYSTEM_SLOT, 'updateSystemSlot', []);
         break;
       case YacserObjectType.Value:
         const updateValueInput = new UpdateValueInput(object.id);
@@ -292,14 +270,22 @@ export class ObjectListService {
             updateValueInput.updateValue = value;
             break;
         }
-        this.apollo.mutate<Mutation>({
-          mutation: UPDATE_VALUE,
-          variables: {input: updateValueInput}
-        }).subscribe(
-          (result) => console.log(result.data.updateValue),
-          (error) => console.log(error.toString()));
+        this.update(updateValueInput, UPDATE_VALUE, 'updateValue', []);
         break;
     }
   }
 
+  private update(
+    updateInput: any,
+    mutation: any,
+    response: string,
+    refetchQueries: ({ variables: { id: string }; query: any })[]) {
+    this.apollo.mutate<Mutation>({
+      mutation,
+      variables: {input: updateInput},
+      refetchQueries
+    }).subscribe(
+      (result) => console.log(result.data[response]),
+      (error) => console.log(error.toString()));
+  }
 }

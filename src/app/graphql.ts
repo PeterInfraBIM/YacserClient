@@ -174,9 +174,15 @@ export const UPDATE_REALISATION_MODULE = gql`
       }
       assembly {
         ...ObjectFields
+        parts {
+          ...ObjectFields
+        }
       }
       parts {
         ...ObjectFields
+        assembly {
+          ...ObjectFields
+        }
       }
     }
   }

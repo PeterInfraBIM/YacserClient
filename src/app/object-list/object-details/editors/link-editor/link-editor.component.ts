@@ -12,7 +12,7 @@ export class LinkEditorComponent implements OnInit {
   @Input() object: YacserObject;
   @Input() links: YacserObject[];
   @Input() attribute: string;
-  @Output() newValue = new EventEmitter<string>();
+  @Output() newValue = new EventEmitter<YacserObject>();
 
   constructor() {
   }
@@ -24,7 +24,7 @@ export class LinkEditorComponent implements OnInit {
   onClickEdit(): void {
     this.isEditing = !this.isEditing;
     if (!this.isEditing && this.value !== this.object[this.attribute]) {
-      this.newValue.emit(this.value.id);
+      this.newValue.emit(this.value);
     }
   }
 
