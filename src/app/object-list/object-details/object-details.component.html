@@ -40,18 +40,13 @@
         </p>
       </div>
       <div *ngIf="selectedObject.type==='Hamburger'">
-        <p *ngIf="getHamburger(selectedObject).functionalUnit" class="card-text">
-          functional unit: {{getHamburger(selectedObject).functionalUnit.name}}
-          ({{getHamburger(selectedObject).functionalUnit.type}})</p>
         <p class="card-text">
           <app-link-editor [object]="selectedObject" attribute="functionalUnit" [links]="getLinks('SystemSlot')"
                            (newValue)="onNewValue($event, 'functionalUnit')"></app-link-editor>
         </p>
-        <p *ngIf="getHamburger(selectedObject).technicalSolution" class="card-text">
-          technical solution: {{getHamburger(selectedObject).technicalSolution.name}}
-          ({{getHamburger(selectedObject).technicalSolution.type}})</p>
         <p class="card-text">
-          <app-link-editor [object]="selectedObject" attribute="technicalSolution" [links]="getLinks('RealisationModule')"
+          <app-link-editor [object]="selectedObject" attribute="technicalSolution"
+                           [links]="getLinks('RealisationModule')"
                            (newValue)="onNewValue($event, 'technicalSolution')"></app-link-editor>
         </p>
       </div>
@@ -82,12 +77,14 @@
       <div *ngIf="selectedObject.type==='Requirement'">
         <p class="card-text">owner: {{getRequirement(selectedObject).owner.name}}
           ({{getRequirement(selectedObject).owner.type}})</p>
-        <p *ngIf="getRequirement(selectedObject).minValue" class="card-text">
-          min value: {{getRequirement(selectedObject).minValue.name}}
-          ({{getRequirement(selectedObject).minValue.type}})</p>
-        <p *ngIf="getRequirement(selectedObject).maxValue" class="card-text">
-          max value: {{getRequirement(selectedObject).maxValue.name}}
-          ({{getRequirement(selectedObject).maxValue.type}})</p>
+        <p class="card-text">
+          <app-link-editor [object]="selectedObject" attribute="minValue" [links]="getLinks('Value')"
+                           (newValue)="onNewValue($event, 'minValue')"></app-link-editor>
+        </p>
+        <p class="card-text">
+          <app-link-editor [object]="selectedObject" attribute="maxValue" [links]="getLinks('Value')"
+                           (newValue)="onNewValue($event, 'maxValue')"></app-link-editor>
+        </p>
       </div>
       <div *ngIf="selectedObject.type==='SystemInterface'">
         <p class="card-text">

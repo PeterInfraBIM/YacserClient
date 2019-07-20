@@ -93,6 +93,8 @@ export class UpdateRequirementInput {
   requirementId: string
   updateName: string;
   updateDescription: string;
+  updateMinValue: string;
+  updateMaxValue: string;
 
   constructor(requirementId: string) {
     this.requirementId = requirementId;

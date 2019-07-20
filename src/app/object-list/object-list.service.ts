@@ -10,7 +10,7 @@ import {
   UpdateSystemInterfaceInput,
   UpdateSystemSlotInput, UpdateValueInput, YacserFunction, YacserHamburger,
   YacserObject,
-  YacserObjectType, YacserRealisationModule, YacserSystemInterface, YacserSystemSlot
+  YacserObjectType, YacserRealisationModule, YacserRequirement, YacserSystemInterface, YacserSystemSlot
 } from '../types';
 import {Apollo} from 'apollo-angular';
 import {map} from 'rxjs/operators';
@@ -301,6 +301,7 @@ export class ObjectListService {
         this.update(updateRealisationModuleInput, UPDATE_REALISATION_MODULE, 'updateRealisationModule', refetchQueries);
         break;
       case YacserObjectType.Requirement:
+        const yacserRequirement = object as YacserRequirement;
         const updateRequirementInput = new UpdateRequirementInput(object.id);
         switch (attribute) {
           case 'name':
@@ -309,8 +310,38 @@ export class ObjectListService {
           case 'description':
             updateRequirementInput.updateDescription = value;
             break;
+          case 'minValue':
+            const oldMinValue = yacserRequirement.minValue;
+            const newMinValue = value as YacserObject;
+            updateRequirementInput.updateMinValue = newMinValue ? newMinValue.id : '';
+            if (oldMinValue) {
+              refetchQueries.push({
+                query: VALUE, variables: {id: oldMinValue.id}
+              });
+            }
+            if (newMinValue) {
+              refetchQueries.push({
+                query: VALUE, variables: {id: newMinValue.id}
+              });
+            }
+            break;
+          case 'maxValue':
+            const oldMaxValue = yacserRequirement.maxValue;
+            const newMaxValue = value as YacserObject;
+            updateRequirementInput.updateMaxValue = newMaxValue ? newMaxValue.id : '';
+            if (oldMaxValue) {
+              refetchQueries.push({
+                query: VALUE, variables: {id: oldMaxValue.id}
+              });
+            }
+            if (newMaxValue) {
+              refetchQueries.push({
+                query: VALUE, variables: {id: newMaxValue.id}
+              });
+            }
+            break;
         }
-        this.update(updateRequirementInput, UPDATE_REQUIREMENT, 'updateRequirement', []);
+        this.update(updateRequirementInput, UPDATE_REQUIREMENT, 'updateRequirement', refetchQueries);
         break;
       case YacserObjectType.SystemInterface:
         const yacserSystemInterface = object as YacserSystemInterface;
