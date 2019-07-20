@@ -8,7 +8,7 @@ import {
   UpdateRealisationModuleInput,
   UpdateRequirementInput,
   UpdateSystemInterfaceInput,
-  UpdateSystemSlotInput, UpdateValueInput, YacserFunction,
+  UpdateSystemSlotInput, UpdateValueInput, YacserFunction, YacserHamburger,
   YacserObject,
   YacserObjectType, YacserRealisationModule, YacserSystemInterface, YacserSystemSlot
 } from '../types';
@@ -217,6 +217,7 @@ export class ObjectListService {
         break;
       case YacserObjectType.Hamburger:
         const updateHamburgerInput = new UpdateHamburgerInput(object.id);
+        const yacserHamburger = object as YacserHamburger;
         switch (attribute) {
           case 'name':
             updateHamburgerInput.updateName = value;
@@ -224,8 +225,38 @@ export class ObjectListService {
           case 'description':
             updateHamburgerInput.updateDescription = value;
             break;
+          case 'functionalUnit':
+            const oldFunctionalUnit = yacserHamburger.functionalUnit;
+            const newFunctionalUnit = value as YacserObject;
+            updateHamburgerInput.updateFunctionalUnit = newFunctionalUnit ? newFunctionalUnit.id : '';
+            if (oldFunctionalUnit) {
+              refetchQueries.push({
+                query: SYSTEM_SLOT, variables: {id: oldFunctionalUnit.id}
+              });
+            }
+            if (newFunctionalUnit) {
+              refetchQueries.push({
+                query: SYSTEM_SLOT, variables: {id: newFunctionalUnit.id}
+              });
+            }
+            break;
+          case 'technicalSolution':
+            const oldTechnicalSolution = yacserHamburger.technicalSolution;
+            const newTechnicalSolution = value as YacserObject;
+            updateHamburgerInput.updateTechnicalSolution = newTechnicalSolution ? newTechnicalSolution.id : '';
+            if (oldTechnicalSolution) {
+              refetchQueries.push({
+                query: REALISATION_MODULE, variables: {id: oldTechnicalSolution.id}
+              });
+            }
+            if (newTechnicalSolution) {
+              refetchQueries.push({
+                query: REALISATION_MODULE, variables: {id: newTechnicalSolution.id}
+              });
+            }
+            break;
         }
-        this.update(updateHamburgerInput, UPDATE_HAMBURGER, 'updateHamburger', []);
+        this.update(updateHamburgerInput, UPDATE_HAMBURGER, 'updateHamburger', refetchQueries);
         break;
       case YacserObjectType.Performance:
         const updatePerformanceInput = new UpdatePerformanceInput(object.id);

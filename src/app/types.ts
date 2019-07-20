@@ -42,6 +42,8 @@ export class UpdateHamburgerInput {
   hamburgerId: string
   updateName: string;
   updateDescription: string;
+  updateFunctionalUnit: string;
+  updateTechnicalSolution: string;
 
   constructor(hamburgerId: string) {
     this.hamburgerId = hamburgerId;

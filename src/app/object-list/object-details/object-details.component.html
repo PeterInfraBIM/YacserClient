@@ -43,9 +43,17 @@
         <p *ngIf="getHamburger(selectedObject).functionalUnit" class="card-text">
           functional unit: {{getHamburger(selectedObject).functionalUnit.name}}
           ({{getHamburger(selectedObject).functionalUnit.type}})</p>
+        <p class="card-text">
+          <app-link-editor [object]="selectedObject" attribute="functionalUnit" [links]="getLinks('SystemSlot')"
+                           (newValue)="onNewValue($event, 'functionalUnit')"></app-link-editor>
+        </p>
         <p *ngIf="getHamburger(selectedObject).technicalSolution" class="card-text">
           technical solution: {{getHamburger(selectedObject).technicalSolution.name}}
           ({{getHamburger(selectedObject).technicalSolution.type}})</p>
+        <p class="card-text">
+          <app-link-editor [object]="selectedObject" attribute="technicalSolution" [links]="getLinks('RealisationModule')"
+                           (newValue)="onNewValue($event, 'technicalSolution')"></app-link-editor>
+        </p>
       </div>
       <div *ngIf="selectedObject.type==='Performance'">
         <p *ngIf="getPerformance(selectedObject).owner" class="card-text">
@@ -82,17 +90,9 @@
           ({{getRequirement(selectedObject).maxValue.type}})</p>
       </div>
       <div *ngIf="selectedObject.type==='SystemInterface'">
-        <p *ngIf="getSystemInterface(selectedObject).systemSlot0" class="card-text">
-          system slot 0: {{getSystemInterface(selectedObject).systemSlot0.name}}
-          ({{getSystemInterface(selectedObject).systemSlot0.type}})
-        </p>
         <p class="card-text">
           <app-link-editor [object]="selectedObject" attribute="systemSlot0" [links]="getLinks('SystemSlot')"
                            (newValue)="onNewValue($event, 'systemSlot0')"></app-link-editor>
-        </p>
-        <p *ngIf="getSystemInterface(selectedObject).systemSlot1" class="card-text">
-          system slot 1: {{getSystemInterface(selectedObject).systemSlot1.name}}
-          ({{getSystemInterface(selectedObject).systemSlot1.type}})
         </p>
         <p class="card-text">
           <app-link-editor [object]="selectedObject" attribute="systemSlot1" [links]="getLinks('SystemSlot')"

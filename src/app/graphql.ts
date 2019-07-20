@@ -111,9 +111,15 @@ export const UPDATE_HAMBURGER = gql`
       ...ObjectFields
       functionalUnit {
         ...ObjectFields
+        hamburgers {
+          ...ObjectFields
+        }
       }
       technicalSolution {
         ...ObjectFields
+        hamburgers {
+          ...ObjectFields
+        }
       }
     }
   }
