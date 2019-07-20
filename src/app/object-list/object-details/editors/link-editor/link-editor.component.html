@@ -1,4 +1,4 @@
-<div *ngIf="isEditing">
+<div *ngIf="isEditing && !isMultiple">
   <p>{{attribute}}: <select [(ngModel)]="value" [compareWith]="compareFn">
     <option [ngValue]="null">null</option>
     <option *ngFor="let link of links" [ngValue]="link">
@@ -8,8 +8,50 @@
     <button type='button' (click)="onClickEdit()">...</button>
   </p>
 </div>
-<div *ngIf="!isEditing">
+<div *ngIf="isEditing && isMultiple">
+  <p>{{attribute}}: </p>
+  <table class="table table-sm">
+    <tr *ngFor="let instance of object[attribute]">
+      <td>
+        <button [class]="remove.includes(instance)?'btn btn-sm btn-outline-success':'btn btn-sm  btn-outline-danger'"
+                (click)="onRemoveClick(instance)">
+          <span *ngIf="remove.includes(instance)">add</span><span *ngIf="!remove.includes(instance)">remove</span>
+        </button>
+      </td>
+      <td><span [class]="remove.includes(instance)?'removed':''">{{instance.name}}</span></td>
+    </tr>
+    <ng-container *ngIf="add.length>0">
+      <tr *ngFor="let instance of add">
+        <td>
+          <button [class]="add.includes(instance)?'btn btn-sm btn-outline-danger':'btn btn-sm  btn-outline-success'"
+                  (click)="onAddClick(instance)">
+            <span *ngIf="add.includes(instance)">remove</span><span *ngIf="!add.includes(instance)">add</span></button>
+        </td>
+        <td>{{instance.name}}</td>
+      </tr>
+    </ng-container>
+    <tr>
+      <td>
+        <button class="btn btn-outline-success btn-sm" (click)="onAddClick(value)" [disabled]="!value">add</button>
+      </td>
+      <td><select [(ngModel)]="value" [compareWith]="compareFn">
+        <option [ngValue]="null">null</option>
+        <option *ngFor="let link of links" [ngValue]="link">
+          {{link.name}}
+        </option>
+      </select></td>
+    </tr>
+  </table>
+  <button type='button' (click)="onClickEdit()">...</button>
+</div>
+<div *ngIf="!isEditing && !isMultiple">
   <p>{{attribute}}: {{object[attribute] ? object[attribute].name : ''}}
+    <button type='button' (click)="onClickEdit()">...</button>
+  </p>
+</div>
+<div *ngIf="!isEditing && isMultiple">
+  <p>{{attribute}}: <span
+    *ngFor="let instance of object[attribute]; let lastItem = last">{{instance.name}}{{lastItem ? '' : ', '}}</span>
     <button type='button' (click)="onClickEdit()">...</button>
   </p>
 </div>

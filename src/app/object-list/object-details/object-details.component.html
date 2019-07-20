@@ -23,6 +23,10 @@
           *ngFor="let requirement of getFunction(selectedObject).requirements">{{requirement.name}}</span>
         </p>
         <p class="card-text">
+          <app-link-editor [object]="selectedObject" attribute="requirements" [isMultiple]="true"
+                           [links]="getLinks('Requirement')"></app-link-editor>
+        </p>
+        <p class="card-text">
           <app-link-editor [object]="selectedObject" attribute="input" [links]="getLinks('SystemInterface')"
                            (newValue)="onNewValue($event, 'input')"></app-link-editor>
         </p>
@@ -54,9 +58,10 @@
         <p *ngIf="getPerformance(selectedObject).owner" class="card-text">
           owner: {{getPerformance(selectedObject).owner.name}}
           ({{getPerformance(selectedObject).owner.type}})</p>
-        <p *ngIf="getPerformance(selectedObject).value" class="card-text">
-          value: {{getPerformance(selectedObject).value.name}}
-          ({{getPerformance(selectedObject).value.type}})</p>
+        <p class="card-text">
+          <app-link-editor [object]="selectedObject" attribute="value" [links]="getLinks('Value')"
+                           (newValue)="onNewValue($event, 'value')"></app-link-editor>
+        </p>
       </div>
       <div *ngIf="selectedObject.type==='RealisationModule'">
         <p class="card-text">performances: <span
@@ -72,6 +77,11 @@
         <p class="card-text">parts: <span
           *ngFor="let part of getRealisationModule(selectedObject).parts; let lastItem = last">{{part.name}}<span
           *ngIf="!lastItem">, </span></span>
+        </p>
+        <p class="card-text">
+          <app-link-editor [object]="selectedObject" attribute="parts" [isMultiple]="true"
+                           [links]="getLinks('RealisationModule')"
+                           (newValues)="onNewValues($event, 'parts')"></app-link-editor>
         </p>
       </div>
       <div *ngIf="selectedObject.type==='Requirement'">

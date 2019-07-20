@@ -8,9 +8,17 @@ import {
   UpdateRealisationModuleInput,
   UpdateRequirementInput,
   UpdateSystemInterfaceInput,
-  UpdateSystemSlotInput, UpdateValueInput, YacserFunction, YacserHamburger,
+  UpdateSystemSlotInput,
+  UpdateValueInput,
+  YacserFunction,
+  YacserHamburger,
   YacserObject,
-  YacserObjectType, YacserRealisationModule, YacserRequirement, YacserSystemInterface, YacserSystemSlot
+  YacserObjectType,
+  YacserPerformance,
+  YacserRealisationModule,
+  YacserRequirement,
+  YacserSystemInterface,
+  YacserSystemSlot
 } from '../types';
 import {Apollo} from 'apollo-angular';
 import {map} from 'rxjs/operators';
@@ -259,6 +267,7 @@ export class ObjectListService {
         this.update(updateHamburgerInput, UPDATE_HAMBURGER, 'updateHamburger', refetchQueries);
         break;
       case YacserObjectType.Performance:
+        const yacserPerformance = object as YacserPerformance;
         const updatePerformanceInput = new UpdatePerformanceInput(object.id);
         switch (attribute) {
           case 'name':
@@ -267,8 +276,23 @@ export class ObjectListService {
           case 'description':
             updatePerformanceInput.updateDescription = value;
             break;
+          case 'value':
+            const oldValue = yacserPerformance.value;
+            const newValue = value as YacserObject;
+            updatePerformanceInput.updateValue = newValue ? newValue.id : '';
+            if (oldValue) {
+              refetchQueries.push({
+                query: VALUE, variables: {id: oldValue.id}
+              });
+            }
+            if (newValue) {
+              refetchQueries.push({
+                query: VALUE, variables: {id: newValue.id}
+              });
+            }
+            break;
         }
-        this.update(updatePerformanceInput, UPDATE_PERFORMANCE, 'updatePerformance', []);
+        this.update(updatePerformanceInput, UPDATE_PERFORMANCE, 'updatePerformance', refetchQueries);
         break;
       case YacserObjectType.RealisationModule:
         const yacserRealisationModule = object as YacserRealisationModule;
@@ -297,6 +321,23 @@ export class ObjectListService {
               });
             }
             break;
+          case 'parts':
+            const oldParts = yacserRealisationModule.parts;
+            const values = value as YacserRealisationModule[];
+            const addParts: string[] = [];
+            const removeParts: string[] = [];
+            for (const part of values) {
+              if (oldParts && oldParts.includes(part)) {
+                removeParts.push(part.id);
+              } else {
+                addParts.push(part.id);
+              }
+            }
+            updateRealisationModuleInput.addParts = addParts;
+            updateRealisationModuleInput.removeParts = removeParts;
+            for (const part of values) {
+              refetchQueries.push({query: REALISATION_MODULE, variables: {id: part.id}});
+            }
         }
         this.update(updateRealisationModuleInput, UPDATE_REALISATION_MODULE, 'updateRealisationModule', refetchQueries);
         break;

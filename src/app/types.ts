@@ -59,6 +59,7 @@ export class UpdatePerformanceInput {
   performanceId: string
   updateName: string;
   updateDescription: string;
+  updateValue: string;
 
   constructor(performanceId: string) {
     this.performanceId = performanceId;
@@ -77,6 +78,8 @@ export class UpdateRealisationModuleInput {
   updateName: string;
   updateDescription: string;
   updateAssembly: string;
+  addParts: string[];
+  removeParts: string[];
 
   constructor(realisationModuleId: string) {
     this.realisationModuleId = realisationModuleId;

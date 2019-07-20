@@ -27,38 +27,38 @@ export class ObjectDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-      this.objectListService.getSelectedObject$().subscribe(
-        (result) => {
-          console.log(result.type);
-          switch (result.type) {
-            case 'Function':
-              this.selectedObject = result as YacserFunction;
-              break;
-            case 'Hamburger':
-              this.selectedObject = result as YacserHamburger;
-              break;
-            case 'RealisationModule':
-              this.selectedObject = result as YacserRealisationModule;
-              break;
-            case 'Performance':
-              this.selectedObject = result as YacserPerformance;
-              break;
-            case 'Requirement':
-              this.selectedObject = result as YacserRequirement;
-              break;
-            case 'SystemInterface':
-              this.selectedObject = result as YacserSystemInterface;
-              break;
-            case 'SystemSlot':
-              this.selectedObject = result as YacserSystemSlot;
-              break;
-            case 'Value':
-              this.selectedObject = result as YacserValue;
-              break;
-          }
-          this.modelId = this.selectedObject.id.substring(0, this.selectedObject.id.indexOf('#'));
+    this.objectListService.getSelectedObject$().subscribe(
+      (result) => {
+        console.log(result.type);
+        switch (result.type) {
+          case 'Function':
+            this.selectedObject = result as YacserFunction;
+            break;
+          case 'Hamburger':
+            this.selectedObject = result as YacserHamburger;
+            break;
+          case 'RealisationModule':
+            this.selectedObject = result as YacserRealisationModule;
+            break;
+          case 'Performance':
+            this.selectedObject = result as YacserPerformance;
+            break;
+          case 'Requirement':
+            this.selectedObject = result as YacserRequirement;
+            break;
+          case 'SystemInterface':
+            this.selectedObject = result as YacserSystemInterface;
+            break;
+          case 'SystemSlot':
+            this.selectedObject = result as YacserSystemSlot;
+            break;
+          case 'Value':
+            this.selectedObject = result as YacserValue;
+            break;
         }
-      );
+        this.modelId = this.selectedObject.id.substring(0, this.selectedObject.id.indexOf('#'));
+      }
+    );
   }
 
   getLinks(filter: string): YacserObject[] {
@@ -100,5 +100,11 @@ export class ObjectDetailsComponent implements OnInit {
   onNewValue(newValue: any, attribute: string): void {
     this.objectListService.updateObject(this.selectedObject, attribute, newValue);
   }
+
+  onNewValues(newValues: any, attribute: string): void {
+    console.log(attribute + ' ' + newValues.length);
+    this.objectListService.updateObject(this.selectedObject, attribute, newValues);
+  }
+
 
 }
