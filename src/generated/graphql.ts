@@ -301,6 +301,10 @@ export type SystemInterface = YacserObject & {
   functionInputs?: Maybe<Array<Maybe<Function>>>;
   /** Output from functions */
   functionOutputs?: Maybe<Array<Maybe<Function>>>;
+  /** Assembly reference. */
+  assembly?: Maybe<SystemInterface>;
+  /** Parts references. */
+  parts?: Maybe<Array<Maybe<SystemInterface>>>;
 };
 
 /** YACSER System slot instance. */
@@ -336,6 +340,8 @@ export type UpdateFunctionInput = {
   updateDescription?: Maybe<Scalars["String"]>;
   /** If present: add requirements. */
   addRequirements?: Maybe<Array<Maybe<Scalars["ID"]>>>;
+  /** If present: remove requirements. */
+  removeRequirements?: Maybe<Array<Maybe<Scalars["ID"]>>>;
   /** If present: new input reference. */
   updateInput?: Maybe<Scalars["ID"]>;
   /** If present: new output reference. */
@@ -344,6 +350,8 @@ export type UpdateFunctionInput = {
   updateAssembly?: Maybe<Scalars["ID"]>;
   /** If present: add parts. */
   addParts?: Maybe<Array<Maybe<Scalars["ID"]>>>;
+  /** If present: remove parts. */
+  removeParts?: Maybe<Array<Maybe<Scalars["ID"]>>>;
 };
 
 /** Update Hamburger input arguments. */
@@ -386,6 +394,8 @@ export type UpdateRealisationModuleInput = {
   updateAssembly?: Maybe<Scalars["ID"]>;
   /** If present: add parts. */
   addParts?: Maybe<Array<Maybe<Scalars["ID"]>>>;
+  /** If present: remove parts. */
+  removeParts?: Maybe<Array<Maybe<Scalars["ID"]>>>;
 };
 
 /** Update Requirement input arguments. */
@@ -414,6 +424,10 @@ export type UpdateSystemInterfaceInput = {
   updateSystemSlot0?: Maybe<Scalars["ID"]>;
   /** If present: update SystemSlot 1. */
   updateSystemSlot1?: Maybe<Scalars["ID"]>;
+  /** If present: update assembly. */
+  updateAssembly?: Maybe<Scalars["ID"]>;
+  /** If present: add parts. */
+  addParts?: Maybe<Array<Maybe<Scalars["ID"]>>>;
 };
 
 /** Update SystemSlot input arguments. */
@@ -430,6 +444,10 @@ export type UpdateSystemSlotInput = {
   removeFunctions?: Maybe<Array<Maybe<Scalars["ID"]>>>;
   /** If present: Replace all functions. */
   replaceFunctions?: Maybe<Array<Maybe<Scalars["ID"]>>>;
+  /** If present: update assembly. */
+  updateAssembly?: Maybe<Scalars["ID"]>;
+  /** If present: add parts. */
+  addParts?: Maybe<Array<Maybe<Scalars["ID"]>>>;
 };
 
 /** Update Value input arguments. */
@@ -600,11 +618,37 @@ export type UpdateFunctionMutation = { __typename?: "Mutation" } & {
       requirements: Maybe<
         Array<Maybe<{ __typename?: "Requirement" } & ObjectFieldsFragment>>
       >;
-      input: Maybe<{ __typename?: "SystemInterface" } & ObjectFieldsFragment>;
-      output: Maybe<{ __typename?: "SystemInterface" } & ObjectFieldsFragment>;
-      assembly: Maybe<{ __typename?: "Function" } & ObjectFieldsFragment>;
+      input: Maybe<
+        { __typename?: "SystemInterface" } & {
+          functionInputs: Maybe<
+            Array<Maybe<{ __typename?: "Function" } & ObjectFieldsFragment>>
+          >;
+        } & ObjectFieldsFragment
+      >;
+      output: Maybe<
+        { __typename?: "SystemInterface" } & {
+          functionOutputs: Maybe<
+            Array<Maybe<{ __typename?: "Function" } & ObjectFieldsFragment>>
+          >;
+        } & ObjectFieldsFragment
+      >;
+      assembly: Maybe<
+        { __typename?: "Function" } & {
+          parts: Maybe<
+            Array<Maybe<{ __typename?: "Function" } & ObjectFieldsFragment>>
+          >;
+        } & ObjectFieldsFragment
+      >;
       parts: Maybe<
-        Array<Maybe<{ __typename?: "Function" } & ObjectFieldsFragment>>
+        Array<
+          Maybe<
+            { __typename?: "Function" } & {
+              assembly: Maybe<
+                { __typename?: "Function" } & ObjectFieldsFragment
+              >;
+            } & ObjectFieldsFragment
+          >
+        >
       >;
     } & ObjectFieldsFragment
   >;
@@ -635,10 +679,18 @@ export type UpdateHamburgerMutation = { __typename?: "Mutation" } & {
   updateHamburger: Maybe<
     { __typename?: "Hamburger" } & {
       functionalUnit: Maybe<
-        { __typename?: "SystemSlot" } & ObjectFieldsFragment
+        { __typename?: "SystemSlot" } & {
+          hamburgers: Maybe<
+            Array<Maybe<{ __typename?: "Hamburger" } & ObjectFieldsFragment>>
+          >;
+        } & ObjectFieldsFragment
       >;
       technicalSolution: Maybe<
-        { __typename?: "RealisationModule" } & ObjectFieldsFragment
+        { __typename?: "RealisationModule" } & {
+          hamburgers: Maybe<
+            Array<Maybe<{ __typename?: "Hamburger" } & ObjectFieldsFragment>>
+          >;
+        } & ObjectFieldsFragment
       >;
     } & ObjectFieldsFragment
   >;
@@ -709,11 +761,23 @@ export type UpdateRealisationModuleMutation = { __typename?: "Mutation" } & {
         Array<Maybe<{ __typename?: "Hamburger" } & ObjectFieldsFragment>>
       >;
       assembly: Maybe<
-        { __typename?: "RealisationModule" } & ObjectFieldsFragment
+        { __typename?: "RealisationModule" } & {
+          parts: Maybe<
+            Array<
+              Maybe<{ __typename?: "RealisationModule" } & ObjectFieldsFragment>
+            >
+          >;
+        } & ObjectFieldsFragment
       >;
       parts: Maybe<
         Array<
-          Maybe<{ __typename?: "RealisationModule" } & ObjectFieldsFragment>
+          Maybe<
+            { __typename?: "RealisationModule" } & {
+              assembly: Maybe<
+                { __typename?: "RealisationModule" } & ObjectFieldsFragment
+              >;
+            } & ObjectFieldsFragment
+          >
         >
       >;
     } & ObjectFieldsFragment
@@ -787,6 +851,12 @@ export type SystemInterfaceQuery = { __typename?: "Query" } & {
       functionOutputs: Maybe<
         Array<Maybe<{ __typename?: "Function" } & ObjectFieldsFragment>>
       >;
+      assembly: Maybe<
+        { __typename?: "SystemInterface" } & ObjectFieldsFragment
+      >;
+      parts: Maybe<
+        Array<Maybe<{ __typename?: "SystemInterface" } & ObjectFieldsFragment>>
+      >;
     } & ObjectFieldsFragment
   >;
 };
@@ -798,13 +868,65 @@ export type UpdateSystemInterfaceMutationVariables = {
 export type UpdateSystemInterfaceMutation = { __typename?: "Mutation" } & {
   updateSystemInterface: Maybe<
     { __typename?: "SystemInterface" } & {
-      systemSlot0: Maybe<{ __typename?: "SystemSlot" } & ObjectFieldsFragment>;
-      systemSlot1: Maybe<{ __typename?: "SystemSlot" } & ObjectFieldsFragment>;
+      systemSlot0: Maybe<
+        { __typename?: "SystemSlot" } & {
+          interfaces: Maybe<
+            Array<
+              Maybe<{ __typename?: "SystemInterface" } & ObjectFieldsFragment>
+            >
+          >;
+        } & ObjectFieldsFragment
+      >;
+      systemSlot1: Maybe<
+        { __typename?: "SystemSlot" } & {
+          interfaces: Maybe<
+            Array<
+              Maybe<{ __typename?: "SystemInterface" } & ObjectFieldsFragment>
+            >
+          >;
+        } & ObjectFieldsFragment
+      >;
       functionInputs: Maybe<
-        Array<Maybe<{ __typename?: "Function" } & ObjectFieldsFragment>>
+        Array<
+          Maybe<
+            { __typename?: "Function" } & {
+              input: Maybe<
+                { __typename?: "SystemInterface" } & ObjectFieldsFragment
+              >;
+            } & ObjectFieldsFragment
+          >
+        >
       >;
       functionOutputs: Maybe<
-        Array<Maybe<{ __typename?: "Function" } & ObjectFieldsFragment>>
+        Array<
+          Maybe<
+            { __typename?: "Function" } & {
+              output: Maybe<
+                { __typename?: "SystemInterface" } & ObjectFieldsFragment
+              >;
+            } & ObjectFieldsFragment
+          >
+        >
+      >;
+      assembly: Maybe<
+        { __typename?: "SystemInterface" } & {
+          parts: Maybe<
+            Array<
+              Maybe<{ __typename?: "SystemInterface" } & ObjectFieldsFragment>
+            >
+          >;
+        } & ObjectFieldsFragment
+      >;
+      parts: Maybe<
+        Array<
+          Maybe<
+            { __typename?: "SystemInterface" } & {
+              assembly: Maybe<
+                { __typename?: "SystemInterface" } & ObjectFieldsFragment
+              >;
+            } & ObjectFieldsFragment
+          >
+        >
       >;
     } & ObjectFieldsFragment
   >;
@@ -826,6 +948,10 @@ export type SystemSlotQuery = { __typename?: "Query" } & {
       hamburgers: Maybe<
         Array<Maybe<{ __typename?: "Hamburger" } & ObjectFieldsFragment>>
       >;
+      assembly: Maybe<{ __typename?: "SystemSlot" } & ObjectFieldsFragment>;
+      parts: Maybe<
+        Array<Maybe<{ __typename?: "SystemSlot" } & ObjectFieldsFragment>>
+      >;
     } & ObjectFieldsFragment
   >;
 };
@@ -845,6 +971,24 @@ export type UpdateSystemSlotMutation = { __typename?: "Mutation" } & {
       >;
       hamburgers: Maybe<
         Array<Maybe<{ __typename?: "Hamburger" } & ObjectFieldsFragment>>
+      >;
+      assembly: Maybe<
+        { __typename?: "SystemSlot" } & {
+          parts: Maybe<
+            Array<Maybe<{ __typename?: "SystemSlot" } & ObjectFieldsFragment>>
+          >;
+        } & ObjectFieldsFragment
+      >;
+      parts: Maybe<
+        Array<
+          Maybe<
+            { __typename?: "SystemSlot" } & {
+              assembly: Maybe<
+                { __typename?: "SystemSlot" } & ObjectFieldsFragment
+              >;
+            } & ObjectFieldsFragment
+          >
+        >
       >;
     } & ObjectFieldsFragment
   >;
@@ -973,15 +1117,27 @@ export const UpdateFunctionDocument = gql`
       }
       input {
         ...ObjectFields
+        functionInputs {
+          ...ObjectFields
+        }
       }
       output {
         ...ObjectFields
+        functionOutputs {
+          ...ObjectFields
+        }
       }
       assembly {
         ...ObjectFields
+        parts {
+          ...ObjectFields
+        }
       }
       parts {
         ...ObjectFields
+        assembly {
+          ...ObjectFields
+        }
       }
     }
   }
@@ -1027,9 +1183,15 @@ export const UpdateHamburgerDocument = gql`
       ...ObjectFields
       functionalUnit {
         ...ObjectFields
+        hamburgers {
+          ...ObjectFields
+        }
       }
       technicalSolution {
         ...ObjectFields
+        hamburgers {
+          ...ObjectFields
+        }
       }
     }
   }
@@ -1135,9 +1297,15 @@ export const UpdateRealisationModuleDocument = gql`
       }
       assembly {
         ...ObjectFields
+        parts {
+          ...ObjectFields
+        }
       }
       parts {
         ...ObjectFields
+        assembly {
+          ...ObjectFields
+        }
       }
     }
   }
@@ -1223,6 +1391,12 @@ export const SystemInterfaceDocument = gql`
       functionOutputs {
         ...ObjectFields
       }
+      assembly {
+        ...ObjectFields
+      }
+      parts {
+        ...ObjectFields
+      }
     }
   }
   ${ObjectFieldsFragmentDoc}
@@ -1243,15 +1417,39 @@ export const UpdateSystemInterfaceDocument = gql`
       ...ObjectFields
       systemSlot0 {
         ...ObjectFields
+        interfaces {
+          ...ObjectFields
+        }
       }
       systemSlot1 {
         ...ObjectFields
+        interfaces {
+          ...ObjectFields
+        }
       }
       functionInputs {
         ...ObjectFields
+        input {
+          ...ObjectFields
+        }
       }
       functionOutputs {
         ...ObjectFields
+        output {
+          ...ObjectFields
+        }
+      }
+      assembly {
+        ...ObjectFields
+        parts {
+          ...ObjectFields
+        }
+      }
+      parts {
+        ...ObjectFields
+        assembly {
+          ...ObjectFields
+        }
       }
     }
   }
@@ -1280,6 +1478,12 @@ export const SystemSlotDocument = gql`
       hamburgers {
         ...ObjectFields
       }
+      assembly {
+        ...ObjectFields
+      }
+      parts {
+        ...ObjectFields
+      }
     }
   }
   ${ObjectFieldsFragmentDoc}
@@ -1306,6 +1510,18 @@ export const UpdateSystemSlotDocument = gql`
       }
       hamburgers {
         ...ObjectFields
+      }
+      assembly {
+        ...ObjectFields
+        parts {
+          ...ObjectFields
+        }
+      }
+      parts {
+        ...ObjectFields
+        assembly {
+          ...ObjectFields
+        }
       }
     }
   }

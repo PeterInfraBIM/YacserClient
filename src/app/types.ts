@@ -24,9 +24,13 @@ export class UpdateFunctionInput {
   functionId: string;
   updateName: string;
   updateDescription: string;
+  addRequirements: string[];
+  removeRequirements: string[];
   updateInput: string;
   updateOutput: string;
   updateAssembly: string;
+  addParts: string[]
+  removeParts: string[];
 
   constructor(functionId: string) {
     this.functionId = functionId;

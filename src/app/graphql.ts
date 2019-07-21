@@ -84,6 +84,9 @@ export const UPDATE_FUNCTION = gql`
       }
       parts {
         ...ObjectFields
+        assembly {
+          ...ObjectFields
+        }
       }
     }
   }

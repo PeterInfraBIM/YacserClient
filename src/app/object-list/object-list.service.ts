@@ -162,6 +162,8 @@ export class ObjectListService {
   public updateObject(object: YacserObject, attribute: string, value: any) {
     const type = YacserObjectType[object.type];
     const refetchQueries = [];
+    const addList: string[] = [];
+    const removeList: string[] = [];
     switch (type) {
       case YacserObjectType.Function:
         const yacserFunction = object as YacserFunction;
@@ -172,6 +174,22 @@ export class ObjectListService {
             break;
           case 'description':
             updateFunctionInput.updateDescription = value;
+            break;
+          case 'requirements':
+            const oldRequirements = yacserFunction.requirements;
+            const requirements = value as YacserRequirement[];
+            for (const requirement of requirements) {
+              if (oldRequirements && oldRequirements.includes(requirement)) {
+                removeList.push(requirement.id);
+              } else {
+                addList.push(requirement.id);
+              }
+            }
+            updateFunctionInput.addRequirements = addList;
+            updateFunctionInput.removeRequirements = removeList;
+            for (const requirement of requirements) {
+              refetchQueries.push({query: REQUIREMENT, variables: {id: requirement.id}});
+            }
             break;
           case 'input':
             const oldInput = yacserFunction.input;
@@ -218,6 +236,22 @@ export class ObjectListService {
                 query: FUNCTION,
                 variables: {id: oldAssembly.id}
               });
+            }
+            break;
+          case 'parts':
+            const oldParts = yacserFunction.parts;
+            const parts = value as YacserFunction[];
+            for (const part of parts) {
+              if (oldParts && oldParts.includes(part)) {
+                removeList.push(part.id);
+              } else {
+                addList.push(part.id);
+              }
+            }
+            updateFunctionInput.addParts = addList;
+            updateFunctionInput.removeParts = removeList;
+            for (const part of parts) {
+              refetchQueries.push({query: FUNCTION, variables: {id: part.id}});
             }
             break;
         }
@@ -323,21 +357,20 @@ export class ObjectListService {
             break;
           case 'parts':
             const oldParts = yacserRealisationModule.parts;
-            const values = value as YacserRealisationModule[];
-            const addParts: string[] = [];
-            const removeParts: string[] = [];
-            for (const part of values) {
+            const parts = value as YacserRealisationModule[];
+            for (const part of parts) {
               if (oldParts && oldParts.includes(part)) {
-                removeParts.push(part.id);
+                removeList.push(part.id);
               } else {
-                addParts.push(part.id);
+                addList.push(part.id);
               }
             }
-            updateRealisationModuleInput.addParts = addParts;
-            updateRealisationModuleInput.removeParts = removeParts;
-            for (const part of values) {
+            updateRealisationModuleInput.addParts = addList;
+            updateRealisationModuleInput.removeParts = removeList;
+            for (const part of parts) {
               refetchQueries.push({query: REALISATION_MODULE, variables: {id: part.id}});
             }
+            break;
         }
         this.update(updateRealisationModuleInput, UPDATE_REALISATION_MODULE, 'updateRealisationModule', refetchQueries);
         break;

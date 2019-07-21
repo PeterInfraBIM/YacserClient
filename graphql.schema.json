@@ -750,6 +750,34 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "assembly",
+            "description": "Assembly reference.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "SystemInterface",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "parts",
+            "description": "Parts references.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "SystemInterface",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -1599,6 +1627,16 @@
             "defaultValue": null
           },
           {
+            "name": "removeRequirements",
+            "description": "If present: remove requirements.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
+          },
+          {
             "name": "updateInput",
             "description": "If present: new input reference.",
             "type": { "kind": "SCALAR", "name": "ID", "ofType": null },
@@ -1619,6 +1657,16 @@
           {
             "name": "addParts",
             "description": "If present: add parts.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "removeParts",
+            "description": "If present: remove parts.",
             "type": {
               "kind": "LIST",
               "name": null,
@@ -1801,6 +1849,16 @@
               "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
             },
             "defaultValue": null
+          },
+          {
+            "name": "removeParts",
+            "description": "If present: remove parts.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
           }
         ],
         "interfaces": null,
@@ -1891,6 +1949,22 @@
             "description": "If present: update SystemSlot 1.",
             "type": { "kind": "SCALAR", "name": "ID", "ofType": null },
             "defaultValue": null
+          },
+          {
+            "name": "updateAssembly",
+            "description": "If present: update assembly.",
+            "type": { "kind": "SCALAR", "name": "ID", "ofType": null },
+            "defaultValue": null
+          },
+          {
+            "name": "addParts",
+            "description": "If present: add parts.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
           }
         ],
         "interfaces": null,
@@ -1948,6 +2022,22 @@
           {
             "name": "replaceFunctions",
             "description": "If present: Replace all functions.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updateAssembly",
+            "description": "If present: update assembly.",
+            "type": { "kind": "SCALAR", "name": "ID", "ofType": null },
+            "defaultValue": null
+          },
+          {
+            "name": "addParts",
+            "description": "If present: add parts.",
             "type": {
               "kind": "LIST",
               "name": null,
