@@ -339,10 +339,12 @@ export const SYSTEM_SLOT = gql`
 
 export const UPDATE_SYSTEM_SLOT = gql`
   mutation updateSystemSlot($input: UpdateSystemSlotInput!) {
-    updateSystemSlot (input: $input){
+    updateSystemSlot (input: $input) {
       ...ObjectFields
       functions {
-        ...ObjectFields      }
+        ...ObjectFields
+        owner {
+          ...ObjectFields }}
       interfaces {
         ...ObjectFields      }
       hamburgers {
@@ -350,15 +352,11 @@ export const UPDATE_SYSTEM_SLOT = gql`
       assembly {
         ...ObjectFields
         parts {
-          ...ObjectFields
-        }
-      }
+          ...ObjectFields }}
       parts {
         ...ObjectFields
         assembly {
-          ...ObjectFields
-        }
-      }
+          ...ObjectFields }}
     }
   }
   ${OBJECT_FIELDS}

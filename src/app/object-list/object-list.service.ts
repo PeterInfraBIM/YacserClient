@@ -491,6 +491,22 @@ export class ObjectListService {
           case 'description':
             updateSystemSlotInput.updateDescription = value;
             break;
+          case 'functions':
+            const oldFunctions = yacserSystemSlot.functions;
+            const functions = value as YacserFunction[];
+            for (const f of functions) {
+              if (oldFunctions && oldFunctions.includes(f)) {
+                removeList.push(f.id);
+              } else {
+                addList.push(f.id);
+              }
+            }
+            updateSystemSlotInput.addFunctions = addList;
+            updateSystemSlotInput.removeFunctions = removeList;
+            for (const f of functions) {
+              refetchQueries.push({query: FUNCTION, variables: {id: f.id}});
+            }
+            break;
           case 'assembly':
             const oldAssembly = yacserSystemSlot.assembly;
             const newAssembly = value as YacserObject;
@@ -506,6 +522,22 @@ export class ObjectListService {
                 query: SYSTEM_SLOT,
                 variables: {id: oldAssembly.id}
               });
+            }
+            break;
+          case 'parts':
+            const oldParts = yacserSystemSlot.parts;
+            const parts = value as YacserSystemSlot[];
+            for (const p of parts) {
+              if (oldParts && oldParts.includes(p)) {
+                removeList.push(p.id);
+              } else {
+                addList.push(p.id);
+              }
+            }
+            updateSystemSlotInput.addParts = addList;
+            updateSystemSlotInput.removeParts = removeList;
+            for (const p of parts) {
+              refetchQueries.push({query: SYSTEM_SLOT, variables: {id: p.id}});
             }
             break;
         }

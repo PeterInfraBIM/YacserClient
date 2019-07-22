@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {YacserObject, YacserObjectType} from '../types';
 import {Apollo} from 'apollo-angular';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -10,7 +10,7 @@ import {ObjectListService} from './object-list.service';
   templateUrl: './object-list.component.html',
   styleUrls: ['./object-list.component.css']
 })
-export class ObjectListComponent implements OnInit {
+export class ObjectListComponent implements OnInit, OnChanges {
   @Input() modelId: string;
   objects: YacserObject[];
   newObject: YacserObject;
@@ -28,7 +28,15 @@ export class ObjectListComponent implements OnInit {
   ngOnInit() {
     this.objectListService.allObjectsUpdated.subscribe(
       (result) => this.objects = result);
-    this.objectListService.getAllObjects$(this.modelId);
+    if (this.modelId) {
+      this.objectListService.getAllObjects$(this.modelId);
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.modelId) {
+      this.objectListService.getAllObjects$(this.modelId);
+    }
   }
 
   openObjectDetails(object: YacserObject): void {
@@ -55,4 +63,5 @@ export class ObjectListComponent implements OnInit {
       });
     return types;
   }
+
 }

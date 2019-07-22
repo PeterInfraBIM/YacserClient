@@ -2,7 +2,7 @@
   <nav class="navbar navbar-dark bg-primary">
     <a class="navbar-brand" href="https://www.infrabim.nl">YACSER client</a>
   </nav>
-  <app-model-list></app-model-list>
-  <app-object-list modelId="http://www.infrabim.nl/yacser/example"></app-object-list>
+  <app-model-list (modelId)="getModelId($event)"></app-model-list>
+  <app-object-list [modelId]="modelId"></app-object-list>
 </div>
 <router-outlet></router-outlet>

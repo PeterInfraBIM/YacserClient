@@ -143,7 +143,11 @@ export class UpdateSystemSlotInput {
   systemSlotId: string
   updateName: string;
   updateDescription: string;
+  addFunctions: string[];
+  removeFunctions: string[];
   updateAssembly: string;
+  addParts: string[];
+  removeParts: string[];
 
   constructor(systemSlotId: string) {
     this.systemSlotId = systemSlotId;
@@ -183,6 +187,7 @@ export interface Query {
 export interface Mutation {
   createModel: YacserModel;
   createObject: YacserObject;
+  loadModel: YacserModel;
 }
 
 export enum YacserObjectType {
