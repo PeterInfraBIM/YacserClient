@@ -278,39 +278,27 @@ export const UPDATE_SYSTEM_INTERFACE = gql`
       systemSlot0 {
         ...ObjectFields
         interfaces {
-          ...ObjectFields
-        }
-      }
+          ...ObjectFields }}
       systemSlot1 {
         ...ObjectFields
         interfaces {
-          ...ObjectFields
-        }
-      }
+          ...ObjectFields }}
       functionInputs {
         ...ObjectFields
         input {
-          ...ObjectFields
-        }
-      }
+          ...ObjectFields }}
       functionOutputs {
         ...ObjectFields
         output {
-          ...ObjectFields
-        }
-      }
+          ...ObjectFields }}
       assembly {
         ...ObjectFields
         parts {
-          ...ObjectFields
-        }
-      }
+          ...ObjectFields }}
       parts {
         ...ObjectFields
         assembly {
-          ...ObjectFields
-        }
-      }
+          ...ObjectFields }}
     }
   }
   ${OBJECT_FIELDS}

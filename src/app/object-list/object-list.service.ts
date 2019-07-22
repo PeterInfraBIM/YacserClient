@@ -478,6 +478,22 @@ export class ObjectListService {
               });
             }
             break;
+          case 'parts':
+            const oldParts = yacserSystemInterface.parts;
+            const parts = value as YacserSystemInterface[];
+            for (const p of parts) {
+              if (oldParts && oldParts.includes(p)) {
+                removeList.push(p.id);
+              } else {
+                addList.push(p.id);
+              }
+            }
+            updateSystemInterfaceInput.addParts = addList;
+            updateSystemInterfaceInput.removeParts = removeList;
+            for (const p of parts) {
+              refetchQueries.push({query: SYSTEM_INTERFACE, variables: {id: p.id}});
+            }
+            break;
         }
         this.update(updateSystemInterfaceInput, UPDATE_SYSTEM_INTERFACE, 'updateSystemInterface', refetchQueries);
         break;

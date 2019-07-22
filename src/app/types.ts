@@ -124,6 +124,8 @@ export class UpdateSystemInterfaceInput {
   updateSystemSlot0: string;
   updateSystemSlot1: string;
   updateAssembly: string;
+  addParts: string[];
+  removeParts: string[];
 
   constructor(systemInterfaceId: string) {
     this.systemInterfaceId = systemInterfaceId;
