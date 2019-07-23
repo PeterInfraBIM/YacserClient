@@ -90,9 +90,10 @@
         </p>
       </div>
       <div *ngIf="selectedObject.type==='Requirement'">
-        <p class="card-text">owner: {{getRequirement(selectedObject).owner.name}}
-          ({{getRequirement(selectedObject).owner.type}})</p>
         <p class="card-text">
+          <app-link-editor [object]="selectedObject" attribute="owner" [isEditable]="false"></app-link-editor>
+        </p>
+        <p>
           <app-link-editor [object]="selectedObject" attribute="minValue" [links]="getLinks('Value')"
                            (newValue)="onNewValue($event, 'minValue')"></app-link-editor>
         </p>
