@@ -40,6 +40,8 @@ export class UpdateFunctionInput {
 export interface YacserHamburger extends YacserObject {
   functionalUnit: YacserSystemSlot;
   technicalSolution: YacserRealisationModule;
+  assembly: YacserHamburger;
+  parts: YacserHamburger[];
 }
 
 export class UpdateHamburgerInput {
@@ -48,6 +50,9 @@ export class UpdateHamburgerInput {
   updateDescription: string;
   updateFunctionalUnit: string;
   updateTechnicalSolution: string;
+  updateAssembly: string;
+  addParts: string[]
+  removeParts: string[];
 
   constructor(hamburgerId: string) {
     this.hamburgerId = hamburgerId;
@@ -81,6 +86,8 @@ export class UpdateRealisationModuleInput {
   realisationModuleId: string
   updateName: string;
   updateDescription: string;
+  addPerformances: string[];
+  removePerformances: string[];
   updateAssembly: string;
   addParts: string[];
   removeParts: string[];

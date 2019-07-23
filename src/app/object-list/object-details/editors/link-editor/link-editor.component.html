@@ -46,13 +46,13 @@
 </div>
 <div *ngIf="!isEditing && !isMultiple">
   <p>{{attribute}}: {{object[attribute] ? object[attribute].name : ''}}
-    <button type='button' (click)="onClickEdit()">...</button>
+    <button *ngIf="isEditable" type='button' (click)="onClickEdit()">...</button>
   </p>
 </div>
 <div *ngIf="!isEditing && isMultiple">
   <p>{{attribute}}: <span
     *ngFor="let instance of object[attribute]; let lastItem = last">{{instance.name}}{{lastItem ? '' : ', '}}</span>
-    <button type='button' (click)="onClickEdit()">...</button>
+    <button *ngIf="isEditable" type='button' (click)="onClickEdit()">...</button>
   </p>
 </div>
 

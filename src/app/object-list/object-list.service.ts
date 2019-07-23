@@ -223,7 +223,7 @@ export class ObjectListService {
             break;
           case 'assembly':
             const oldAssembly = yacserFunction.assembly;
-            const newAssembly = value as YacserObject;
+            const newAssembly = value as YacserFunction;
             updateFunctionInput.updateAssembly = newAssembly ? newAssembly.id : '';
             if (newAssembly) {
               refetchQueries.push({
@@ -297,6 +297,39 @@ export class ObjectListService {
               });
             }
             break;
+          case 'assembly':
+            const oldAssembly = yacserHamburger.assembly;
+            const newAssembly = value as YacserHamburger;
+            updateHamburgerInput.updateAssembly = newAssembly ? newAssembly.id : '';
+            if (newAssembly) {
+              refetchQueries.push({
+                query: HAMBURGER,
+                variables: {id: newAssembly.id}
+              });
+            }
+            if (oldAssembly) {
+              refetchQueries.push({
+                query: HAMBURGER,
+                variables: {id: oldAssembly.id}
+              });
+            }
+            break;
+          case 'parts':
+            const oldParts = yacserHamburger.parts;
+            const parts = value as YacserHamburger[];
+            for (const part of parts) {
+              if (oldParts && oldParts.includes(part)) {
+                removeList.push(part.id);
+              } else {
+                addList.push(part.id);
+              }
+            }
+            updateHamburgerInput.addParts = addList;
+            updateHamburgerInput.removeParts = removeList;
+            for (const part of parts) {
+              refetchQueries.push({query: HAMBURGER, variables: {id: part.id}});
+            }
+            break;
         }
         this.update(updateHamburgerInput, UPDATE_HAMBURGER, 'updateHamburger', refetchQueries);
         break;
@@ -338,9 +371,25 @@ export class ObjectListService {
           case 'description':
             updateRealisationModuleInput.updateDescription = value;
             break;
+          case 'performances':
+            const oldPerformances = yacserRealisationModule.performances;
+            const performances = value as YacserPerformance[];
+            for (const p of performances) {
+              if (oldPerformances && oldPerformances.includes(p)) {
+                removeList.push(p.id);
+              } else {
+                addList.push(p.id);
+              }
+            }
+            updateRealisationModuleInput.addPerformances = addList;
+            updateRealisationModuleInput.removePerformances = removeList;
+            for (const p of performances) {
+              refetchQueries.push({query: PERFORMANCE, variables: {id: p.id}});
+            }
+            break;
           case 'assembly':
             const oldAssembly = yacserRealisationModule.assembly;
-            const newAssembly = value as YacserObject;
+            const newAssembly = value as YacserRealisationModule;
             updateRealisationModuleInput.updateAssembly = newAssembly ? newAssembly.id : '';
             if (newAssembly) {
               refetchQueries.push({
@@ -463,7 +512,7 @@ export class ObjectListService {
             break;
           case 'assembly':
             const oldAssembly = yacserSystemInterface.assembly;
-            const newAssembly = value as YacserObject;
+            const newAssembly = value as YacserSystemInterface;
             updateSystemInterfaceInput.updateAssembly = newAssembly ? newAssembly.id : '';
             if (newAssembly) {
               refetchQueries.push({
@@ -525,7 +574,7 @@ export class ObjectListService {
             break;
           case 'assembly':
             const oldAssembly = yacserSystemSlot.assembly;
-            const newAssembly = value as YacserObject;
+            const newAssembly = value as YacserSystemSlot;
             updateSystemSlotInput.updateAssembly = newAssembly ? newAssembly.id : '';
             if (newAssembly) {
               refetchQueries.push({

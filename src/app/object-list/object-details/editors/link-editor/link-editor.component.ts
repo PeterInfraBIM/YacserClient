@@ -15,6 +15,7 @@ export class LinkEditorComponent implements OnInit {
   @Input() links: YacserObject[];
   @Input() attribute: string;
   @Input() isMultiple = false;
+  @Input() isEditable = true;
   @Output() newValue = new EventEmitter<YacserObject>();
   @Output() newValues = new EventEmitter<YacserObject[]>()
 
