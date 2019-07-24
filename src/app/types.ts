@@ -97,6 +97,25 @@ export class UpdateRealisationModuleInput {
   }
 }
 
+export interface YacserRealisationPort extends YacserObject {
+  owner: YacserRealisationModule;
+  assembly: YacserRealisationPort;
+  parts: YacserRealisationPort[];
+}
+
+export class UpdateRealisationPortInput {
+  realisationPortId: string
+  updateName: string;
+  updateDescription: string;
+  updateAssembly: string;
+  addParts: string[];
+  removeParts: string[];
+
+  constructor(realisationPortId: string) {
+    this.realisationPortId = realisationPortId;
+  }
+}
+
 export interface YacserRequirement extends YacserObject {
   owner: YacserObject;
   minValue: YacserValue;
@@ -187,6 +206,7 @@ export interface Query {
   hamburger: YacserHamburger;
   performance: YacserPerformance;
   realisationModule: YacserRealisationModule;
+  realisationPort: YacserRealisationPort;
   requirement: YacserRequirement;
   systemInterface: YacserSystemInterface;
   systemSlot: YacserSystemSlot;

@@ -51,6 +51,10 @@ export type Hamburger = YacserObject & {
   functionalUnit?: Maybe<SystemSlot>;
   /** Technical Solution reference. */
   technicalSolution?: Maybe<RealisationModule>;
+  /** Assembly reference. */
+  assembly?: Maybe<Hamburger>;
+  /** Parts references. */
+  parts?: Maybe<Array<Maybe<Hamburger>>>;
 };
 
 /** All mutations that are defined for this YACSER graphQL server */
@@ -187,6 +191,8 @@ export type Query = {
   performance?: Maybe<Performance>;
   /** Get RealisationModule object by ID. */
   realisationModule?: Maybe<RealisationModule>;
+  /** Get RealisationPort object by ID. */
+  realisationPort?: Maybe<RealisationPort>;
   /** Get Requirement object by ID. */
   requirement?: Maybe<Requirement>;
   /** Get SystemInterface object by ID. */
@@ -219,6 +225,11 @@ export type QueryPerformanceArgs = {
 
 /** All queries that are defined for this YACSER graphQL server */
 export type QueryRealisationModuleArgs = {
+  id: Scalars["ID"];
+};
+
+/** All queries that are defined for this YACSER graphQL server */
+export type QueryRealisationPortArgs = {
   id: Scalars["ID"];
 };
 
@@ -261,6 +272,25 @@ export type RealisationModule = YacserObject & {
   assembly?: Maybe<RealisationModule>;
   /** Parts references. */
   parts?: Maybe<Array<Maybe<RealisationModule>>>;
+};
+
+/** YACSER Realisation port instance. */
+export type RealisationPort = YacserObject & {
+  __typename?: "RealisationPort";
+  /** URI of the object instance. */
+  id: Scalars["ID"];
+  /** Optional name of the object. */
+  name?: Maybe<Scalars["String"]>;
+  /** Optional description of the object. */
+  description?: Maybe<Scalars["String"]>;
+  /** Type of the object instance. */
+  type: YacserObjectType;
+  /** Owner RealisationModule. */
+  owner?: Maybe<RealisationModule>;
+  /** Assembly reference. */
+  assembly?: Maybe<RealisationPort>;
+  /** Parts references. */
+  parts?: Maybe<Array<Maybe<RealisationPort>>>;
 };
 
 /** YACSER Requirement instance. */
@@ -366,6 +396,12 @@ export type UpdateHamburgerInput = {
   updateFunctionalUnit?: Maybe<Scalars["ID"]>;
   /** If present: new technical solution reference. */
   updateTechnicalSolution?: Maybe<Scalars["ID"]>;
+  /** If present: update assembly. */
+  updateAssembly?: Maybe<Scalars["ID"]>;
+  /** If present: add parts. */
+  addParts?: Maybe<Array<Maybe<Scalars["ID"]>>>;
+  /** If present: remove parts. */
+  removeParts?: Maybe<Array<Maybe<Scalars["ID"]>>>;
 };
 
 /** Update Performance input arguments. */
@@ -390,6 +426,8 @@ export type UpdateRealisationModuleInput = {
   updateDescription?: Maybe<Scalars["String"]>;
   /** If present: add performances. */
   addPerformances?: Maybe<Array<Maybe<Scalars["ID"]>>>;
+  /** If present: remove performances. */
+  removePerformances?: Maybe<Array<Maybe<Scalars["ID"]>>>;
   /** If present: update assembly. */
   updateAssembly?: Maybe<Scalars["ID"]>;
   /** If present: add parts. */
@@ -428,6 +466,8 @@ export type UpdateSystemInterfaceInput = {
   updateAssembly?: Maybe<Scalars["ID"]>;
   /** If present: add parts. */
   addParts?: Maybe<Array<Maybe<Scalars["ID"]>>>;
+  /** If present: remove parts. */
+  removeParts?: Maybe<Array<Maybe<Scalars["ID"]>>>;
 };
 
 /** Update SystemSlot input arguments. */
@@ -442,12 +482,12 @@ export type UpdateSystemSlotInput = {
   addFunctions?: Maybe<Array<Maybe<Scalars["ID"]>>>;
   /** If present: remove functions. */
   removeFunctions?: Maybe<Array<Maybe<Scalars["ID"]>>>;
-  /** If present: Replace all functions. */
-  replaceFunctions?: Maybe<Array<Maybe<Scalars["ID"]>>>;
   /** If present: update assembly. */
   updateAssembly?: Maybe<Scalars["ID"]>;
   /** If present: add parts. */
   addParts?: Maybe<Array<Maybe<Scalars["ID"]>>>;
+  /** If present: remove parts. */
+  removeParts?: Maybe<Array<Maybe<Scalars["ID"]>>>;
 };
 
 /** Update Value input arguments. */
@@ -536,7 +576,8 @@ export type ObjectFieldsFragment = {
     | "RealisationModule"
     | "Performance"
     | "Value"
-    | "Requirement";
+    | "Requirement"
+    | "RealisationPort";
 } & Pick<YacserObject, "id" | "name" | "description" | "type">;
 
 export type AllObjectsQueryVariables = {
@@ -556,7 +597,8 @@ export type AllObjectsQuery = { __typename?: "Query" } & {
             | "RealisationModule"
             | "Performance"
             | "Value"
-            | "Requirement";
+            | "Requirement"
+            | "RealisationPort";
         } & ObjectFieldsFragment
       >
     >
@@ -581,7 +623,8 @@ export type CreateObjectMutation = { __typename?: "Mutation" } & {
         | "RealisationModule"
         | "Performance"
         | "Value"
-        | "Requirement";
+        | "Requirement"
+        | "RealisationPort";
     } & ObjectFieldsFragment
   >;
 };
@@ -667,6 +710,10 @@ export type HamburgerQuery = { __typename?: "Query" } & {
       technicalSolution: Maybe<
         { __typename?: "RealisationModule" } & ObjectFieldsFragment
       >;
+      assembly: Maybe<{ __typename?: "Hamburger" } & ObjectFieldsFragment>;
+      parts: Maybe<
+        Array<Maybe<{ __typename?: "Hamburger" } & ObjectFieldsFragment>>
+      >;
     } & ObjectFieldsFragment
   >;
 };
@@ -691,6 +738,24 @@ export type UpdateHamburgerMutation = { __typename?: "Mutation" } & {
             Array<Maybe<{ __typename?: "Hamburger" } & ObjectFieldsFragment>>
           >;
         } & ObjectFieldsFragment
+      >;
+      assembly: Maybe<
+        { __typename?: "Hamburger" } & {
+          parts: Maybe<
+            Array<Maybe<{ __typename?: "Hamburger" } & ObjectFieldsFragment>>
+          >;
+        } & ObjectFieldsFragment
+      >;
+      parts: Maybe<
+        Array<
+          Maybe<
+            { __typename?: "Hamburger" } & {
+              assembly: Maybe<
+                { __typename?: "Hamburger" } & ObjectFieldsFragment
+              >;
+            } & ObjectFieldsFragment
+          >
+        >
       >;
     } & ObjectFieldsFragment
   >;
@@ -784,6 +849,23 @@ export type UpdateRealisationModuleMutation = { __typename?: "Mutation" } & {
   >;
 };
 
+export type RealisationPortQueryVariables = {
+  id: Scalars["ID"];
+};
+
+export type RealisationPortQuery = { __typename?: "Query" } & {
+  realisationPort: Maybe<
+    { __typename?: "RealisationPort" } & {
+      assembly: Maybe<
+        { __typename?: "RealisationPort" } & ObjectFieldsFragment
+      >;
+      parts: Maybe<
+        Array<Maybe<{ __typename?: "RealisationPort" } & ObjectFieldsFragment>>
+      >;
+    } & ObjectFieldsFragment
+  >;
+};
+
 export type RequirementQueryVariables = {
   id: Scalars["ID"];
 };
@@ -801,7 +883,8 @@ export type RequirementQuery = { __typename?: "Query" } & {
             | "RealisationModule"
             | "Performance"
             | "Value"
-            | "Requirement";
+            | "Requirement"
+            | "RealisationPort";
         } & ObjectFieldsFragment
       >;
       minValue: Maybe<{ __typename?: "Value" } & ObjectFieldsFragment>;
@@ -827,7 +910,8 @@ export type UpdateRequirementMutation = { __typename?: "Mutation" } & {
             | "RealisationModule"
             | "Performance"
             | "Value"
-            | "Requirement";
+            | "Requirement"
+            | "RealisationPort";
         } & ObjectFieldsFragment
       >;
       minValue: Maybe<{ __typename?: "Value" } & ObjectFieldsFragment>;
@@ -964,7 +1048,15 @@ export type UpdateSystemSlotMutation = { __typename?: "Mutation" } & {
   updateSystemSlot: Maybe<
     { __typename?: "SystemSlot" } & {
       functions: Maybe<
-        Array<Maybe<{ __typename?: "Function" } & ObjectFieldsFragment>>
+        Array<
+          Maybe<
+            { __typename?: "Function" } & {
+              owner: Maybe<
+                { __typename?: "SystemSlot" } & ObjectFieldsFragment
+              >;
+            } & ObjectFieldsFragment
+          >
+        >
       >;
       interfaces: Maybe<
         Array<Maybe<{ __typename?: "SystemInterface" } & ObjectFieldsFragment>>
@@ -1163,6 +1255,12 @@ export const HamburgerDocument = gql`
       technicalSolution {
         ...ObjectFields
       }
+      assembly {
+        ...ObjectFields
+      }
+      parts {
+        ...ObjectFields
+      }
     }
   }
   ${ObjectFieldsFragmentDoc}
@@ -1190,6 +1288,18 @@ export const UpdateHamburgerDocument = gql`
       technicalSolution {
         ...ObjectFields
         hamburgers {
+          ...ObjectFields
+        }
+      }
+      assembly {
+        ...ObjectFields
+        parts {
+          ...ObjectFields
+        }
+      }
+      parts {
+        ...ObjectFields
+        assembly {
           ...ObjectFields
         }
       }
@@ -1320,6 +1430,30 @@ export class UpdateRealisationModuleGQL extends Apollo.Mutation<
   UpdateRealisationModuleMutationVariables
 > {
   document = UpdateRealisationModuleDocument;
+}
+export const RealisationPortDocument = gql`
+  query realisationPort($id: ID!) {
+    realisationPort(id: $id) {
+      ...ObjectFields
+      assembly {
+        ...ObjectFields
+      }
+      parts {
+        ...ObjectFields
+      }
+    }
+  }
+  ${ObjectFieldsFragmentDoc}
+`;
+
+@Injectable({
+  providedIn: "root"
+})
+export class RealisationPortGQL extends Apollo.Query<
+  RealisationPortQuery,
+  RealisationPortQueryVariables
+> {
+  document = RealisationPortDocument;
 }
 export const RequirementDocument = gql`
   query requirement($id: ID!) {
@@ -1504,6 +1638,9 @@ export const UpdateSystemSlotDocument = gql`
       ...ObjectFields
       functions {
         ...ObjectFields
+        owner {
+          ...ObjectFields
+        }
       }
       interfaces {
         ...ObjectFields

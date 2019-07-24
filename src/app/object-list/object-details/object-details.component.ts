@@ -6,7 +6,7 @@ import {
   YacserHamburger,
   YacserObject,
   YacserPerformance,
-  YacserRealisationModule,
+  YacserRealisationModule, YacserRealisationPort,
   YacserRequirement, YacserSystemInterface,
   YacserSystemSlot,
   YacserValue
@@ -40,6 +40,9 @@ export class ObjectDetailsComponent implements OnInit {
           case 'RealisationModule':
             this.selectedObject = result as YacserRealisationModule;
             break;
+          case 'RealisationPort':
+            this.selectedObject = result as YacserRealisationPort;
+            break;
           case 'Performance':
             this.selectedObject = result as YacserPerformance;
             break;
@@ -63,38 +66,6 @@ export class ObjectDetailsComponent implements OnInit {
 
   getLinks(filter: string): YacserObject[] {
     return this.objectListService.allObjects.filter((object => object.type === filter));
-  }
-
-  getFunction(object: YacserObject): YacserFunction {
-    return object as YacserFunction;
-  }
-
-  getHamburger(object: YacserObject): YacserHamburger {
-    return object as YacserHamburger;
-  }
-
-  getPerformance(object: YacserObject): YacserPerformance {
-    return object as YacserPerformance;
-  }
-
-  getRealisationModule(object: YacserObject): YacserRealisationModule {
-    return object as YacserRealisationModule;
-  }
-
-  getRequirement(object: YacserObject): YacserRequirement {
-    return object as YacserRequirement;
-  }
-
-  getSystemInterface(object: YacserObject): YacserSystemInterface {
-    return object as YacserSystemInterface;
-  }
-
-  getSystemSlot(object: YacserObject): YacserSystemSlot {
-    return object as YacserSystemSlot;
-  }
-
-  getValue(object: YacserObject): YacserValue {
-    return object as YacserValue;
   }
 
   onNewValue(newValue: any, attribute: string): void {

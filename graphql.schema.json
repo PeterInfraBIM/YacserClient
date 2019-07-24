@@ -133,6 +133,29 @@
             "deprecationReason": null
           },
           {
+            "name": "realisationPort",
+            "description": "Get RealisationPort object by ID.",
+            "args": [
+              {
+                "name": "id",
+                "description": "RealisationPort object ID.",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "RealisationPort",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "requirement",
             "description": "Get Requirement object by ID.",
             "args": [
@@ -338,7 +361,8 @@
           { "kind": "OBJECT", "name": "RealisationModule", "ofType": null },
           { "kind": "OBJECT", "name": "Performance", "ofType": null },
           { "kind": "OBJECT", "name": "Value", "ofType": null },
-          { "kind": "OBJECT", "name": "Requirement", "ofType": null }
+          { "kind": "OBJECT", "name": "Requirement", "ofType": null },
+          { "kind": "OBJECT", "name": "RealisationPort", "ofType": null }
         ]
       },
       {
@@ -855,6 +879,30 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "assembly",
+            "description": "Assembly reference.",
+            "args": [],
+            "type": { "kind": "OBJECT", "name": "Hamburger", "ofType": null },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "parts",
+            "description": "Parts references.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Hamburger",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -1215,6 +1263,103 @@
             "description": "Maximal value.",
             "args": [],
             "type": { "kind": "OBJECT", "name": "Value", "ofType": null },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          { "kind": "INTERFACE", "name": "YacserObject", "ofType": null }
+        ],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "RealisationPort",
+        "description": "YACSER Realisation port instance.",
+        "fields": [
+          {
+            "name": "id",
+            "description": "URI of the object instance.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "name",
+            "description": "Optional name of the object.",
+            "args": [],
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "description",
+            "description": "Optional description of the object.",
+            "args": [],
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "type",
+            "description": "Type of the object instance.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "YacserObjectType",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "owner",
+            "description": "Owner RealisationModule.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "RealisationModule",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "assembly",
+            "description": "Assembly reference.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "RealisationPort",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "parts",
+            "description": "Parts references.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "RealisationPort",
+                "ofType": null
+              }
+            },
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -1718,6 +1863,32 @@
             "description": "If present: new technical solution reference.",
             "type": { "kind": "SCALAR", "name": "ID", "ofType": null },
             "defaultValue": null
+          },
+          {
+            "name": "updateAssembly",
+            "description": "If present: update assembly.",
+            "type": { "kind": "SCALAR", "name": "ID", "ofType": null },
+            "defaultValue": null
+          },
+          {
+            "name": "addParts",
+            "description": "If present: add parts.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "removeParts",
+            "description": "If present: remove parts.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
           }
         ],
         "interfaces": null,
@@ -1827,6 +1998,16 @@
           {
             "name": "addPerformances",
             "description": "If present: add performances.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "removePerformances",
+            "description": "If present: remove performances.",
             "type": {
               "kind": "LIST",
               "name": null,
@@ -1965,6 +2146,16 @@
               "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
             },
             "defaultValue": null
+          },
+          {
+            "name": "removeParts",
+            "description": "If present: remove parts.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
           }
         ],
         "interfaces": null,
@@ -2020,16 +2211,6 @@
             "defaultValue": null
           },
           {
-            "name": "replaceFunctions",
-            "description": "If present: Replace all functions.",
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
-            },
-            "defaultValue": null
-          },
-          {
             "name": "updateAssembly",
             "description": "If present: update assembly.",
             "type": { "kind": "SCALAR", "name": "ID", "ofType": null },
@@ -2038,6 +2219,16 @@
           {
             "name": "addParts",
             "description": "If present: add parts.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "removeParts",
+            "description": "If present: remove parts.",
             "type": {
               "kind": "LIST",
               "name": null,

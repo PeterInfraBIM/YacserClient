@@ -5,7 +5,7 @@ import {
   UpdateFunctionInput,
   UpdateHamburgerInput,
   UpdatePerformanceInput,
-  UpdateRealisationModuleInput,
+  UpdateRealisationModuleInput, UpdateRealisationPortInput,
   UpdateRequirementInput,
   UpdateSystemInterfaceInput,
   UpdateSystemSlotInput,
@@ -15,7 +15,7 @@ import {
   YacserObject,
   YacserObjectType,
   YacserPerformance,
-  YacserRealisationModule,
+  YacserRealisationModule, YacserRealisationPort,
   YacserRequirement,
   YacserSystemInterface,
   YacserSystemSlot
@@ -29,14 +29,14 @@ import {
   FUNCTION,
   HAMBURGER,
   PERFORMANCE,
-  REALISATION_MODULE,
+  REALISATION_MODULE, REALISATION_PORT,
   REQUIREMENT,
   SYSTEM_INTERFACE,
   SYSTEM_SLOT,
   UPDATE_FUNCTION,
   UPDATE_HAMBURGER,
   UPDATE_PERFORMANCE,
-  UPDATE_REALISATION_MODULE,
+  UPDATE_REALISATION_MODULE, UPDATE_REALISATION_PORT,
   UPDATE_REQUIREMENT,
   UPDATE_SYSTEM_INTERFACE, UPDATE_SYSTEM_SLOT, UPDATE_VALUE,
   VALUE
@@ -100,6 +100,14 @@ export class ObjectListService {
             }
           }
         ).valueChanges.pipe(map(result => result.data.realisationModule));
+      case YacserObjectType.RealisationPort:
+        return this.apollo.watchQuery<Query>({
+            query: REALISATION_PORT,
+            variables: {
+              id: this.selectedObject.id
+            }
+          }
+        ).valueChanges.pipe(map(result => result.data.realisationPort));
       case YacserObjectType.Requirement:
         return this.apollo.watchQuery<Query>({
             query: REQUIREMENT,
@@ -422,6 +430,52 @@ export class ObjectListService {
             break;
         }
         this.update(updateRealisationModuleInput, UPDATE_REALISATION_MODULE, 'updateRealisationModule', refetchQueries);
+        break;
+      case YacserObjectType.RealisationPort:
+        const yacserRealisationPort = object as YacserRealisationPort;
+        const updateRealisationPortInput = new UpdateRealisationPortInput(yacserRealisationPort.id);
+        switch (attribute) {
+          case 'name':
+            updateRealisationPortInput.updateName = value;
+            break;
+          case 'description':
+            updateRealisationPortInput.updateDescription = value;
+            break;
+          case 'assembly':
+            const oldAssembly = yacserRealisationPort.assembly;
+            const newAssembly = value as YacserRealisationPort;
+            updateRealisationPortInput.updateAssembly = newAssembly ? newAssembly.id : '';
+            if (newAssembly) {
+              refetchQueries.push({
+                query: REALISATION_PORT,
+                variables: {id: newAssembly.id}
+              });
+            }
+            if (oldAssembly) {
+              refetchQueries.push({
+                query: REALISATION_PORT,
+                variables: {id: oldAssembly.id}
+              });
+            }
+            break;
+          case 'parts':
+            const oldParts = yacserRealisationPort.parts;
+            const parts = value as YacserRealisationPort[];
+            for (const part of parts) {
+              if (oldParts && oldParts.includes(part)) {
+                removeList.push(part.id);
+              } else {
+                addList.push(part.id);
+              }
+            }
+            updateRealisationPortInput.addParts = addList;
+            updateRealisationPortInput.removeParts = removeList;
+            for (const part of parts) {
+              refetchQueries.push({query: REALISATION_PORT, variables: {id: part.id}});
+            }
+            break;
+        }
+        this.update(updateRealisationPortInput, UPDATE_REALISATION_PORT, 'updateRealisationPort', refetchQueries);
         break;
       case YacserObjectType.Requirement:
         const yacserRequirement = object as YacserRequirement;

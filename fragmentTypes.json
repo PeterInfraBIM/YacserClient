@@ -28,6 +28,9 @@
           },
           {
             "name": "Requirement"
+          },
+          {
+            "name": "RealisationPort"
           }
         ]
       }

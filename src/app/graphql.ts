@@ -185,6 +185,36 @@ export const UPDATE_REALISATION_MODULE = gql`
     ${OBJECT_FIELDS}
 `;
 
+export const REALISATION_PORT = gql`
+    query realisationPort($id: ID!) {
+        realisationPort (id: $id) {
+            ...ObjectFields
+            assembly {
+                ...ObjectFields }
+            parts {
+                ...ObjectFields }
+        }
+    }
+    ${OBJECT_FIELDS}
+`;
+
+export const UPDATE_REALISATION_PORT = gql`
+    mutation updateRealisationPort($input: UpdateRealisationPortInput!) {
+        updateRealisationPort (input: $input) {
+            ...ObjectFields
+            assembly {
+                ...ObjectFields
+                parts {
+                    ...ObjectFields }}
+            parts {
+                ...ObjectFields
+                assembly {
+                    ...ObjectFields }}
+        }
+    }
+    ${OBJECT_FIELDS}
+`;
+
 export const REQUIREMENT = gql`
     query requirement($id: ID!){
         requirement (id: $id) {
