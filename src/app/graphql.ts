@@ -153,6 +153,8 @@ export const REALISATION_MODULE = gql`
             ...ObjectFields
             performances {
                 ...ObjectFields }
+            ports {
+                ...ObjectFields }
             hamburgers {
                 ...ObjectFields }
             assembly {
@@ -170,6 +172,10 @@ export const UPDATE_REALISATION_MODULE = gql`
             ...ObjectFields
             performances {
                 ...ObjectFields }
+            ports {
+                ...ObjectFields
+                owner {
+                    ...ObjectFields }}
             hamburgers {
                 ...ObjectFields }
             assembly {
@@ -189,6 +195,8 @@ export const REALISATION_PORT = gql`
     query realisationPort($id: ID!) {
         realisationPort (id: $id) {
             ...ObjectFields
+            owner {
+                ...ObjectFields }
             assembly {
                 ...ObjectFields }
             parts {

@@ -74,6 +74,8 @@ export type Mutation = {
   updatePerformance?: Maybe<Performance>;
   /** Update RealisationModule object. */
   updateRealisationModule?: Maybe<RealisationModule>;
+  /** Update RealisationPort object. */
+  updateRealisationPort?: Maybe<RealisationPort>;
   /** Update Requirement object. */
   updateRequirement?: Maybe<Requirement>;
   /** Update SystemInterface object. */
@@ -126,6 +128,11 @@ export type MutationUpdatePerformanceArgs = {
 /** All mutations that are defined for this YACSER graphQL server */
 export type MutationUpdateRealisationModuleArgs = {
   input: UpdateRealisationModuleInput;
+};
+
+/** All mutations that are defined for this YACSER graphQL server */
+export type MutationUpdateRealisationPortArgs = {
+  input: UpdateRealisationPortInput;
 };
 
 /** All mutations that are defined for this YACSER graphQL server */
@@ -266,6 +273,8 @@ export type RealisationModule = YacserObject & {
   type: YacserObjectType;
   /** Specified performances. */
   performances?: Maybe<Array<Maybe<Performance>>>;
+  /** Connection ports */
+  ports?: Maybe<Array<Maybe<RealisationPort>>>;
   /** Hamburger references */
   hamburgers?: Maybe<Array<Maybe<Hamburger>>>;
   /** Assembly reference. */
@@ -428,6 +437,26 @@ export type UpdateRealisationModuleInput = {
   addPerformances?: Maybe<Array<Maybe<Scalars["ID"]>>>;
   /** If present: remove performances. */
   removePerformances?: Maybe<Array<Maybe<Scalars["ID"]>>>;
+  /** If present: add ports. */
+  addPorts?: Maybe<Array<Maybe<Scalars["ID"]>>>;
+  /** If present: remove ports. */
+  removePorts?: Maybe<Array<Maybe<Scalars["ID"]>>>;
+  /** If present: update assembly. */
+  updateAssembly?: Maybe<Scalars["ID"]>;
+  /** If present: add parts. */
+  addParts?: Maybe<Array<Maybe<Scalars["ID"]>>>;
+  /** If present: remove parts. */
+  removeParts?: Maybe<Array<Maybe<Scalars["ID"]>>>;
+};
+
+/** Update Realisation port input arguments. */
+export type UpdateRealisationPortInput = {
+  /** Realisation port ID. */
+  realisationPortId: Scalars["ID"];
+  /** If present: new name. */
+  updateName?: Maybe<Scalars["String"]>;
+  /** If present: new description. */
+  updateDescription?: Maybe<Scalars["String"]>;
   /** If present: update assembly. */
   updateAssembly?: Maybe<Scalars["ID"]>;
   /** If present: add parts. */
@@ -576,8 +605,8 @@ export type ObjectFieldsFragment = {
     | "RealisationModule"
     | "Performance"
     | "Value"
-    | "Requirement"
-    | "RealisationPort";
+    | "RealisationPort"
+    | "Requirement";
 } & Pick<YacserObject, "id" | "name" | "description" | "type">;
 
 export type AllObjectsQueryVariables = {
@@ -597,8 +626,8 @@ export type AllObjectsQuery = { __typename?: "Query" } & {
             | "RealisationModule"
             | "Performance"
             | "Value"
-            | "Requirement"
-            | "RealisationPort";
+            | "RealisationPort"
+            | "Requirement";
         } & ObjectFieldsFragment
       >
     >
@@ -623,8 +652,8 @@ export type CreateObjectMutation = { __typename?: "Mutation" } & {
         | "RealisationModule"
         | "Performance"
         | "Value"
-        | "Requirement"
-        | "RealisationPort";
+        | "RealisationPort"
+        | "Requirement";
     } & ObjectFieldsFragment
   >;
 };
@@ -797,6 +826,9 @@ export type RealisationModuleQuery = { __typename?: "Query" } & {
       performances: Maybe<
         Array<Maybe<{ __typename?: "Performance" } & ObjectFieldsFragment>>
       >;
+      ports: Maybe<
+        Array<Maybe<{ __typename?: "RealisationPort" } & ObjectFieldsFragment>>
+      >;
       hamburgers: Maybe<
         Array<Maybe<{ __typename?: "Hamburger" } & ObjectFieldsFragment>>
       >;
@@ -866,6 +898,37 @@ export type RealisationPortQuery = { __typename?: "Query" } & {
   >;
 };
 
+export type UpdateRealisationPortMutationVariables = {
+  input: UpdateRealisationPortInput;
+};
+
+export type UpdateRealisationPortMutation = { __typename?: "Mutation" } & {
+  updateRealisationPort: Maybe<
+    { __typename?: "RealisationPort" } & {
+      assembly: Maybe<
+        { __typename?: "RealisationPort" } & {
+          parts: Maybe<
+            Array<
+              Maybe<{ __typename?: "RealisationPort" } & ObjectFieldsFragment>
+            >
+          >;
+        } & ObjectFieldsFragment
+      >;
+      parts: Maybe<
+        Array<
+          Maybe<
+            { __typename?: "RealisationPort" } & {
+              assembly: Maybe<
+                { __typename?: "RealisationPort" } & ObjectFieldsFragment
+              >;
+            } & ObjectFieldsFragment
+          >
+        >
+      >;
+    } & ObjectFieldsFragment
+  >;
+};
+
 export type RequirementQueryVariables = {
   id: Scalars["ID"];
 };
@@ -883,8 +946,8 @@ export type RequirementQuery = { __typename?: "Query" } & {
             | "RealisationModule"
             | "Performance"
             | "Value"
-            | "Requirement"
-            | "RealisationPort";
+            | "RealisationPort"
+            | "Requirement";
         } & ObjectFieldsFragment
       >;
       minValue: Maybe<{ __typename?: "Value" } & ObjectFieldsFragment>;
@@ -910,8 +973,8 @@ export type UpdateRequirementMutation = { __typename?: "Mutation" } & {
             | "RealisationModule"
             | "Performance"
             | "Value"
-            | "Requirement"
-            | "RealisationPort";
+            | "RealisationPort"
+            | "Requirement";
         } & ObjectFieldsFragment
       >;
       minValue: Maybe<{ __typename?: "Value" } & ObjectFieldsFragment>;
@@ -1372,6 +1435,9 @@ export const RealisationModuleDocument = gql`
       performances {
         ...ObjectFields
       }
+      ports {
+        ...ObjectFields
+      }
       hamburgers {
         ...ObjectFields
       }
@@ -1454,6 +1520,36 @@ export class RealisationPortGQL extends Apollo.Query<
   RealisationPortQueryVariables
 > {
   document = RealisationPortDocument;
+}
+export const UpdateRealisationPortDocument = gql`
+  mutation updateRealisationPort($input: UpdateRealisationPortInput!) {
+    updateRealisationPort(input: $input) {
+      ...ObjectFields
+      assembly {
+        ...ObjectFields
+        parts {
+          ...ObjectFields
+        }
+      }
+      parts {
+        ...ObjectFields
+        assembly {
+          ...ObjectFields
+        }
+      }
+    }
+  }
+  ${ObjectFieldsFragmentDoc}
+`;
+
+@Injectable({
+  providedIn: "root"
+})
+export class UpdateRealisationPortGQL extends Apollo.Mutation<
+  UpdateRealisationPortMutation,
+  UpdateRealisationPortMutationVariables
+> {
+  document = UpdateRealisationPortDocument;
 }
 export const RequirementDocument = gql`
   query requirement($id: ID!) {

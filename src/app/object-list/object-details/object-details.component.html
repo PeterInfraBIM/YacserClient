@@ -76,6 +76,11 @@
                            (newValues)="onNewValues($event, 'performances')"></app-link-editor>
         </p>
         <p class="card-text">
+          <app-link-editor [object]="selectedObject" attribute="ports" [isMultiple]="true"
+                           [links]="getLinks('RealisationPort')"
+                           (newValues)="onNewValues($event, 'ports')"></app-link-editor>
+        </p>
+        <p class="card-text">
           <app-link-editor [object]="selectedObject" attribute="hamburgers" [isMultiple]="true"
                            [isEditable]="false"></app-link-editor>
         </p>
@@ -90,6 +95,9 @@
         </p>
       </div>
       <div *ngIf="selectedObject.type==='RealisationPort'">
+        <p class="card-text">
+          <app-link-editor [object]="selectedObject" attribute="owner" [isEditable]="false"></app-link-editor>
+        </p>
         <p class="card-text">
           <app-link-editor [object]="selectedObject" attribute="assembly" [links]="getLinks('RealisationPort')"
                            (newValue)="onNewValue($event, 'assembly')"></app-link-editor>

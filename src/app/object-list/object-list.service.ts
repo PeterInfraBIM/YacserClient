@@ -395,6 +395,22 @@ export class ObjectListService {
               refetchQueries.push({query: PERFORMANCE, variables: {id: p.id}});
             }
             break;
+          case 'ports':
+            const oldPorts = yacserRealisationModule.ports;
+            const ports = value as YacserRealisationPort[];
+            for (const p of ports) {
+              if (oldPorts && oldPorts.includes(p)) {
+                removeList.push(p.id);
+              } else {
+                addList.push(p.id);
+              }
+            }
+            updateRealisationModuleInput.addPorts = addList;
+            updateRealisationModuleInput.removePorts = removeList;
+            for (const p of ports) {
+              refetchQueries.push({query: REALISATION_PORT, variables: {id: p.id}});
+            }
+            break;
           case 'assembly':
             const oldAssembly = yacserRealisationModule.assembly;
             const newAssembly = value as YacserRealisationModule;

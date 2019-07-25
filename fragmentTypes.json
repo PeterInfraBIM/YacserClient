@@ -27,10 +27,10 @@
             "name": "Value"
           },
           {
-            "name": "Requirement"
+            "name": "RealisationPort"
           },
           {
-            "name": "RealisationPort"
+            "name": "Requirement"
           }
         ]
       }

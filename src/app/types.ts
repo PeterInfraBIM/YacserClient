@@ -77,6 +77,7 @@ export class UpdatePerformanceInput {
 
 export interface YacserRealisationModule extends YacserObject {
   performances: YacserPerformance[];
+  ports: YacserRealisationPort[];
   hamburgers: YacserHamburger[];
   assembly: YacserRealisationModule;
   parts: YacserRealisationModule[];
@@ -88,6 +89,8 @@ export class UpdateRealisationModuleInput {
   updateDescription: string;
   addPerformances: string[];
   removePerformances: string[];
+  addPorts: string[];
+  removePorts: string[];
   updateAssembly: string;
   addParts: string[];
   removeParts: string[];

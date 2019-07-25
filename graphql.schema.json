@@ -361,8 +361,8 @@
           { "kind": "OBJECT", "name": "RealisationModule", "ofType": null },
           { "kind": "OBJECT", "name": "Performance", "ofType": null },
           { "kind": "OBJECT", "name": "Value", "ofType": null },
-          { "kind": "OBJECT", "name": "Requirement", "ofType": null },
-          { "kind": "OBJECT", "name": "RealisationPort", "ofType": null }
+          { "kind": "OBJECT", "name": "RealisationPort", "ofType": null },
+          { "kind": "OBJECT", "name": "Requirement", "ofType": null }
         ]
       },
       {
@@ -978,6 +978,22 @@
             "deprecationReason": null
           },
           {
+            "name": "ports",
+            "description": "Connection ports",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "RealisationPort",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "hamburgers",
             "description": "Hamburger references",
             "args": [],
@@ -1191,91 +1207,6 @@
       },
       {
         "kind": "OBJECT",
-        "name": "Requirement",
-        "description": "YACSER Requirement instance.",
-        "fields": [
-          {
-            "name": "id",
-            "description": "URI of the object instance.",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "name",
-            "description": "Optional name of the object.",
-            "args": [],
-            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "description",
-            "description": "Optional description of the object.",
-            "args": [],
-            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "type",
-            "description": "Type of the object instance.",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "ENUM",
-                "name": "YacserObjectType",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "owner",
-            "description": "Owner Function, SystemSlot of SystemInterface.",
-            "args": [],
-            "type": {
-              "kind": "INTERFACE",
-              "name": "YacserObject",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "minValue",
-            "description": "Minimal value.",
-            "args": [],
-            "type": { "kind": "OBJECT", "name": "Value", "ofType": null },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "maxValue",
-            "description": "Maximal value.",
-            "args": [],
-            "type": { "kind": "OBJECT", "name": "Value", "ofType": null },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [
-          { "kind": "INTERFACE", "name": "YacserObject", "ofType": null }
-        ],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "OBJECT",
         "name": "RealisationPort",
         "description": "YACSER Realisation port instance.",
         "fields": [
@@ -1360,6 +1291,91 @@
                 "ofType": null
               }
             },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          { "kind": "INTERFACE", "name": "YacserObject", "ofType": null }
+        ],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "Requirement",
+        "description": "YACSER Requirement instance.",
+        "fields": [
+          {
+            "name": "id",
+            "description": "URI of the object instance.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "name",
+            "description": "Optional name of the object.",
+            "args": [],
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "description",
+            "description": "Optional description of the object.",
+            "args": [],
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "type",
+            "description": "Type of the object instance.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "YacserObjectType",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "owner",
+            "description": "Owner Function, SystemSlot of SystemInterface.",
+            "args": [],
+            "type": {
+              "kind": "INTERFACE",
+              "name": "YacserObject",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "minValue",
+            "description": "Minimal value.",
+            "args": [],
+            "type": { "kind": "OBJECT", "name": "Value", "ofType": null },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "maxValue",
+            "description": "Maximal value.",
+            "args": [],
+            "type": { "kind": "OBJECT", "name": "Value", "ofType": null },
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -1570,6 +1586,33 @@
             "type": {
               "kind": "OBJECT",
               "name": "RealisationModule",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "updateRealisationPort",
+            "description": "Update RealisationPort object.",
+            "args": [
+              {
+                "name": "input",
+                "description": "Input for Update RealisationPort.",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "UpdateRealisationPortInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "RealisationPort",
               "ofType": null
             },
             "isDeprecated": false,
@@ -2013,6 +2056,85 @@
               "name": null,
               "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
             },
+            "defaultValue": null
+          },
+          {
+            "name": "addPorts",
+            "description": "If present: add ports.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "removePorts",
+            "description": "If present: remove ports.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updateAssembly",
+            "description": "If present: update assembly.",
+            "type": { "kind": "SCALAR", "name": "ID", "ofType": null },
+            "defaultValue": null
+          },
+          {
+            "name": "addParts",
+            "description": "If present: add parts.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "removeParts",
+            "description": "If present: remove parts.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "UpdateRealisationPortInput",
+        "description": "Update Realisation port input arguments.",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "realisationPortId",
+            "description": "Realisation port ID.",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updateName",
+            "description": "If present: new name.",
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null
+          },
+          {
+            "name": "updateDescription",
+            "description": "If present: new description.",
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
             "defaultValue": null
           },
           {
