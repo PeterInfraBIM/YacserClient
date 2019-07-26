@@ -51,6 +51,8 @@ export type Hamburger = YacserObject & {
   functionalUnit?: Maybe<SystemSlot>;
   /** Technical Solution reference. */
   technicalSolution?: Maybe<RealisationModule>;
+  /** Port realisations */
+  ports?: Maybe<Array<Maybe<PortRealisation>>>;
   /** Assembly reference. */
   assembly?: Maybe<Hamburger>;
   /** Parts references. */
@@ -183,6 +185,29 @@ export type Performance = YacserObject & {
   value?: Maybe<Value>;
 };
 
+/** YACSER Port realisation instance. */
+export type PortRealisation = YacserObject & {
+  __typename?: "PortRealisation";
+  /** URI of the object instance. */
+  id: Scalars["ID"];
+  /** Optional name of the object. */
+  name?: Maybe<Scalars["String"]>;
+  /** Optional description of the object. */
+  description?: Maybe<Scalars["String"]>;
+  /** Type of the object instance. */
+  type: YacserObjectType;
+  /** Owner Hamburger. */
+  owner?: Maybe<Hamburger>;
+  /** System interface reference. */
+  interface?: Maybe<SystemInterface>;
+  /** Realisation port reference. */
+  port?: Maybe<RealisationPort>;
+  /** Assembly reference. */
+  assembly?: Maybe<PortRealisation>;
+  /** Parts references. */
+  parts?: Maybe<Array<Maybe<PortRealisation>>>;
+};
+
 /** All queries that are defined for this YACSER graphQL server */
 export type Query = {
   __typename?: "Query";
@@ -196,6 +221,8 @@ export type Query = {
   hamburger?: Maybe<Hamburger>;
   /** Get Performance object by ID. */
   performance?: Maybe<Performance>;
+  /** Get PortRealisation object by ID. */
+  portRealisation?: Maybe<PortRealisation>;
   /** Get RealisationModule object by ID. */
   realisationModule?: Maybe<RealisationModule>;
   /** Get RealisationPort object by ID. */
@@ -227,6 +254,11 @@ export type QueryHamburgerArgs = {
 
 /** All queries that are defined for this YACSER graphQL server */
 export type QueryPerformanceArgs = {
+  id: Scalars["ID"];
+};
+
+/** All queries that are defined for this YACSER graphQL server */
+export type QueryPortRealisationArgs = {
   id: Scalars["ID"];
 };
 
@@ -606,6 +638,7 @@ export type ObjectFieldsFragment = {
     | "Performance"
     | "Value"
     | "RealisationPort"
+    | "PortRealisation"
     | "Requirement";
 } & Pick<YacserObject, "id" | "name" | "description" | "type">;
 
@@ -627,6 +660,7 @@ export type AllObjectsQuery = { __typename?: "Query" } & {
             | "Performance"
             | "Value"
             | "RealisationPort"
+            | "PortRealisation"
             | "Requirement";
         } & ObjectFieldsFragment
       >
@@ -653,6 +687,7 @@ export type CreateObjectMutation = { __typename?: "Mutation" } & {
         | "Performance"
         | "Value"
         | "RealisationPort"
+        | "PortRealisation"
         | "Requirement";
     } & ObjectFieldsFragment
   >;
@@ -854,6 +889,17 @@ export type UpdateRealisationModuleMutation = { __typename?: "Mutation" } & {
       performances: Maybe<
         Array<Maybe<{ __typename?: "Performance" } & ObjectFieldsFragment>>
       >;
+      ports: Maybe<
+        Array<
+          Maybe<
+            { __typename?: "RealisationPort" } & {
+              owner: Maybe<
+                { __typename?: "RealisationModule" } & ObjectFieldsFragment
+              >;
+            } & ObjectFieldsFragment
+          >
+        >
+      >;
       hamburgers: Maybe<
         Array<Maybe<{ __typename?: "Hamburger" } & ObjectFieldsFragment>>
       >;
@@ -888,6 +934,7 @@ export type RealisationPortQueryVariables = {
 export type RealisationPortQuery = { __typename?: "Query" } & {
   realisationPort: Maybe<
     { __typename?: "RealisationPort" } & {
+      owner: Maybe<{ __typename?: "RealisationModule" } & ObjectFieldsFragment>;
       assembly: Maybe<
         { __typename?: "RealisationPort" } & ObjectFieldsFragment
       >;
@@ -947,6 +994,7 @@ export type RequirementQuery = { __typename?: "Query" } & {
             | "Performance"
             | "Value"
             | "RealisationPort"
+            | "PortRealisation"
             | "Requirement";
         } & ObjectFieldsFragment
       >;
@@ -974,6 +1022,7 @@ export type UpdateRequirementMutation = { __typename?: "Mutation" } & {
             | "Performance"
             | "Value"
             | "RealisationPort"
+            | "PortRealisation"
             | "Requirement";
         } & ObjectFieldsFragment
       >;
@@ -1468,6 +1517,12 @@ export const UpdateRealisationModuleDocument = gql`
       performances {
         ...ObjectFields
       }
+      ports {
+        ...ObjectFields
+        owner {
+          ...ObjectFields
+        }
+      }
       hamburgers {
         ...ObjectFields
       }
@@ -1501,6 +1556,9 @@ export const RealisationPortDocument = gql`
   query realisationPort($id: ID!) {
     realisationPort(id: $id) {
       ...ObjectFields
+      owner {
+        ...ObjectFields
+      }
       assembly {
         ...ObjectFields
       }
