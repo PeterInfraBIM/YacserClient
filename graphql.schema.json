@@ -1722,6 +1722,33 @@
             "deprecationReason": null
           },
           {
+            "name": "updatePortRealisation",
+            "description": "Update PortRealisation object.",
+            "args": [
+              {
+                "name": "input",
+                "description": "Input for Update PortRealisation.",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "UpdatePortRealisationInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "PortRealisation",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "updateRealisationModule",
             "description": "Update RealisationModule object.",
             "args": [
@@ -2071,6 +2098,26 @@
             "defaultValue": null
           },
           {
+            "name": "addPorts",
+            "description": "If present: add realisation ports.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "removePorts",
+            "description": "If present: remove realisation ports.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
+          },
+          {
             "name": "addParts",
             "description": "If present: add parts.",
             "type": {
@@ -2160,6 +2207,77 @@
             "name": "updateValue",
             "description": "If present: new Value",
             "type": { "kind": "SCALAR", "name": "ID", "ofType": null },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "UpdatePortRealisationInput",
+        "description": "Update PortRealisation input arguments.",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "portRealisationId",
+            "description": "Port realisation ID.",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updateName",
+            "description": "If present: new name.",
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null
+          },
+          {
+            "name": "updateDescription",
+            "description": "If present: new description.",
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null
+          },
+          {
+            "name": "updateInterface",
+            "description": "If present: new interface reference.",
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null
+          },
+          {
+            "name": "updatePort",
+            "description": "If present: new realisation port reference.",
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null
+          },
+          {
+            "name": "updateAssembly",
+            "description": "If present: update assembly.",
+            "type": { "kind": "SCALAR", "name": "ID", "ofType": null },
+            "defaultValue": null
+          },
+          {
+            "name": "addParts",
+            "description": "If present: add parts.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "removeParts",
+            "description": "If present: remove parts.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
             "defaultValue": null
           }
         ],

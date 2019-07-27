@@ -51,6 +51,11 @@
                            [links]="getLinks('RealisationModule')"
                            (newValue)="onNewValue($event, 'technicalSolution')"></app-link-editor>
         </p>
+        <p>
+          <app-link-editor [object]="selectedObject" attribute="ports" [isMultiple]="true"
+                           [links]="getLinks('PortRealisation')"
+                           (newValues)="onNewValues($event, 'ports')"></app-link-editor>
+        </p>
         <p class="card-text">
           <app-link-editor [object]="selectedObject" attribute="assembly" [links]="getLinks('Hamburger')"
                            (newValue)="onNewValue($event, 'assembly')"></app-link-editor>
@@ -67,6 +72,28 @@
         <p class="card-text">
           <app-link-editor [object]="selectedObject" attribute="value" [links]="getLinks('Value')"
                            (newValue)="onNewValue($event, 'value')"></app-link-editor>
+        </p>
+      </div>
+      <div *ngIf="selectedObject.type==='PortRealisation'">
+        <p class="card-text">
+          <app-link-editor [object]="selectedObject" attribute="owner" [isEditable]="false"></app-link-editor>
+        </p>
+        <p class="card-text">
+          <app-link-editor [object]="selectedObject" attribute="interface" [links]="getLinks('SystemInterface')"
+                           (newValue)="onNewValue($event, 'interface')"></app-link-editor>
+        </p>
+        <p class="card-text">
+          <app-link-editor [object]="selectedObject" attribute="port" [links]="getLinks('RealisationPort')"
+                           (newValue)="onNewValue($event, 'port')"></app-link-editor>
+        </p>
+        <p class="card-text">
+          <app-link-editor [object]="selectedObject" attribute="assembly" [links]="getLinks('PortRealisation')"
+                           (newValue)="onNewValue($event, 'assembly')"></app-link-editor>
+        </p>
+        <p class="card-text">
+          <app-link-editor [object]="selectedObject" attribute="parts" [isMultiple]="true"
+                           [links]="getLinks('PortRealisation')"
+                           (newValues)="onNewValues($event, 'parts')"></app-link-editor>
         </p>
       </div>
       <div *ngIf="selectedObject.type==='RealisationModule'">

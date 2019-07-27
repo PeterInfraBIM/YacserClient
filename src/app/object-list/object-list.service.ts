@@ -4,7 +4,7 @@ import {
   Query,
   UpdateFunctionInput,
   UpdateHamburgerInput,
-  UpdatePerformanceInput,
+  UpdatePerformanceInput, UpdatePortRealisationInput,
   UpdateRealisationModuleInput, UpdateRealisationPortInput,
   UpdateRequirementInput,
   UpdateSystemInterfaceInput,
@@ -14,7 +14,7 @@ import {
   YacserHamburger,
   YacserObject,
   YacserObjectType,
-  YacserPerformance,
+  YacserPerformance, YacserPortRealisation,
   YacserRealisationModule, YacserRealisationPort,
   YacserRequirement,
   YacserSystemInterface,
@@ -28,14 +28,14 @@ import {
   CREATE_OBJECT,
   FUNCTION,
   HAMBURGER,
-  PERFORMANCE,
+  PERFORMANCE, PORT_REALISATION,
   REALISATION_MODULE, REALISATION_PORT,
   REQUIREMENT,
   SYSTEM_INTERFACE,
   SYSTEM_SLOT,
   UPDATE_FUNCTION,
   UPDATE_HAMBURGER,
-  UPDATE_PERFORMANCE,
+  UPDATE_PERFORMANCE, UPDATE_PORT_REALISATION,
   UPDATE_REALISATION_MODULE, UPDATE_REALISATION_PORT,
   UPDATE_REQUIREMENT,
   UPDATE_SYSTEM_INTERFACE, UPDATE_SYSTEM_SLOT, UPDATE_VALUE,
@@ -92,6 +92,14 @@ export class ObjectListService {
             }
           }
         ).valueChanges.pipe(map(result => result.data.performance));
+      case YacserObjectType.PortRealisation:
+        return this.apollo.watchQuery<Query>({
+            query: PORT_REALISATION,
+            variables: {
+              id: this.selectedObject.id
+            }
+          }
+        ).valueChanges.pipe(map(result => result.data.portRealisation));
       case YacserObjectType.RealisationModule:
         return this.apollo.watchQuery<Query>({
             query: REALISATION_MODULE,
@@ -305,6 +313,22 @@ export class ObjectListService {
               });
             }
             break;
+          case 'ports':
+            const oldPorts = yacserHamburger.ports;
+            const ports = value as YacserPortRealisation[];
+            for (const port of ports) {
+              if (oldPorts && oldPorts.includes(port)) {
+                removeList.push(port.id);
+              } else {
+                addList.push(port.id);
+              }
+            }
+            updateHamburgerInput.addPorts = addList;
+            updateHamburgerInput.removePorts = removeList;
+            for (const port of ports) {
+              refetchQueries.push({query: PORT_REALISATION, variables: {id: port.id}});
+            }
+            break;
           case 'assembly':
             const oldAssembly = yacserHamburger.assembly;
             const newAssembly = value as YacserHamburger;
@@ -368,6 +392,82 @@ export class ObjectListService {
             break;
         }
         this.update(updatePerformanceInput, UPDATE_PERFORMANCE, 'updatePerformance', refetchQueries);
+        break;
+      case YacserObjectType.PortRealisation:
+        const yacserPortRealisation = object as YacserPortRealisation;
+        const updatePortRealisationInput = new UpdatePortRealisationInput(yacserPortRealisation.id);
+        switch (attribute) {
+          case 'name':
+            updatePortRealisationInput.updateName = value;
+            break;
+          case 'description':
+            updatePortRealisationInput.updateDescription = value;
+            break;
+          case 'interface':
+            const oldInterface = yacserPortRealisation.interface;
+            const newInterface = value as YacserSystemInterface;
+            updatePortRealisationInput.updateInterface = newInterface ? newInterface.id : '';
+            if (oldInterface) {
+              refetchQueries.push({
+                query: SYSTEM_INTERFACE, variables: {id: oldInterface.id}
+              });
+            }
+            if (newInterface) {
+              refetchQueries.push({
+                query: SYSTEM_INTERFACE, variables: {id: newInterface.id}
+              });
+            }
+            break;
+          case 'port':
+            const oldPort = yacserPortRealisation.port;
+            const newPort = value as YacserRealisationPort;
+            updatePortRealisationInput.updatePort = newPort ? newPort.id : '';
+            if (oldPort) {
+              refetchQueries.push({
+                query: REALISATION_PORT, variables: {id: oldPort.id}
+              });
+            }
+            if (newPort) {
+              refetchQueries.push({
+                query: REALISATION_PORT, variables: {id: newPort.id}
+              });
+            }
+            break;
+          case 'assembly':
+            const oldAssembly = yacserPortRealisation.assembly;
+            const newAssembly = value as YacserPortRealisation;
+            updatePortRealisationInput.updateAssembly = newAssembly ? newAssembly.id : '';
+            if (newAssembly) {
+              refetchQueries.push({
+                query: PORT_REALISATION,
+                variables: {id: newAssembly.id}
+              });
+            }
+            if (oldAssembly) {
+              refetchQueries.push({
+                query: PORT_REALISATION,
+                variables: {id: oldAssembly.id}
+              });
+            }
+            break;
+          case 'parts':
+            const oldParts = yacserPortRealisation.parts;
+            const parts = value as YacserPortRealisation[];
+            for (const part of parts) {
+              if (oldParts && oldParts.includes(part)) {
+                removeList.push(part.id);
+              } else {
+                addList.push(part.id);
+              }
+            }
+            updatePortRealisationInput.addParts = addList;
+            updatePortRealisationInput.removeParts = removeList;
+            for (const part of parts) {
+              refetchQueries.push({query: PORT_REALISATION, variables: {id: part.id}});
+            }
+            break;
+        }
+        this.update(updatePortRealisationInput, UPDATE_PORT_REALISATION, 'updatePortRealisation', refetchQueries);
         break;
       case YacserObjectType.RealisationModule:
         const yacserRealisationModule = object as YacserRealisationModule;
@@ -699,17 +799,16 @@ export class ObjectListService {
     }
   }
 
-  private update(
-    updateInput: any,
-    mutation: any,
-    response: string,
-    refetchQueries: ({ variables: { id: string }; query: any })[]) {
-    this.apollo.mutate<Mutation>({
-      mutation,
-      variables: {input: updateInput},
-      refetchQueries
-    }).subscribe(
-      (result) => console.log(result.data[response]),
-      (error) => console.log(error.toString()));
-  }
+  private update(updateInput: any, mutation: any, response: string, refetchQueries:
+      ({
+        variables: { id: string };
+        query: any
+      })[]) {
+  this.apollo.mutate<Mutation>({
+                     mutation,
+                     variables: {input: updateInput},
+                     refetchQueries
+                   }).subscribe(
+                     (result) => console.log(result.data[response]),
+    (error) => console.log(error.toString())); }
 }

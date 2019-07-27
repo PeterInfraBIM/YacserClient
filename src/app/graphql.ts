@@ -83,6 +83,8 @@ export const HAMBURGER = gql`
                 ...ObjectFields }
             technicalSolution {
                 ...ObjectFields }
+            ports {
+                ...ObjectFields }
             assembly {
                 ...ObjectFields }
             parts {
@@ -103,6 +105,10 @@ export const UPDATE_HAMBURGER = gql`
             technicalSolution {
                 ...ObjectFields
                 hamburgers {
+                    ...ObjectFields }}
+            ports {
+                ...ObjectFields
+                owner {
                     ...ObjectFields }}
             assembly {
                 ...ObjectFields
@@ -142,6 +148,50 @@ export const UPDATE_PERFORMANCE = gql`
             value {
                 ...ObjectFields
             }
+        }
+    }
+    ${OBJECT_FIELDS}
+`;
+
+export const PORT_REALISATION = gql`
+    query portRealisation($id: ID!) {
+        portRealisation (id: $id) {
+            ...ObjectFields
+            owner {
+                ...ObjectFields }
+            interface {
+                ...ObjectFields }
+            port {
+                ...ObjectFields }
+            assembly {
+                ...ObjectFields }
+            parts {
+                ...ObjectFields }
+        }
+    }
+    ${OBJECT_FIELDS}
+`;
+
+export const UPDATE_PORT_REALISATION = gql`
+    mutation updatePortRealisation($input: UpdatePortRealisationInput!) {
+        updatePortRealisation (input: $input) {
+            ...ObjectFields
+            owner {
+                ...ObjectFields
+                ports {
+                    ...ObjectFields }}
+            interface {
+                ...ObjectFields }
+            port {
+                ...ObjectFields }
+            assembly {
+                ...ObjectFields
+                parts {
+                    ...ObjectFields }}
+            parts {
+                ...ObjectFields
+                assembly {
+                    ...ObjectFields }}
         }
     }
     ${OBJECT_FIELDS}

@@ -40,6 +40,7 @@ export class UpdateFunctionInput {
 export interface YacserHamburger extends YacserObject {
   functionalUnit: YacserSystemSlot;
   technicalSolution: YacserRealisationModule;
+  ports: YacserPortRealisation[];
   assembly: YacserHamburger;
   parts: YacserHamburger[];
 }
@@ -50,6 +51,8 @@ export class UpdateHamburgerInput {
   updateDescription: string;
   updateFunctionalUnit: string;
   updateTechnicalSolution: string;
+  addPorts: string[]
+  removePorts: string[];
   updateAssembly: string;
   addParts: string[]
   removeParts: string[];
@@ -72,6 +75,29 @@ export class UpdatePerformanceInput {
 
   constructor(performanceId: string) {
     this.performanceId = performanceId;
+  }
+}
+
+export interface YacserPortRealisation extends YacserObject {
+  owner: YacserHamburger;
+  interface: YacserSystemInterface;
+  port: YacserRealisationPort;
+  assembly: YacserPortRealisation;
+  parts: YacserPortRealisation[];
+}
+
+export class UpdatePortRealisationInput {
+  portRealisationId: string;
+  updateName: string;
+  updateDescription: string;
+  updateInterface: string;
+  updatePort: string;
+  updateAssembly: string;
+  addParts: string[];
+  removeParts: string[];
+
+  constructor(portRealisationId: string) {
+    this.portRealisationId = portRealisationId;
   }
 }
 
@@ -208,6 +234,7 @@ export interface Query {
   function: YacserFunction;
   hamburger: YacserHamburger;
   performance: YacserPerformance;
+  portRealisation: YacserPortRealisation;
   realisationModule: YacserRealisationModule;
   realisationPort: YacserRealisationPort;
   requirement: YacserRequirement;
@@ -220,6 +247,16 @@ export interface Mutation {
   createModel: YacserModel;
   createObject: YacserObject;
   loadModel: YacserModel;
+  updateFunction: YacserFunction;
+  updateHamburger: YacserHamburger;
+  updatePerformance: YacserPerformance;
+  updatePortRealisation: YacserPortRealisation;
+  updateRealisationModule: YacserRealisationModule;
+  updateRealisationPort: YacserRealisationPort;
+  updateRequirement: YacserRequirement;
+  updateSystemInterface: YacserSystemInterface;
+  updateSystemSlot: YacserSystemSlot;
+  updateValue: YacserValue;
 }
 
 export enum YacserObjectType {

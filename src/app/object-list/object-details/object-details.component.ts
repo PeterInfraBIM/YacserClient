@@ -5,7 +5,7 @@ import {
   YacserFunction,
   YacserHamburger,
   YacserObject,
-  YacserPerformance,
+  YacserPerformance, YacserPortRealisation,
   YacserRealisationModule, YacserRealisationPort,
   YacserRequirement, YacserSystemInterface,
   YacserSystemSlot,
@@ -37,14 +37,17 @@ export class ObjectDetailsComponent implements OnInit {
           case 'Hamburger':
             this.selectedObject = result as YacserHamburger;
             break;
+          case 'Performance':
+            this.selectedObject = result as YacserPerformance;
+            break;
+          case 'PortRealisation':
+            this.selectedObject = result as YacserPortRealisation;
+            break;
           case 'RealisationModule':
             this.selectedObject = result as YacserRealisationModule;
             break;
           case 'RealisationPort':
             this.selectedObject = result as YacserRealisationPort;
-            break;
-          case 'Performance':
-            this.selectedObject = result as YacserPerformance;
             break;
           case 'Requirement':
             this.selectedObject = result as YacserRequirement;
