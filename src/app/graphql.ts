@@ -247,6 +247,8 @@ export const REALISATION_PORT = gql`
             ...ObjectFields
             owner {
                 ...ObjectFields }
+            portRealisations {
+                ...ObjectFields }
             assembly {
                 ...ObjectFields }
             parts {
@@ -260,6 +262,14 @@ export const UPDATE_REALISATION_PORT = gql`
     mutation updateRealisationPort($input: UpdateRealisationPortInput!) {
         updateRealisationPort (input: $input) {
             ...ObjectFields
+            owner {
+                ...ObjectFields
+                ports {
+                    ...ObjectFields }}
+            portRealisations {
+                ...ObjectFields
+                port {
+                    ...ObjectFields }}
             assembly {
                 ...ObjectFields
                 parts {
@@ -315,6 +325,8 @@ export const SYSTEM_INTERFACE = gql`
                 ...ObjectFields }
             functionOutputs {
                 ...ObjectFields }
+            portRealisations {
+                ...ObjectFields }
             assembly {
                 ...ObjectFields }
             parts {
@@ -342,6 +354,10 @@ export const UPDATE_SYSTEM_INTERFACE = gql`
             functionOutputs {
                 ...ObjectFields
                 output {
+                    ...ObjectFields }}
+            portRealisations {
+                ...ObjectFields
+                interface {
                     ...ObjectFields }}
             assembly {
                 ...ObjectFields

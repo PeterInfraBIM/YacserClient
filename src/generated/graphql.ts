@@ -335,6 +335,8 @@ export type RealisationPort = YacserObject & {
   type: YacserObjectType;
   /** Owner RealisationModule. */
   owner?: Maybe<RealisationModule>;
+  /** Port realisation references */
+  portRealisations?: Maybe<Array<Maybe<PortRealisation>>>;
   /** Assembly reference. */
   assembly?: Maybe<RealisationPort>;
   /** Parts references. */
@@ -379,6 +381,8 @@ export type SystemInterface = YacserObject & {
   functionInputs?: Maybe<Array<Maybe<Function>>>;
   /** Output from functions */
   functionOutputs?: Maybe<Array<Maybe<Function>>>;
+  /** Port realisation references */
+  portRealisations?: Maybe<Array<Maybe<PortRealisation>>>;
   /** Assembly reference. */
   assembly?: Maybe<SystemInterface>;
   /** Parts references. */
@@ -664,12 +668,12 @@ export type ObjectFieldsFragment = {
     | "Function"
     | "SystemSlot"
     | "SystemInterface"
+    | "PortRealisation"
     | "Hamburger"
     | "RealisationModule"
     | "Performance"
     | "Value"
     | "RealisationPort"
-    | "PortRealisation"
     | "Requirement";
 } & Pick<YacserObject, "id" | "name" | "description" | "type">;
 
@@ -686,12 +690,12 @@ export type AllObjectsQuery = { __typename?: "Query" } & {
             | "Function"
             | "SystemSlot"
             | "SystemInterface"
+            | "PortRealisation"
             | "Hamburger"
             | "RealisationModule"
             | "Performance"
             | "Value"
             | "RealisationPort"
-            | "PortRealisation"
             | "Requirement";
         } & ObjectFieldsFragment
       >
@@ -713,12 +717,12 @@ export type CreateObjectMutation = { __typename?: "Mutation" } & {
         | "Function"
         | "SystemSlot"
         | "SystemInterface"
+        | "PortRealisation"
         | "Hamburger"
         | "RealisationModule"
         | "Performance"
         | "Value"
         | "RealisationPort"
-        | "PortRealisation"
         | "Requirement";
     } & ObjectFieldsFragment
   >;
@@ -1044,6 +1048,9 @@ export type RealisationPortQuery = { __typename?: "Query" } & {
   realisationPort: Maybe<
     { __typename?: "RealisationPort" } & {
       owner: Maybe<{ __typename?: "RealisationModule" } & ObjectFieldsFragment>;
+      portRealisations: Maybe<
+        Array<Maybe<{ __typename?: "PortRealisation" } & ObjectFieldsFragment>>
+      >;
       assembly: Maybe<
         { __typename?: "RealisationPort" } & ObjectFieldsFragment
       >;
@@ -1061,6 +1068,26 @@ export type UpdateRealisationPortMutationVariables = {
 export type UpdateRealisationPortMutation = { __typename?: "Mutation" } & {
   updateRealisationPort: Maybe<
     { __typename?: "RealisationPort" } & {
+      owner: Maybe<
+        { __typename?: "RealisationModule" } & {
+          ports: Maybe<
+            Array<
+              Maybe<{ __typename?: "RealisationPort" } & ObjectFieldsFragment>
+            >
+          >;
+        } & ObjectFieldsFragment
+      >;
+      portRealisations: Maybe<
+        Array<
+          Maybe<
+            { __typename?: "PortRealisation" } & {
+              port: Maybe<
+                { __typename?: "RealisationPort" } & ObjectFieldsFragment
+              >;
+            } & ObjectFieldsFragment
+          >
+        >
+      >;
       assembly: Maybe<
         { __typename?: "RealisationPort" } & {
           parts: Maybe<
@@ -1098,12 +1125,12 @@ export type RequirementQuery = { __typename?: "Query" } & {
             | "Function"
             | "SystemSlot"
             | "SystemInterface"
+            | "PortRealisation"
             | "Hamburger"
             | "RealisationModule"
             | "Performance"
             | "Value"
             | "RealisationPort"
-            | "PortRealisation"
             | "Requirement";
         } & ObjectFieldsFragment
       >;
@@ -1126,12 +1153,12 @@ export type UpdateRequirementMutation = { __typename?: "Mutation" } & {
             | "Function"
             | "SystemSlot"
             | "SystemInterface"
+            | "PortRealisation"
             | "Hamburger"
             | "RealisationModule"
             | "Performance"
             | "Value"
             | "RealisationPort"
-            | "PortRealisation"
             | "Requirement";
         } & ObjectFieldsFragment
       >;
@@ -1155,6 +1182,9 @@ export type SystemInterfaceQuery = { __typename?: "Query" } & {
       >;
       functionOutputs: Maybe<
         Array<Maybe<{ __typename?: "Function" } & ObjectFieldsFragment>>
+      >;
+      portRealisations: Maybe<
+        Array<Maybe<{ __typename?: "PortRealisation" } & ObjectFieldsFragment>>
       >;
       assembly: Maybe<
         { __typename?: "SystemInterface" } & ObjectFieldsFragment
@@ -1207,6 +1237,17 @@ export type UpdateSystemInterfaceMutation = { __typename?: "Mutation" } & {
           Maybe<
             { __typename?: "Function" } & {
               output: Maybe<
+                { __typename?: "SystemInterface" } & ObjectFieldsFragment
+              >;
+            } & ObjectFieldsFragment
+          >
+        >
+      >;
+      portRealisations: Maybe<
+        Array<
+          Maybe<
+            { __typename?: "PortRealisation" } & {
+              interface: Maybe<
                 { __typename?: "SystemInterface" } & ObjectFieldsFragment
               >;
             } & ObjectFieldsFragment
@@ -1752,6 +1793,9 @@ export const RealisationPortDocument = gql`
       owner {
         ...ObjectFields
       }
+      portRealisations {
+        ...ObjectFields
+      }
       assembly {
         ...ObjectFields
       }
@@ -1776,6 +1820,18 @@ export const UpdateRealisationPortDocument = gql`
   mutation updateRealisationPort($input: UpdateRealisationPortInput!) {
     updateRealisationPort(input: $input) {
       ...ObjectFields
+      owner {
+        ...ObjectFields
+        ports {
+          ...ObjectFields
+        }
+      }
+      portRealisations {
+        ...ObjectFields
+        port {
+          ...ObjectFields
+        }
+      }
       assembly {
         ...ObjectFields
         parts {
@@ -1872,6 +1928,9 @@ export const SystemInterfaceDocument = gql`
       functionOutputs {
         ...ObjectFields
       }
+      portRealisations {
+        ...ObjectFields
+      }
       assembly {
         ...ObjectFields
       }
@@ -1917,6 +1976,12 @@ export const UpdateSystemInterfaceDocument = gql`
       functionOutputs {
         ...ObjectFields
         output {
+          ...ObjectFields
+        }
+      }
+      portRealisations {
+        ...ObjectFields
+        interface {
           ...ObjectFields
         }
       }

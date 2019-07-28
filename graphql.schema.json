@@ -380,12 +380,12 @@
           { "kind": "OBJECT", "name": "Function", "ofType": null },
           { "kind": "OBJECT", "name": "SystemSlot", "ofType": null },
           { "kind": "OBJECT", "name": "SystemInterface", "ofType": null },
+          { "kind": "OBJECT", "name": "PortRealisation", "ofType": null },
           { "kind": "OBJECT", "name": "Hamburger", "ofType": null },
           { "kind": "OBJECT", "name": "RealisationModule", "ofType": null },
           { "kind": "OBJECT", "name": "Performance", "ofType": null },
           { "kind": "OBJECT", "name": "Value", "ofType": null },
           { "kind": "OBJECT", "name": "RealisationPort", "ofType": null },
-          { "kind": "OBJECT", "name": "PortRealisation", "ofType": null },
           { "kind": "OBJECT", "name": "Requirement", "ofType": null }
         ]
       },
@@ -800,6 +800,22 @@
             "deprecationReason": null
           },
           {
+            "name": "portRealisations",
+            "description": "Port realisation references",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PortRealisation",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "assembly",
             "description": "Assembly reference.",
             "args": [],
@@ -821,6 +837,123 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "SystemInterface",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          { "kind": "INTERFACE", "name": "YacserObject", "ofType": null }
+        ],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "PortRealisation",
+        "description": "YACSER Port realisation instance.",
+        "fields": [
+          {
+            "name": "id",
+            "description": "URI of the object instance.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "name",
+            "description": "Optional name of the object.",
+            "args": [],
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "description",
+            "description": "Optional description of the object.",
+            "args": [],
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "type",
+            "description": "Type of the object instance.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "YacserObjectType",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "owner",
+            "description": "Owner Hamburger.",
+            "args": [],
+            "type": { "kind": "OBJECT", "name": "Hamburger", "ofType": null },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "interface",
+            "description": "System interface reference.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "SystemInterface",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "port",
+            "description": "Realisation port reference.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "RealisationPort",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "assembly",
+            "description": "Assembly reference.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "PortRealisation",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "parts",
+            "description": "Parts references.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PortRealisation",
                 "ofType": null
               }
             },
@@ -1307,6 +1440,22 @@
             "deprecationReason": null
           },
           {
+            "name": "portRealisations",
+            "description": "Port realisation references",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PortRealisation",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "assembly",
             "description": "Assembly reference.",
             "args": [],
@@ -1328,123 +1477,6 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "RealisationPort",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [
-          { "kind": "INTERFACE", "name": "YacserObject", "ofType": null }
-        ],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "OBJECT",
-        "name": "PortRealisation",
-        "description": "YACSER Port realisation instance.",
-        "fields": [
-          {
-            "name": "id",
-            "description": "URI of the object instance.",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "name",
-            "description": "Optional name of the object.",
-            "args": [],
-            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "description",
-            "description": "Optional description of the object.",
-            "args": [],
-            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "type",
-            "description": "Type of the object instance.",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "ENUM",
-                "name": "YacserObjectType",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "owner",
-            "description": "Owner Hamburger.",
-            "args": [],
-            "type": { "kind": "OBJECT", "name": "Hamburger", "ofType": null },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "interface",
-            "description": "System interface reference.",
-            "args": [],
-            "type": {
-              "kind": "OBJECT",
-              "name": "SystemInterface",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "port",
-            "description": "Realisation port reference.",
-            "args": [],
-            "type": {
-              "kind": "OBJECT",
-              "name": "RealisationPort",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "assembly",
-            "description": "Assembly reference.",
-            "args": [],
-            "type": {
-              "kind": "OBJECT",
-              "name": "PortRealisation",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "parts",
-            "description": "Parts references.",
-            "args": [],
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PortRealisation",
                 "ofType": null
               }
             },

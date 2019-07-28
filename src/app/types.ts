@@ -128,6 +128,7 @@ export class UpdateRealisationModuleInput {
 
 export interface YacserRealisationPort extends YacserObject {
   owner: YacserRealisationModule;
+  portRealisations: YacserPortRealisation[];
   assembly: YacserRealisationPort;
   parts: YacserRealisationPort[];
 }
@@ -167,7 +168,8 @@ export interface YacserSystemInterface extends YacserObject {
   systemSlot0: YacserSystemSlot;
   systemSlot1: YacserSystemSlot;
   functionInputs: YacserFunction[];
-  functionOutputs: YacserFunction;
+  functionOutputs: YacserFunction[];
+  portRealisations: YacserPortRealisation[];
   assembly: YacserSystemInterface;
   parts: YacserSystemInterface[];
 }
