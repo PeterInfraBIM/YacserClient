@@ -218,8 +218,12 @@ export type PortRealisation = YacserObject & {
 /** All queries that are defined for this YACSER graphQL server */
 export type Query = {
   __typename?: "Query";
+  /** List all model files. */
+  allModelFiles?: Maybe<Array<Maybe<Scalars["String"]>>>;
   /** List all loaded models. */
   allModels?: Maybe<Array<Maybe<YacserModel>>>;
+  /** get Model by ID. */
+  model?: Maybe<YacserModel>;
   /** List all YACSER objects */
   allObjects?: Maybe<Array<Maybe<YacserObject>>>;
   /** Get Function object by ID. */
@@ -242,6 +246,11 @@ export type Query = {
   systemSlot?: Maybe<SystemSlot>;
   /** Get Value object by ID. */
   value?: Maybe<Value>;
+};
+
+/** All queries that are defined for this YACSER graphQL server */
+export type QueryModelArgs = {
+  modelId: Scalars["ID"];
 };
 
 /** All queries that are defined for this YACSER graphQL server */

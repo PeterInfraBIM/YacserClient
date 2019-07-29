@@ -35,7 +35,9 @@ export class ObjectListComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.modelId) {
-      this.objectListService.getAllObjects$(this.modelId);
+      if (this.modelId) {
+        this.objectListService.getAllObjects$(this.modelId);
+      }
     }
   }
 

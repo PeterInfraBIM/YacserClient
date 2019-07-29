@@ -231,6 +231,7 @@ export class UpdateValueInput {
 }
 
 export interface Query {
+  allModelFiles: string[];
   allModels: YacserModel[];
   allObjects: YacserObject[];
   function: YacserFunction;

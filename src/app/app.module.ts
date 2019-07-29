@@ -15,6 +15,7 @@ import {ObjectListComponent} from './object-list/object-list.component';
 import {ObjectDetailsComponent} from './object-list/object-details/object-details.component';
 import {LiteralEditorComponent} from './object-list/object-details/editors/literal-editor/literal-editor.component';
 import {LinkEditorComponent} from './object-list/object-details/editors/link-editor/link-editor.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 const fragmentMatcher = new IntrospectionFragmentMatcher({
   introspectionQueryResultData
@@ -36,7 +37,8 @@ const fragmentMatcher = new IntrospectionFragmentMatcher({
     AppRoutingModule,
     HttpClientModule,
     ApolloModule,
-    HttpLinkModule
+    HttpLinkModule,
+    FontAwesomeModule
   ],
   entryComponents: [
     ObjectDetailsComponent
