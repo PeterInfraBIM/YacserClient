@@ -1,41 +1,41 @@
 <div class="container">
-  <div class="card">
-    <div class="card-header">
-      <h5 class="card-title">Objects of {{modelId}}</h5>
-      <div class="card-body">
-        <table class="table table-hover table-sm">
-          <thead class="thead-light">
-          <tr>
-            <th colspan="2">name</th>
-            <th>description</th>
-            <th>type</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr class="select" *ngFor="let object of objects" (click)="openObjectDetails(object)">
-            <td colspan="2">{{object.name}}</td>
-            <td>
+  <!--  <div class="card">-->
+  <!--    <div class="card-header">-->
+  <!--      <h5 class="card-title">Objects of {{modelId}}</h5>-->
+  <!--    </div>-->
+  <!--    <div class="card-body">-->
+  <table class="table table-hover table-sm">
+    <thead class="thead-light">
+    <tr>
+      <th colspan="2">name</th>
+      <th>description</th>
+      <th>type</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="select" *ngFor="let object of objects" (click)="openObjectDetails(object)">
+      <td colspan="2">{{object.name}}</td>
+      <td>
             <span
               class="description">{{object.description}}</span>
-            </td>
-            <td>
-              <span class="type">{{object.type}}</span>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <button class="btn btn-primary" (click)="createObject()" ngbTooltip="Create object">*</button>
-            </td>
-            <td><input class="form-control" [(ngModel)]="newObjectName" placeholder="enter name"></td>
-            <td><input class="form-control" [(ngModel)]="newObjectDescription" placeholder="enter description"></td>
-            <td><select class="form-control" [(ngModel)]="newObjectType">
-              <option *ngFor="let type of getTypes()" [value]="type"
-                      [selected]="type === newObjectType">{{type}}</option>
-            </select></td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+      </td>
+      <td>
+        <span class="type">{{object.type}}</span>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <button class="btn btn-primary" (click)="createObject()" ngbTooltip="Create object">*</button>
+      </td>
+      <td><input class="form-control" [(ngModel)]="newObjectName" placeholder="enter name"></td>
+      <td><input class="form-control" [(ngModel)]="newObjectDescription" placeholder="enter description"></td>
+      <td><select class="form-control" [(ngModel)]="newObjectType">
+        <option *ngFor="let type of getTypes()" [value]="type"
+                [selected]="type === newObjectType">{{type}}</option>
+      </select></td>
+    </tr>
+    </tbody>
+  </table>
 </div>
+<!--  </div>-->
+<!--</div>-->

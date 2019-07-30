@@ -16,6 +16,7 @@ import {ObjectDetailsComponent} from './object-list/object-details/object-detail
 import {LiteralEditorComponent} from './object-list/object-details/editors/literal-editor/literal-editor.component';
 import {LinkEditorComponent} from './object-list/object-details/editors/link-editor/link-editor.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { CanvasComponent } from './canvas/canvas.component';
 
 const fragmentMatcher = new IntrospectionFragmentMatcher({
   introspectionQueryResultData
@@ -28,7 +29,8 @@ const fragmentMatcher = new IntrospectionFragmentMatcher({
     ObjectListComponent,
     ObjectDetailsComponent,
     LiteralEditorComponent,
-    LinkEditorComponent
+    LinkEditorComponent,
+    CanvasComponent
   ],
   imports: [
     BrowserModule,

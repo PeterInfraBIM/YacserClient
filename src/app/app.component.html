@@ -13,7 +13,9 @@
     </ngb-panel>
     <ngb-panel>
       <ng-template ngbPanelHeader>
-        <button ngbPanelToggle class="btn btn-link"><h5>Objects</h5></button>
+        <button ngbPanelToggle class="btn btn-link">
+          <h5>Objects<span *ngIf="modelId"> of {{modelId}}</span></h5>
+        </button>
       </ng-template>
       <ng-template ngbPanelContent>
         <app-object-list [modelId]="modelId"></app-object-list>
@@ -23,7 +25,9 @@
       <ng-template ngbPanelHeader>
         <button ngbPanelToggle class="btn btn-link"><h5>Canvas</h5></button>
       </ng-template>
-      <ng-template ngbPanelContent></ng-template>
+      <ng-template ngbPanelContent>
+        <app-canvas></app-canvas>
+      </ng-template>
     </ngb-panel>
   </ngb-accordion>
 </div>
