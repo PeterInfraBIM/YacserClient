@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {YacserModel} from './types';
+import {YacserModel, YacserObject} from './types';
 
 @Component({
   selector: 'app-root',
@@ -9,12 +9,15 @@ import {YacserModel} from './types';
 export class AppComponent {
   modelMap: Map<string, YacserModel>;
   modelId: string;
+  canvasObjectIds: string[];
 
   constructor() {
     this.modelMap = new Map<string, YacserModel>();
+    this.canvasObjectIds = [] as string[];
   }
 
   getModelId(modelId: string): void {
     this.modelId = modelId;
+    this.canvasObjectIds.splice(0, this.canvasObjectIds.length);
   }
 }

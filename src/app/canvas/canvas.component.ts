@@ -1,36 +1,44 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {ObjectListService} from '../object-list/object-list.service';
+import {YacserObject, YacserSystemSlot} from '../types';
 
 @Component({
   selector: 'app-canvas',
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.css']
 })
-export class CanvasComponent implements OnInit {
+export class CanvasComponent implements OnInit, OnChanges {
+  @Input() modelId: string;
+  @Input() canvasObjectIds: string[];
+  objectMap: Map<string, YacserObject>;
+  widgets: Map<string, Node>;
   context: Context;
-  // canvas: HTMLCanvasElement;
-  // ctx: CanvasRenderingContext2D;
-  // windowX: number;
-  // windowY: number;
-  // currentScale: number;
-  // zIndex: number;
   drawList: Shape[];
 
-  constructor() {
+  constructor(private objectListService: ObjectListService) {
+    this.objectMap = new Map<string, YacserObject>();
+    this.widgets = new Map<string, Node>();
   }
 
   ngOnInit() {
+    this.drawList = [];
     this.context = new Context(
-      document.getElementById('cnvs') as HTMLCanvasElement,
+      document.getElementById('cnvs') as HTMLCanvasElement, this.drawList, this.widgets, this.objectMap,
       0, 0, 1, 1, 0, 0);
     document.onmousemove = (event: MouseEvent) => {
       this.context.cursorX = (event.offsetX - this.context.windowX) / this.context.currentScale;
       this.context.cursorY = (event.offsetY - this.context.windowY) / this.context.currentScale;
     };
-    this.drawList = [];
-    // *********************************
     this.drawTest();
-    // *********************************
     this.gameloop();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.canvasObjectIds) {
+      for (const object of this.objectListService.allObjects) {
+        this.objectMap.set(object.id, object);
+      }
+    }
   }
 
   gameloop(): void {
@@ -57,11 +65,22 @@ export class CanvasComponent implements OnInit {
   }
 
   drawTest(): void {
-    const node1 = new SystemSlotWidget(this.context, 100, 100, 'Zitvoorziening');
-    this.drawList.push(node1);
-    const node2 = new SystemSlotWidget(this.context, 300, 100, 'Fundatiesysteem');
-    this.drawList.push(node2);
-    this.drawList.push(new Edge(this.context, 'part', node1, node2));
+    let index = 0;
+    for (const objectId of this.canvasObjectIds) {
+      const object = this.objectMap.get(objectId);
+      this.objectListService.setSelectedObject(object);
+      this.objectListService.getSelectedObject$().subscribe((response) => this.objectMap.set(response.id, response));
+      switch (object.type) {
+        case 'SystemSlot':
+          const node = new SystemSlotWidget(this.context, object.id, 100 + index * 10, 100 + index * 10, object.name);
+          this.widgets.set(object.id, node);
+          this.drawList.push(node);
+          break;
+        default:
+          break;
+      }
+      index++;
+    }
   }
 
 }
@@ -70,13 +89,18 @@ export class Context {
   public ctx: CanvasRenderingContext2D;
 
   constructor(public canvas: HTMLCanvasElement,
+              public drawList: Shape[],
+              public widgets: Map<string, Node>,
+              public objectMap: Map<string, YacserObject>,
               public windowX: number,
               public windowY: number,
               public currentScale: number,
               public zIndex: number,
               public cursorX: number,
-              public cursorY: number) {
-    this.ctx = this.canvas.getContext('2d');
+              public cursorY: number
+  ) {
+    this
+      .ctx = this.canvas.getContext('2d');
   }
 }
 
@@ -126,7 +150,12 @@ export abstract class Shape {
 }
 
 export class Edge extends Shape {
-  constructor(protected context: Context, private label: string, public startNode: Node, public endNode: Node, private fontSize: number = 10) {
+  constructor(
+    protected context: Context,
+    private label: string,
+    public startNode: Node,
+    public endNode: Node,
+    private fontSize: number = 10) {
     super();
     this.zIndex = 0;
   }
@@ -161,14 +190,17 @@ export class Edge extends Shape {
 
 export abstract class Node extends Shape {
   protected static selectedNode;
+  public id: string;
   protected label: string;
   protected fontSize: number;
   protected down: boolean;
   protected anchorX: number;
   protected anchorY: number;
 
-  protected constructor(protected context: Context) {
+  protected constructor(protected context: Context, id: string) {
     super();
+    this.id = id;
+    this.context.widgets.set(id, this);
     this.zIndex = this.context.zIndex++;
     this.fontSize = 12;
     this.down = false;
@@ -279,11 +311,41 @@ export abstract class Node extends Shape {
     }
     ctx.restore();
   }
+
+  getAssembly = () => {
+    const object = this.context.objectMap.get(this.id);
+    let assembly = null;
+    switch (object.type) {
+      case 'SystemSlot':
+        assembly = (this.context.objectMap.get(this.id) as YacserSystemSlot).assembly;
+        break;
+      default:
+        break;
+    }
+    if (assembly) {
+      if (this.context.widgets.get(assembly.id)) {
+        this.context.drawList.push(new Edge(this.context, 'assembly', this, this.context.widgets.get(assembly.id)));
+      } else {
+        let widget = null;
+        switch (object.type) {
+          case 'SystemSlot':
+            widget = new SystemSlotWidget(this.context, assembly.id, this.x + 100, this.y + 100, assembly.name);
+            break;
+          default:
+            break;
+        }
+        this.context.drawList.push(new Edge(this.context, 'assembly', this, widget));
+        this.context.drawList.push(widget);
+      }
+    }
+    const dropDown = document.getElementById('dropdown');
+    dropDown.classList.toggle('show');
+  }
 }
 
 export class SystemSlotWidget extends Node {
-  constructor(context: Context, x: number, y: number, label: string) {
-    super(context);
+  constructor(context: Context, id: string, x: number, y: number, label: string) {
+    super(context, id);
     this.x = x;
     this.y = y;
     this.width = 110;
@@ -305,8 +367,8 @@ export class SystemSlotWidget extends Node {
       const dropDown = document.getElementById('dropdown');
       dropDown.style.left = this.x * this.context.currentScale + this.context.windowX + 'px';
       dropDown.style.top = this.y * this.context.currentScale + this.context.windowY + 'px';
- //     this.clearMenu(dropDown);
- //     this.addMenuItem(dropDown, 'assembly', null, false);
+      this.clearMenu(dropDown);
+      this.addMenuItem(dropDown, 'assembly', this.getAssembly, true);
       dropDown.classList.toggle('show');
     }
   }

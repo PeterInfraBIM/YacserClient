@@ -1,9 +1,10 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {YacserObject, YacserObjectType} from '../types';
 import {Apollo} from 'apollo-angular';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ObjectDetailsComponent} from './object-details/object-details.component';
 import {ObjectListService} from './object-list.service';
+import {faPlus} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-object-list',
@@ -12,14 +13,15 @@ import {ObjectListService} from './object-list.service';
 })
 export class ObjectListComponent implements OnInit, OnChanges {
   @Input() modelId: string;
+  @Input() canvasObjectIds: string[];
   objects: YacserObject[];
   newObject: YacserObject;
   newObjectName: string;
   newObjectDescription: string;
   newObjectType: YacserObjectType;
+  faPlus = faPlus;
 
   constructor(
-    private apollo: Apollo,
     private modal: NgbModal,
     private objectListService: ObjectListService) {
     this.newObjectType = YacserObjectType.Function;
@@ -66,4 +68,16 @@ export class ObjectListComponent implements OnInit, OnChanges {
     return types;
   }
 
+  toggleCanvas(object: YacserObject): void {
+    if (this.canvasObjectIds.includes(object.id)) {
+      const index = this.canvasObjectIds.indexOf(object.id);
+      this.canvasObjectIds.splice(index, 1);
+    } else {
+      this.canvasObjectIds.push(object.id);
+    }
+  }
+
+  inCanvas(object: YacserObject): boolean {
+    return this.canvasObjectIds.includes(object.id);
+  }
 }

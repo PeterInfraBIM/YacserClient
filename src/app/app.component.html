@@ -18,7 +18,7 @@
         </button>
       </ng-template>
       <ng-template ngbPanelContent>
-        <app-object-list [modelId]="modelId"></app-object-list>
+        <app-object-list [modelId]="modelId" [canvasObjectIds]="canvasObjectIds"></app-object-list>
       </ng-template>
     </ngb-panel>
     <ngb-panel>
@@ -26,7 +26,7 @@
         <button ngbPanelToggle class="btn btn-link"><h5>Canvas</h5></button>
       </ng-template>
       <ng-template ngbPanelContent>
-        <app-canvas></app-canvas>
+        <app-canvas [modelId]="modelId" [canvasObjectIds]="canvasObjectIds"></app-canvas>
       </ng-template>
     </ngb-panel>
   </ngb-accordion>
