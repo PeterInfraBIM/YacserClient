@@ -1,6 +1,6 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {ObjectListService} from '../object-list/object-list.service';
-import {YacserObject, YacserSystemSlot} from '../types';
+import {YacserFunction, YacserObject, YacserObjectType, YacserRequirement, YacserSystemSlot} from '../types';
 
 @Component({
   selector: 'app-canvas',
@@ -23,7 +23,8 @@ export class CanvasComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.drawList = [];
     this.context = new Context(
-      document.getElementById('cnvs') as HTMLCanvasElement, this.drawList, this.widgets, this.objectMap,
+      document.getElementById('cnvs') as HTMLCanvasElement, this.drawList, this.canvasObjectIds,
+      this.widgets, this.objectMap, this.objectListService,
       0, 0, 1, 1, 0, 0);
     document.onmousemove = (event: MouseEvent) => {
       this.context.cursorX = (event.offsetX - this.context.windowX) / this.context.currentScale;
@@ -68,17 +69,10 @@ export class CanvasComponent implements OnInit, OnChanges {
     let index = 0;
     for (const objectId of this.canvasObjectIds) {
       const object = this.objectMap.get(objectId);
-      this.objectListService.setSelectedObject(object);
-      this.objectListService.getSelectedObject$().subscribe((response) => this.objectMap.set(response.id, response));
-      switch (object.type) {
-        case 'SystemSlot':
-          const node = new SystemSlotWidget(this.context, object.id, 100 + index * 10, 100 + index * 10, object.name);
-          this.widgets.set(object.id, node);
-          this.drawList.push(node);
-          break;
-        default:
-          break;
-      }
+      // this.objectListService.setSelectedObject(object);
+      // this.objectListService.getSelectedObject$().subscribe((response) => this.objectMap.set(response.id, response));
+      const node = WidgetFactory.createWidget(object.type, this.context, object.id, 100 + index * 10, 100 + index * 10, object.name);
+      this.drawList.push(node);
       index++;
     }
   }
@@ -90,8 +84,10 @@ export class Context {
 
   constructor(public canvas: HTMLCanvasElement,
               public drawList: Shape[],
+              public canvasObjectIds: string[],
               public widgets: Map<string, Node>,
               public objectMap: Map<string, YacserObject>,
+              public objectListService: ObjectListService,
               public windowX: number,
               public windowY: number,
               public currentScale: number,
@@ -149,10 +145,120 @@ export abstract class Shape {
   }
 }
 
+export class WidgetFactory {
+
+  public static createWidget(type: string, context: Context, id: string, x: number, y: number, label: string): Node {
+    if (!context.canvasObjectIds.includes(id)) {
+      context.canvasObjectIds.push(id);
+    }
+    switch (YacserObjectType[type]) {
+      case YacserObjectType.Function:
+        return new FunctionWidget(context, id, x, y, label);
+      case YacserObjectType.Hamburger:
+        break;
+      case YacserObjectType.Performance:
+        break;
+      case YacserObjectType.PortRealisation:
+        break;
+      case YacserObjectType.RealisationModule:
+        break;
+      case YacserObjectType.RealisationPort:
+        break;
+      case YacserObjectType.Requirement:
+        return new RequirementWidget(context, id, x, y, label);
+      case YacserObjectType.SystemInterface:
+        break;
+      case YacserObjectType.SystemSlot:
+        return new SystemSlotWidget(context, id, x, y, label);
+      case YacserObjectType.Value:
+        return new ValueWidget(context, id, x, y, label);
+    }
+  }
+
+  public static isAlreadyRelated(context: Context, label: string, startNode: Node, endNode: Node): boolean {
+    for (const shape of context.drawList) {
+      if (shape instanceof Edge) {
+        const edge = shape as Edge;
+        if (edge.startNode === startNode && edge.endNode === endNode && edge.label === label)
+          return true;
+      }
+    }
+    return false;
+  }
+
+  public static exists(context: Context, id: string, relation: string): boolean {
+    if (this.getRelatedObject(context, id, relation)) {
+      return true;
+    }
+    if (this.getRelatedObjects(context, id, relation)) {
+      return true;
+    }
+    return false;
+  }
+
+  public static getRelatedObject(context: Context, id: string, relation: string): YacserObject {
+    const object = context.objectMap.get(id);
+    if (object) {
+      switch (YacserObjectType[object.type]) {
+        case YacserObjectType.Function:
+          return (object as YacserFunction)[relation];
+        case YacserObjectType.Hamburger:
+          break;
+        case YacserObjectType.Performance:
+          break;
+        case YacserObjectType.PortRealisation:
+          break;
+        case YacserObjectType.RealisationModule:
+          break;
+        case YacserObjectType.RealisationPort:
+          break;
+        case YacserObjectType.Requirement:
+          return (object as YacserRequirement)[relation];
+        case YacserObjectType.SystemInterface:
+          break;
+        case YacserObjectType.SystemSlot:
+          return (object as YacserSystemSlot)[relation];
+        case YacserObjectType.Value:
+          break;
+      }
+    }
+    return null;
+  }
+
+  public static getRelatedObjects(context: Context, id: string, relation: string): YacserObject[] {
+    const object = context.objectMap.get(id);
+    if (object) {
+      switch (YacserObjectType[object.type]) {
+        case YacserObjectType.Function:
+          return (object as YacserFunction)[relation];
+        case YacserObjectType.Hamburger:
+          break;
+        case YacserObjectType.Performance:
+          break;
+        case YacserObjectType.PortRealisation:
+          break;
+        case YacserObjectType.RealisationModule:
+          break;
+        case YacserObjectType.RealisationPort:
+          break;
+        case YacserObjectType.Requirement:
+          return (object as YacserRequirement)[relation];
+        case YacserObjectType.SystemInterface:
+          break;
+        case YacserObjectType.SystemSlot:
+          return (object as YacserSystemSlot)[relation];
+        case YacserObjectType.Value:
+          break;
+      }
+    }
+    return null;
+  }
+}
+
 export class Edge extends Shape {
   constructor(
     protected context: Context,
-    private label: string,
+    public label: string,
     public startNode: Node,
     public endNode: Node,
     private fontSize: number = 10) {
@@ -200,6 +306,11 @@ export abstract class Node extends Shape {
   protected constructor(protected context: Context, id: string) {
     super();
     this.id = id;
+    const object = this.context.objectMap.get(id);
+    this.context.objectListService.setSelectedObject(object);
+    this.context.objectListService.getSelectedObject$()
+      .subscribe((response) => this.context.objectMap.set(response.id, response));
+
     this.context.widgets.set(id, this);
     this.zIndex = this.context.zIndex++;
     this.fontSize = 12;
@@ -312,34 +423,137 @@ export abstract class Node extends Shape {
     ctx.restore();
   }
 
-  getAssembly = () => {
-    const object = this.context.objectMap.get(this.id);
-    let assembly = null;
-    switch (object.type) {
-      case 'SystemSlot':
-        assembly = (this.context.objectMap.get(this.id) as YacserSystemSlot).assembly;
-        break;
-      default:
-        break;
-    }
-    if (assembly) {
-      if (this.context.widgets.get(assembly.id)) {
-        this.context.drawList.push(new Edge(this.context, 'assembly', this, this.context.widgets.get(assembly.id)));
-      } else {
-        let widget = null;
-        switch (object.type) {
-          case 'SystemSlot':
-            widget = new SystemSlotWidget(this.context, assembly.id, this.x + 100, this.y + 100, assembly.name);
-            break;
-          default:
-            break;
+  showRelatedObject(relation: string): void {
+    const relatedObject = WidgetFactory.getRelatedObject(this.context, this.id, relation);
+    if (relatedObject) {
+      if (this.context.widgets.get(relatedObject.id)) {
+        const endNode = this.context.widgets.get(relatedObject.id);
+        if (!WidgetFactory.isAlreadyRelated(this.context, relation, this, endNode)) {
+          this.context.drawList.push(new Edge(this.context, relation, this, endNode));
         }
-        this.context.drawList.push(new Edge(this.context, 'assembly', this, widget));
+      } else {
+        const widget = WidgetFactory.createWidget(relatedObject.type, this.context, relatedObject.id,
+          this.x + 100, this.y + 100, relatedObject.name);
+        this.context.drawList.push(new Edge(this.context, relation, this, widget));
         this.context.drawList.push(widget);
       }
     }
-    const dropDown = document.getElementById('dropdown');
-    dropDown.classList.toggle('show');
+  }
+
+  showRelatedObjects(relation: string): void {
+    const parts = WidgetFactory.getRelatedObjects(this.context, this.id, relation);
+    if (parts && parts.length > 0) {
+      let index = 0;
+      for (const part of parts) {
+        if (this.context.widgets.get(part.id)) {
+          const endNode = this.context.widgets.get(part.id);
+          if (!WidgetFactory.isAlreadyRelated(this.context, relation, this, endNode)) {
+            this.context.drawList.push(new Edge(this.context, relation, this, endNode));
+          }
+        } else {
+          const widget = WidgetFactory
+            .createWidget(part.type, this.context, part.id, this.x + 100 + index * 8, this.y + 100 + index * 8, part.name)
+          this.context.drawList.push(new Edge(this.context, relation, this, widget));
+          this.context.drawList.push(widget);
+        }
+        index++;
+      }
+    }
+  }
+
+  getAssembly = () => {
+    this.showRelatedObject('assembly');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+
+  getParts = () => {
+    this.showRelatedObjects('parts');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+
+  isEnabled(relation: string): boolean {
+    return WidgetFactory.exists(this.context, this.id, relation);
+  }
+}
+
+export class FunctionWidget extends Node {
+  constructor(context: Context, id: string, x: number, y: number, label: string) {
+    super(context, id);
+    this.x = x;
+    this.y = y;
+    this.width = 110;
+    this.height = 110;
+    this.label = label;
+    this.color = 'Plum';
+    this.context.canvas.addEventListener('contextmenu', (e) => {
+      this.contextmenu(e);
+    }, false);
+  }
+
+  public draw() {
+    super.draw();
+  }
+
+  public contextmenu(event: MouseEvent): void {
+    event.preventDefault();
+    if (this.isHit(event)) {
+      const dropDown = document.getElementById('dropdown');
+      dropDown.style.left = this.x * this.context.currentScale + this.context.windowX + 'px';
+      dropDown.style.top = this.y * this.context.currentScale + this.context.windowY + 'px';
+      this.clearMenu(dropDown);
+      this.addMenuItem(dropDown, 'assembly', this.getAssembly, this.isEnabled('assembly'));
+      this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
+      this.addMenuItem(dropDown, 'requirements', this.getRequirements, this.isEnabled('requirements'));
+      dropDown.classList.toggle('show');
+    }
+  }
+
+  getRequirements = () => {
+    this.showRelatedObjects('requirements');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+}
+
+export class RequirementWidget extends Node {
+  constructor(context: Context, id: string, x: number, y: number, label: string) {
+    super(context, id);
+    this.x = x;
+    this.y = y;
+    this.width = 110;
+    this.height = 110;
+    this.label = label;
+    this.color = 'Gold';
+    this.context.canvas.addEventListener('contextmenu', (e) => {
+      this.contextmenu(e);
+    }, false);
+  }
+
+  public draw() {
+    super.draw();
+  }
+
+  public contextmenu(event: MouseEvent): void {
+    event.preventDefault();
+    if (this.isHit(event)) {
+      const dropDown = document.getElementById('dropdown');
+      dropDown.style.left = this.x * this.context.currentScale + this.context.windowX + 'px';
+      dropDown.style.top = this.y * this.context.currentScale + this.context.windowY + 'px';
+      this.clearMenu(dropDown);
+      this.addMenuItem(dropDown, 'assembly', this.getAssembly, this.isEnabled('assembly'));
+      this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
+      this.addMenuItem(dropDown, 'minValue', this.getMinValue, this.isEnabled('minValue'));
+      this.addMenuItem(dropDown, 'maxValue', this.getMaxValue, this.isEnabled('maxValue'));
+      dropDown.classList.toggle('show');
+    }
+  }
+
+  getMinValue = () => {
+    this.showRelatedObject('minValue');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+  getMaxValue = () => {
+    this.showRelatedObject('maxValue');
+    document.getElementById('dropdown').classList.toggle('show');
   }
 }
 
@@ -368,7 +582,44 @@ export class SystemSlotWidget extends Node {
       dropDown.style.left = this.x * this.context.currentScale + this.context.windowX + 'px';
       dropDown.style.top = this.y * this.context.currentScale + this.context.windowY + 'px';
       this.clearMenu(dropDown);
-      this.addMenuItem(dropDown, 'assembly', this.getAssembly, true);
+      this.addMenuItem(dropDown, 'assembly', this.getAssembly, this.isEnabled('assembly'));
+      this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
+      this.addMenuItem(dropDown, 'functions', this.getFunctions, this.isEnabled('functions'));
+      dropDown.classList.toggle('show');
+    }
+  }
+
+  getFunctions = () => {
+    this.showRelatedObjects('functions');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+}
+
+export class ValueWidget extends Node {
+  constructor(context: Context, id: string, x: number, y: number, label: string) {
+    super(context, id);
+    this.x = x;
+    this.y = y;
+    this.width = 110;
+    this.height = 110;
+    this.label = label;
+    this.color = 'white';
+    this.context.canvas.addEventListener('contextmenu', (e) => {
+      this.contextmenu(e);
+    }, false);
+  }
+
+  public draw() {
+    super.draw();
+  }
+
+  public contextmenu(event: MouseEvent): void {
+    event.preventDefault();
+    if (this.isHit(event)) {
+      const dropDown = document.getElementById('dropdown');
+      dropDown.style.left = this.x * this.context.currentScale + this.context.windowX + 'px';
+      dropDown.style.top = this.y * this.context.currentScale + this.context.windowY + 'px';
+      this.clearMenu(dropDown);
       dropDown.classList.toggle('show');
     }
   }

@@ -800,15 +800,16 @@ export class ObjectListService {
   }
 
   private update(updateInput: any, mutation: any, response: string, refetchQueries:
-      ({
-        variables: { id: string };
-        query: any
-      })[]) {
-  this.apollo.mutate<Mutation>({
-                     mutation,
-                     variables: {input: updateInput},
-                     refetchQueries
-                   }).subscribe(
-                     (result) => console.log(result.data[response]),
-    (error) => console.log(error.toString())); }
+    ({
+      variables: { id: string };
+      query: any
+    })[]) {
+    this.apollo.mutate<Mutation>({
+      mutation,
+      variables: {input: updateInput},
+      refetchQueries
+    }).subscribe(
+      (result) => console.log(result.data[response]),
+      (error) => console.log(error.toString()));
+  }
 }
