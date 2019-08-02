@@ -1,6 +1,13 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {ObjectListService} from '../object-list/object-list.service';
-import {YacserFunction, YacserObject, YacserObjectType, YacserRequirement, YacserSystemSlot} from '../types';
+import {
+  YacserFunction, YacserHamburger,
+  YacserObject,
+  YacserObjectType, YacserPerformance, YacserPortRealisation, YacserRealisationModule, YacserRealisationPort,
+  YacserRequirement,
+  YacserSystemInterface,
+  YacserSystemSlot
+} from '../types';
 
 @Component({
   selector: 'app-canvas',
@@ -69,8 +76,6 @@ export class CanvasComponent implements OnInit, OnChanges {
     let index = 0;
     for (const objectId of this.canvasObjectIds) {
       const object = this.objectMap.get(objectId);
-      // this.objectListService.setSelectedObject(object);
-      // this.objectListService.getSelectedObject$().subscribe((response) => this.objectMap.set(response.id, response));
       const node = WidgetFactory.createWidget(object.type, this.context, object.id, 100 + index * 10, 100 + index * 10, object.name);
       this.drawList.push(node);
       index++;
@@ -155,19 +160,19 @@ export class WidgetFactory {
       case YacserObjectType.Function:
         return new FunctionWidget(context, id, x, y, label);
       case YacserObjectType.Hamburger:
-        break;
+        return new HamburgerWidget(context, id, x, y, label);
       case YacserObjectType.Performance:
-        break;
+        return new PerformanceWidget(context, id, x, y, label);
       case YacserObjectType.PortRealisation:
-        break;
+        return new PortRealisationWidget(context, id, x, y, label);
       case YacserObjectType.RealisationModule:
-        break;
+        return new RealisationModuleWidget(context, id, x, y, label);
       case YacserObjectType.RealisationPort:
-        break;
+        return new RealisationPortWidget(context, id, x, y, label);
       case YacserObjectType.Requirement:
         return new RequirementWidget(context, id, x, y, label);
       case YacserObjectType.SystemInterface:
-        break;
+        return new SystemInterfaceWidget(context, id, x, y, label);
       case YacserObjectType.SystemSlot:
         return new SystemSlotWidget(context, id, x, y, label);
       case YacserObjectType.Value:
@@ -179,8 +184,9 @@ export class WidgetFactory {
     for (const shape of context.drawList) {
       if (shape instanceof Edge) {
         const edge = shape as Edge;
-        if (edge.startNode === startNode && edge.endNode === endNode && edge.label === label)
+        if (edge.startNode === startNode && edge.endNode === endNode && edge.label === label) {
           return true;
+        }
       }
     }
     return false;
@@ -203,19 +209,19 @@ export class WidgetFactory {
         case YacserObjectType.Function:
           return (object as YacserFunction)[relation];
         case YacserObjectType.Hamburger:
-          break;
+          return (object as YacserHamburger)[relation];
         case YacserObjectType.Performance:
-          break;
+          return (object as YacserPerformance)[relation];
         case YacserObjectType.PortRealisation:
-          break;
+          return (object as YacserPortRealisation)[relation];
         case YacserObjectType.RealisationModule:
-          break;
+          return (object as YacserRealisationModule)[relation];
         case YacserObjectType.RealisationPort:
-          break;
+          return (object as YacserRealisationPort)[relation];
         case YacserObjectType.Requirement:
           return (object as YacserRequirement)[relation];
         case YacserObjectType.SystemInterface:
-          break;
+          return (object as YacserSystemInterface)[relation];
         case YacserObjectType.SystemSlot:
           return (object as YacserSystemSlot)[relation];
         case YacserObjectType.Value:
@@ -232,19 +238,19 @@ export class WidgetFactory {
         case YacserObjectType.Function:
           return (object as YacserFunction)[relation];
         case YacserObjectType.Hamburger:
-          break;
+          return (object as YacserHamburger)[relation];
         case YacserObjectType.Performance:
-          break;
+          return (object as YacserPerformance)[relation];
         case YacserObjectType.PortRealisation:
-          break;
+          return (object as YacserPortRealisation)[relation];
         case YacserObjectType.RealisationModule:
-          break;
+          return (object as YacserRealisationModule)[relation];
         case YacserObjectType.RealisationPort:
-          break;
+          return (object as YacserRealisationPort)[relation];
         case YacserObjectType.Requirement:
           return (object as YacserRequirement)[relation];
         case YacserObjectType.SystemInterface:
-          break;
+          return (object as YacserSystemInterface)[relation];
         case YacserObjectType.SystemSlot:
           return (object as YacserSystemSlot)[relation];
         case YacserObjectType.Value:
@@ -369,27 +375,143 @@ export abstract class Node extends Shape {
   public draw() {
     const ctx = this.context.ctx;
     if (this.down === true) {
-      this.x = this.context.cursorX - this.anchorX;
-      this.y = this.context.cursorY - this.anchorY;
+      this.x = Math.round((this.context.cursorX - this.anchorX) / 10.0) * 10;
+      this.y = Math.round((this.context.cursorY - this.anchorY) / 10.0) * 10;
     }
 
     ctx.save();
     ctx.lineWidth = 4;
     ctx.strokeStyle = 'black';
     ctx.fillStyle = this.color;
-    if (this.down === true && this === Node.selectedNode) {
-      ctx.globalAlpha = 0.5;
-      ctx.beginPath();
-      ctx.arc(this.x + 2, this.y + 2, this.width / 2, 0, Math.PI * 2);
+    const halfWidth = this.width / 2;
+    const halfHeight = this.height / 2;
+    if (this instanceof FunctionWidget ||
+      this instanceof PerformanceWidget ||
+      this instanceof RequirementWidget ||
+      this instanceof SystemInterfaceWidget ||
+      this instanceof ValueWidget) {
+      if (this.down === true && this === Node.selectedNode) {
+        ctx.globalAlpha = 0.5;
+        ctx.strokeRect(this.x - halfWidth + 2, this.y - halfHeight + 2, this.width, this.height);
+        ctx.fillRect(this.x - halfWidth + 2, this.y - halfHeight + 2, this.width, this.height);
+      } else {
+        ctx.strokeRect(this.x - halfWidth, this.y - halfHeight, this.width, this.height);
+        ctx.fillRect(this.x - halfWidth, this.y - halfHeight, this.width, this.height);
+      }
+    } else if (this instanceof HamburgerWidget) {
+      if (this.down === true && this === Node.selectedNode) {
+        ctx.globalAlpha = 0.5;
+        ctx.beginPath();
+        ctx.arc(this.x + 2, this.y + 2, this.width / 2, 0, Math.PI);
+        ctx.stroke();
+        ctx.fillStyle = 'LightGreen';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(this.x + 2, this.y + 2, this.width / 2, Math.PI, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = 'LightBlue';
+        ctx.fill();
+      } else {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.width / 2, 0, Math.PI);
+        ctx.stroke();
+        ctx.fillStyle = 'LightGreen';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.width / 2, Math.PI, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = 'LightBlue';
+        ctx.fill();
+      }
+    } else if (this instanceof PortRealisationWidget) {
+      if (this.down === true && this === Node.selectedNode) {
+        ctx.globalAlpha = 0.5;
+        ctx.beginPath();
+        ctx.arc(this.x + 2, this.y + 2, this.width / 2, 0, Math.PI);
+        ctx.stroke();
+        ctx.fillStyle = 'LightGreen';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(this.x + 2, this.y + 2, this.width / 2, Math.PI, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = 'DarkGrey';
+        ctx.fill();
+      } else {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.width / 2, 0, Math.PI);
+        ctx.stroke();
+        ctx.fillStyle = 'LightGreen';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.width / 2, Math.PI, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = 'DarkGrey';
+        ctx.fill();
+      }
+    } else if (this instanceof RealisationPortWidget) {
+      const rotation = this.rotateState * Math.PI / 2;
+      if (this.down === true && this === Node.selectedNode) {
+        ctx.globalAlpha = 0.5;
+        ctx.beginPath();
+        ctx.arc(this.x + 2, this.y + 2, this.width / 2, Math.PI + rotation, Math.PI * 2 + rotation);
+        switch (this.rotateState) {
+          case 0:
+            ctx.moveTo(this.x - halfWidth + 2, this.y + 2);
+            ctx.lineTo(this.x + halfWidth + 2, this.y + 2);
+            break;
+          case 1:
+            ctx.moveTo(this.x + 2, this.y - halfHeight + 2);
+            ctx.lineTo(this.x + 2, this.y + halfHeight + 2);
+            break;
+          case 2:
+            ctx.moveTo(this.x - halfWidth + 2, this.y + 2);
+            ctx.lineTo(this.x + halfWidth + 2, this.y + 2);
+            break;
+          case 3:
+            ctx.moveTo(this.x + 2, this.y - halfHeight + 2);
+            ctx.lineTo(this.x + 2, this.y + halfHeight + 2);
+            break;
+        }
+      } else {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.width / 2, Math.PI + rotation, Math.PI * 2 + rotation);
+        switch (this.rotateState) {
+          case 0:
+            ctx.moveTo(this.x - halfWidth, this.y);
+            ctx.lineTo(this.x + halfWidth, this.y);
+            break;
+          case 1:
+            ctx.moveTo(this.x, this.y - halfHeight);
+            ctx.lineTo(this.x, this.y + halfHeight);
+            break;
+          case 2:
+            ctx.moveTo(this.x - halfWidth, this.y);
+            ctx.lineTo(this.x + halfWidth, this.y);
+            break;
+          case 3:
+            ctx.moveTo(this.x, this.y - halfHeight);
+            ctx.lineTo(this.x, this.y + halfHeight);
+            break;
+        }
+      }
       ctx.stroke();
-      ctx.fillStyle = this.color;
+      ctx.fillStyle = 'LightGreen';
       ctx.fill();
     } else {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.width / 2, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.fillStyle = this.color;
-      ctx.fill();
+      if (this.down === true && this === Node.selectedNode) {
+        ctx.globalAlpha = 0.5;
+        ctx.beginPath();
+        ctx.arc(this.x + 2, this.y + 2, this.width / 2, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = this.color;
+        ctx.fill();
+      } else {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.width / 2, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = this.color;
+        ctx.fill();
+      }
     }
     ctx.restore();
 
@@ -399,25 +521,50 @@ export abstract class Node extends Shape {
     ctx.textBaseline = 'middle';
     ctx.fillStyle = 'black';
     ctx.font = this.fontSize + 'px Verdana';
-
-    if (this.down === true && this === Node.selectedNode) {
-      ctx.globalAlpha = 0.5;
-      if (ctx.measureText(this.label).width < this.width) {
-        ctx.fillText(this.label, this.x + 2, this.y + 2);
+    if (this instanceof RealisationPortWidget) {
+      ctx.font = (this.fontSize - 2) + 'px Verdana';
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rotateState !== 2 ? this.rotateState * Math.PI / 2 : 0);
+      if (this.down === true && this === Node.selectedNode) {
+        ctx.globalAlpha = 0.5;
+        if (ctx.measureText(this.label).width < this.width - 4) {
+          ctx.fillText(this.label, 2, (this.rotateState !== 2 ? this.height / -6 : this.height / 6) + 2);
+        } else {
+          const firstPart = this.label.substring(0, this.label.length / 2);
+          const secondPart = this.label.substring(this.label.length / 2);
+          ctx.fillText(firstPart, 2, (this.rotateState !== 2 ? this.height / -3 : this.height / 6) + 2);
+          ctx.fillText(secondPart, 2, (this.rotateState !== 2 ? this.height / -6 : this.height / 3) + 2);
+        }
       } else {
-        const firstPart = this.label.substring(0, this.label.length / 2);
-        const secondPart = this.label.substring(this.label.length / 2);
-        ctx.fillText(firstPart, this.x + 2, this.y - this.height / 8 + 2);
-        ctx.fillText(secondPart, this.x + 2, this.y + this.height / 8 + 2);
+        if (ctx.measureText(this.label).width < this.width - 4) {
+          ctx.fillText(this.label, 0, this.rotateState !== 2 ? this.height / -6 : this.height / 6);
+        } else {
+          const firstPart = this.label.substring(0, this.label.length / 2);
+          const secondPart = this.label.substring(this.label.length / 2);
+          ctx.fillText(firstPart, 0, this.rotateState !== 2 ? this.height / -3 : this.height / 6);
+          ctx.fillText(secondPart, 0, this.rotateState !== 2 ? this.height / -6 : this.height / 3);
+        }
       }
     } else {
-      if (ctx.measureText(this.label).width < this.width) {
-        ctx.fillText(this.label, this.x, this.y);
+      if (this.down === true && this === Node.selectedNode) {
+        ctx.globalAlpha = 0.5;
+        if (ctx.measureText(this.label).width < this.width) {
+          ctx.fillText(this.label, this.x + 2, this.y + 2);
+        } else {
+          const firstPart = this.label.substring(0, this.label.length / 2);
+          const secondPart = this.label.substring(this.label.length / 2);
+          ctx.fillText(firstPart, this.x + 2, this.y - this.height / 8 + 2);
+          ctx.fillText(secondPart, this.x + 2, this.y + this.height / 8 + 2);
+        }
       } else {
-        const firstPart = this.label.substring(0, this.label.length / 2);
-        const secondPart = this.label.substring(this.label.length / 2);
-        ctx.fillText(firstPart, this.x, this.y - this.height / 8);
-        ctx.fillText(secondPart, this.x, this.y + this.height / 8);
+        if (ctx.measureText(this.label).width < this.width) {
+          ctx.fillText(this.label, this.x, this.y);
+        } else {
+          const firstPart = this.label.substring(0, this.label.length / 2);
+          const secondPart = this.label.substring(this.label.length / 2);
+          ctx.fillText(firstPart, this.x, this.y - this.height / 8);
+          ctx.fillText(secondPart, this.x, this.y + this.height / 8);
+        }
       }
     }
     ctx.restore();
@@ -452,7 +599,7 @@ export abstract class Node extends Shape {
           }
         } else {
           const widget = WidgetFactory
-            .createWidget(part.type, this.context, part.id, this.x + 100 + index * 8, this.y + 100 + index * 8, part.name)
+            .createWidget(part.type, this.context, part.id, this.x + 100 + index * 8, this.y + 100 + index * 8, part.name);
           this.context.drawList.push(new Edge(this.context, relation, this, widget));
           this.context.drawList.push(widget);
         }
@@ -481,8 +628,8 @@ export class FunctionWidget extends Node {
     super(context, id);
     this.x = x;
     this.y = y;
-    this.width = 110;
-    this.height = 110;
+    this.width = 160;
+    this.height = 50;
     this.label = label;
     this.color = 'Plum';
     this.context.canvas.addEventListener('contextmenu', (e) => {
@@ -504,12 +651,257 @@ export class FunctionWidget extends Node {
       this.addMenuItem(dropDown, 'assembly', this.getAssembly, this.isEnabled('assembly'));
       this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
       this.addMenuItem(dropDown, 'requirements', this.getRequirements, this.isEnabled('requirements'));
+      this.addMenuItem(dropDown, 'input', this.getInput, this.isEnabled('input'));
+      this.addMenuItem(dropDown, 'output', this.getOutput, this.isEnabled('output'));
       dropDown.classList.toggle('show');
     }
   }
 
   getRequirements = () => {
     this.showRelatedObjects('requirements');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+
+  getInput = () => {
+    this.showRelatedObject('input');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+
+  getOutput = () => {
+    this.showRelatedObject('output');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+}
+
+export class HamburgerWidget extends Node {
+  constructor(context: Context, id: string, x: number, y: number, label: string) {
+    super(context, id);
+    this.x = x;
+    this.y = y;
+    this.width = 110;
+    this.height = 110;
+    this.label = label;
+    this.color = 'LightGreen';
+    this.context.canvas.addEventListener('contextmenu', (e) => {
+      this.contextmenu(e);
+    }, false);
+  }
+
+  public draw() {
+    super.draw();
+  }
+
+  public contextmenu(event: MouseEvent): void {
+    event.preventDefault();
+    if (this.isHit(event)) {
+      const dropDown = document.getElementById('dropdown');
+      dropDown.style.left = this.x * this.context.currentScale + this.context.windowX + 'px';
+      dropDown.style.top = this.y * this.context.currentScale + this.context.windowY + 'px';
+      this.clearMenu(dropDown);
+      this.addMenuItem(dropDown, 'assembly', this.getAssembly, this.isEnabled('assembly'));
+      this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
+      this.addMenuItem(dropDown, 'functionalUnit', this.getFunctionalUnit, this.isEnabled('functionalUnit'));
+      this.addMenuItem(dropDown, 'technicalSolution', this.getTechnicalSolution, this.isEnabled('technicalSolution'));
+      this.addMenuItem(dropDown, 'ports', this.getPorts, this.isEnabled('ports'));
+      dropDown.classList.toggle('show');
+    }
+  }
+
+  getFunctionalUnit = () => {
+    this.showRelatedObject('functionalUnit');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+
+  getTechnicalSolution = () => {
+    this.showRelatedObject('technicalSolution');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+
+  getPorts = () => {
+    this.showRelatedObjects('ports');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+}
+
+export class PerformanceWidget extends Node {
+  constructor(context: Context, id: string, x: number, y: number, label: string) {
+    super(context, id);
+    this.x = x;
+    this.y = y;
+    this.width = 160;
+    this.height = 50;
+    this.label = label;
+    this.color = 'YellowGreen';
+    this.context.canvas.addEventListener('contextmenu', (e) => {
+      this.contextmenu(e);
+    }, false);
+  }
+
+  public draw() {
+    super.draw();
+  }
+
+  public contextmenu(event: MouseEvent): void {
+    event.preventDefault();
+    if (this.isHit(event)) {
+      const dropDown = document.getElementById('dropdown');
+      dropDown.style.left = this.x * this.context.currentScale + this.context.windowX + 'px';
+      dropDown.style.top = this.y * this.context.currentScale + this.context.windowY + 'px';
+      this.clearMenu(dropDown);
+      this.addMenuItem(dropDown, 'assembly', this.getAssembly, this.isEnabled('assembly'));
+      this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
+      this.addMenuItem(dropDown, 'value', this.getValue, this.isEnabled('value'));
+      dropDown.classList.toggle('show');
+    }
+  }
+
+  getValue = () => {
+    this.showRelatedObject('value');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+}
+
+export class PortRealisationWidget extends Node {
+  constructor(context: Context, id: string, x: number, y: number, label: string) {
+    super(context, id);
+    this.x = x;
+    this.y = y;
+    this.width = 110;
+    this.height = 110;
+    this.label = label;
+    this.color = 'LightGreen';
+    this.context.canvas.addEventListener('contextmenu', (e) => {
+      this.contextmenu(e);
+    }, false);
+  }
+
+  public draw() {
+    super.draw();
+  }
+
+  public contextmenu(event: MouseEvent): void {
+    event.preventDefault();
+    if (this.isHit(event)) {
+      const dropDown = document.getElementById('dropdown');
+      dropDown.style.left = this.x * this.context.currentScale + this.context.windowX + 'px';
+      dropDown.style.top = this.y * this.context.currentScale + this.context.windowY + 'px';
+      this.clearMenu(dropDown);
+      this.addMenuItem(dropDown, 'assembly', this.getAssembly, this.isEnabled('assembly'));
+      this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
+      this.addMenuItem(dropDown, 'owner', this.getOwner, this.isEnabled('owner'));
+      this.addMenuItem(dropDown, 'interface', this.getInterface, this.isEnabled('interface'));
+      this.addMenuItem(dropDown, 'port', this.getPort, this.isEnabled('port'));
+      dropDown.classList.toggle('show');
+    }
+  }
+
+  getOwner = () => {
+    this.showRelatedObject('owner');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+
+  getInterface = () => {
+    this.showRelatedObject('interface');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+
+  getPort = () => {
+    this.showRelatedObject('port');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+}
+
+export class RealisationModuleWidget extends Node {
+  constructor(context: Context, id: string, x: number, y: number, label: string) {
+    super(context, id);
+    this.x = x;
+    this.y = y;
+    this.width = 110;
+    this.height = 110;
+    this.label = label;
+    this.color = 'LightGreen';
+    this.context.canvas.addEventListener('contextmenu', (e) => {
+      this.contextmenu(e);
+    }, false);
+  }
+
+  public draw() {
+    super.draw();
+  }
+
+  public contextmenu(event: MouseEvent): void {
+    event.preventDefault();
+    if (this.isHit(event)) {
+      const dropDown = document.getElementById('dropdown');
+      dropDown.style.left = this.x * this.context.currentScale + this.context.windowX + 'px';
+      dropDown.style.top = this.y * this.context.currentScale + this.context.windowY + 'px';
+      this.clearMenu(dropDown);
+      this.addMenuItem(dropDown, 'assembly', this.getAssembly, this.isEnabled('assembly'));
+      this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
+      this.addMenuItem(dropDown, 'performances', this.getPerformances, this.isEnabled('performances'));
+      this.addMenuItem(dropDown, 'ports', this.getPorts, this.isEnabled('ports'));
+      dropDown.classList.toggle('show');
+    }
+  }
+
+  getPerformances = () => {
+    this.showRelatedObjects('performances');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+
+  getPorts = () => {
+    this.showRelatedObjects('ports');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+}
+
+export class RealisationPortWidget extends Node {
+  rotateState: number;
+
+  constructor(context: Context, id: string, x: number, y: number, label: string) {
+    super(context, id);
+    this.x = x;
+    this.y = y;
+    this.width = 110;
+    this.height = 110;
+    this.label = label;
+    this.color = 'LightGreen';
+    this.rotateState = 0;
+    this.context.canvas.addEventListener('contextmenu', (e) => {
+      this.contextmenu(e);
+    }, false);
+  }
+
+  public draw() {
+    super.draw();
+  }
+
+  public contextmenu(event: MouseEvent): void {
+    event.preventDefault();
+    if (this.isHit(event)) {
+      const dropDown = document.getElementById('dropdown');
+      dropDown.style.left = this.x * this.context.currentScale + this.context.windowX + 'px';
+      dropDown.style.top = this.y * this.context.currentScale + this.context.windowY + 'px';
+      this.clearMenu(dropDown);
+      this.addMenuItem(dropDown, 'assembly', this.getAssembly, this.isEnabled('assembly'));
+      this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
+      this.addMenuItem(dropDown, 'owner', this.getOwner, this.isEnabled('owner'));
+      this.addMenuItem(dropDown, '', null, false);
+      this.addMenuItem(dropDown, 'rotate', this.rotate, true);
+      dropDown.classList.toggle('show');
+    }
+  }
+
+  getOwner = () => {
+    this.showRelatedObject('owner');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+
+  rotate = () => {
+    this.rotateState++;
+    if (this.rotateState > 3) {
+      this.rotateState = 0;
+    }
     document.getElementById('dropdown').classList.toggle('show');
   }
 }
@@ -519,8 +911,8 @@ export class RequirementWidget extends Node {
     super(context, id);
     this.x = x;
     this.y = y;
-    this.width = 110;
-    this.height = 110;
+    this.width = 160;
+    this.height = 50;
     this.label = label;
     this.color = 'Gold';
     this.context.canvas.addEventListener('contextmenu', (e) => {
@@ -557,6 +949,62 @@ export class RequirementWidget extends Node {
   }
 }
 
+export class SystemInterfaceWidget extends Node {
+  constructor(context: Context, id: string, x: number, y: number, label: string) {
+    super(context, id);
+    this.x = x;
+    this.y = y;
+    this.width = 160;
+    this.height = 50;
+    this.label = label;
+    this.color = 'DarkGrey';
+    this.context.canvas.addEventListener('contextmenu', (e) => {
+      this.contextmenu(e);
+    }, false);
+  }
+
+  public draw() {
+    super.draw();
+  }
+
+  public contextmenu(event: MouseEvent): void {
+    event.preventDefault();
+    if (this.isHit(event)) {
+      const dropDown = document.getElementById('dropdown');
+      dropDown.style.left = this.x * this.context.currentScale + this.context.windowX + 'px';
+      dropDown.style.top = this.y * this.context.currentScale + this.context.windowY + 'px';
+      this.clearMenu(dropDown);
+      this.addMenuItem(dropDown, 'assembly', this.getAssembly, this.isEnabled('assembly'));
+      this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
+      this.addMenuItem(dropDown, 'systemSlot0', this.getSystemSlot0, this.isEnabled('systemSlot0'));
+      this.addMenuItem(dropDown, 'systemSlot1', this.getSystemSlot1, this.isEnabled('systemSlot1'));
+      this.addMenuItem(dropDown, 'functionInputs', this.getFunctionInputs, this.isEnabled('functionInputs'));
+      this.addMenuItem(dropDown, 'functionOutputs', this.getFunctionOutputs, this.isEnabled('functionOutputs'));
+      dropDown.classList.toggle('show');
+    }
+  }
+
+  getSystemSlot0 = () => {
+    this.showRelatedObject('systemSlot0');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+
+  getSystemSlot1 = () => {
+    this.showRelatedObject('systemSlot1');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+
+  getFunctionInputs = () => {
+    this.showRelatedObjects('functionInputs');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+
+  getFunctionOutputs = () => {
+    this.showRelatedObjects('functionOutputs');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+}
+
 export class SystemSlotWidget extends Node {
   constructor(context: Context, id: string, x: number, y: number, label: string) {
     super(context, id);
@@ -585,12 +1033,18 @@ export class SystemSlotWidget extends Node {
       this.addMenuItem(dropDown, 'assembly', this.getAssembly, this.isEnabled('assembly'));
       this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
       this.addMenuItem(dropDown, 'functions', this.getFunctions, this.isEnabled('functions'));
+      this.addMenuItem(dropDown, 'interfaces', this.getInterfaces, this.isEnabled('interfaces'));
       dropDown.classList.toggle('show');
     }
   }
 
   getFunctions = () => {
     this.showRelatedObjects('functions');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+
+  getInterfaces = () => {
+    this.showRelatedObjects('interfaces');
     document.getElementById('dropdown').classList.toggle('show');
   }
 }
@@ -600,8 +1054,8 @@ export class ValueWidget extends Node {
     super(context, id);
     this.x = x;
     this.y = y;
-    this.width = 110;
-    this.height = 110;
+    this.width = 160;
+    this.height = 50;
     this.label = label;
     this.color = 'white';
     this.context.canvas.addEventListener('contextmenu', (e) => {
