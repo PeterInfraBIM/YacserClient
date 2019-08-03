@@ -8,8 +8,12 @@ import {
   YacserSystemInterface,
   YacserSystemSlot
 } from '../types';
-import {ObjectDetailsComponent} from "../object-list/object-details/object-details.component";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {ObjectDetailsComponent} from '../object-list/object-details/object-details.component';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+
+const minScale = .2;
+const maxScale = 3;
+const scaleIncrement = .1;
 
 @Component({
   selector: 'app-canvas',
@@ -36,8 +40,51 @@ export class CanvasComponent implements OnInit, OnChanges {
       this.widgets, this.objectMap, this.objectListService, this.modal,
       0, 0, 1, 1, 0, 0);
     document.onmousemove = (event: MouseEvent) => {
-      this.context.cursorX = (event.offsetX - this.context.windowX) / this.context.currentScale;
-      this.context.cursorY = (event.offsetY - this.context.windowY) / this.context.currentScale;
+      // this.context.cursorX = (event.offsetX - this.context.windowX) / this.context.currentScale;
+      // this.context.cursorY = (event.offsetY - this.context.windowY) / this.context.currentScale;
+      this.context.cursorX = (event.offsetX ) / this.context.currentScale;
+      this.context.cursorY = (event.offsetY ) / this.context.currentScale;
+    };
+    document.onkeydown = (e) => {
+      console.log(e.keyCode + 'down');
+      switch (e.keyCode) {
+        case 38:
+          // up
+          this.context.windowY -= 10;
+          this.context.ctx.translate(0, -10);
+          break;
+        case 40:
+          // down
+          this.context.windowY += 10;
+          this.context.ctx.translate(0, 10);
+          break;
+        case 37:
+          // left
+          this.context.windowX -= 10;
+          this.context.ctx.translate(-10, 0);
+          break;
+        case 39:
+          // right
+          this.context.windowX += 10;
+          this.context.ctx.translate(10, 0);
+          break;
+        case 109:
+          // -
+          this.context.currentScale -= scaleIncrement;
+          if (this.context.currentScale < minScale) {
+            this.context.currentScale = minScale;
+          }
+          console.log('zoom out: currentScale=' + this.context.currentScale);
+          break;
+        case 107:
+          // +
+          this.context.currentScale += scaleIncrement;
+          if (this.context.currentScale > maxScale) {
+            this.context.currentScale = maxScale;
+          }
+          console.log('zoom in: currentScale=' + this.context.currentScale);
+          break;
+      }
     };
     this.drawTest();
     this.gameloop();
@@ -83,7 +130,6 @@ export class CanvasComponent implements OnInit, OnChanges {
       index++;
     }
   }
-
 }
 
 export class Context {
@@ -361,9 +407,14 @@ export abstract class Node extends Shape {
       return;
     }
     if (this.isHit(event)) {
+      const x = (event.offsetX - this.context.windowX) / this.context.currentScale;
+      const y = (event.offsetY - this.context.windowY) / this.context.currentScale;
+      this.anchorX = x - this.x + this.context.windowX / this.context.currentScale;
+      this.anchorY = y - this.y + this.context.windowY / this.context.currentScale;
       console.log(this.label + ' mouseDown x=' + event.offsetX + ' y=' + event.offsetY);
-      this.anchorX = event.offsetX - this.x + this.context.windowX / this.context.currentScale;
-      this.anchorY = event.offsetY - this.y + this.context.windowY / this.context.currentScale;
+      console.log(this.label + ' this.x=' + this.x + ' this.y=' + this.y);
+      console.log(this.label + ' anchorX=' + this.anchorX + ' anchorY=' + this.anchorY);
+      console.log(this.label + ' windowX=' + this.context.windowX + ' windowY=' + this.context.windowY);
       this.zIndex = this.context.zIndex++;
       if (Node.selectedNode) {
         if (Node.selectedNode !== this && this.zIndex > Node.selectedNode.zIndex) {
@@ -399,6 +450,8 @@ export abstract class Node extends Shape {
     if (this.down === true) {
       this.x = Math.round((this.context.cursorX - this.anchorX) / 10.0) * 10;
       this.y = Math.round((this.context.cursorY - this.anchorY) / 10.0) * 10;
+      // this.x = this.context.cursorX - this.anchorX;
+      // this.y = this.context.cursorY - this.anchorY;
     }
 
     ctx.save();
