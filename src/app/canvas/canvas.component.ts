@@ -8,6 +8,8 @@ import {
   YacserSystemInterface,
   YacserSystemSlot
 } from '../types';
+import {ObjectDetailsComponent} from "../object-list/object-details/object-details.component";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-canvas',
@@ -22,7 +24,7 @@ export class CanvasComponent implements OnInit, OnChanges {
   context: Context;
   drawList: Shape[];
 
-  constructor(private objectListService: ObjectListService) {
+  constructor(private objectListService: ObjectListService, private modal: NgbModal) {
     this.objectMap = new Map<string, YacserObject>();
     this.widgets = new Map<string, Node>();
   }
@@ -31,7 +33,7 @@ export class CanvasComponent implements OnInit, OnChanges {
     this.drawList = [];
     this.context = new Context(
       document.getElementById('cnvs') as HTMLCanvasElement, this.drawList, this.canvasObjectIds,
-      this.widgets, this.objectMap, this.objectListService,
+      this.widgets, this.objectMap, this.objectListService, this.modal,
       0, 0, 1, 1, 0, 0);
     document.onmousemove = (event: MouseEvent) => {
       this.context.cursorX = (event.offsetX - this.context.windowX) / this.context.currentScale;
@@ -93,6 +95,7 @@ export class Context {
               public widgets: Map<string, Node>,
               public objectMap: Map<string, YacserObject>,
               public objectListService: ObjectListService,
+              public modal: NgbModal,
               public windowX: number,
               public windowY: number,
               public currentScale: number,
@@ -312,7 +315,15 @@ export abstract class Node extends Shape {
   protected constructor(protected context: Context, id: string) {
     super();
     this.id = id;
-    const object = this.context.objectMap.get(id);
+    let object = this.context.objectMap.get(id);
+    if (!object) {
+      for (let yObj of this.context.objectListService.allObjects) {
+        if (yObj.id === id) {
+          object = yObj;
+          this.context.objectMap.set(id, yObj);
+        }
+      }
+    }
     this.context.objectListService.setSelectedObject(object);
     this.context.objectListService.getSelectedObject$()
       .subscribe((response) => this.context.objectMap.set(response.id, response));
@@ -327,6 +338,9 @@ export abstract class Node extends Shape {
     }, false);
     this.context.canvas.addEventListener('mouseup', (e) => {
       this.mouseUp(e);
+    }, false);
+    this.context.canvas.addEventListener('dblclick', (e) => {
+      this.dblClick(e);
     }, false);
   }
 
@@ -369,6 +383,14 @@ export abstract class Node extends Shape {
     if (this.isHit(event)) {
       console.log(this.label + 'mouseUp x=' + event.offsetX + ' y=' + event.offsetY);
       this.down = false;
+    }
+  }
+
+  dblClick(event: MouseEvent): void {
+    if (this.isHit(event)) {
+      const object = this.context.objectMap.get(this.id);
+      this.context.objectListService.setSelectedObject(object);
+      const modal = this.context.modal.open(ObjectDetailsComponent);
     }
   }
 
@@ -840,6 +862,7 @@ export class RealisationModuleWidget extends Node {
       this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
       this.addMenuItem(dropDown, 'performances', this.getPerformances, this.isEnabled('performances'));
       this.addMenuItem(dropDown, 'ports', this.getPorts, this.isEnabled('ports'));
+      this.addMenuItem(dropDown, 'hamburgers', this.getHamburgers, this.isEnabled('hamburgers'));
       dropDown.classList.toggle('show');
     }
   }
@@ -851,6 +874,11 @@ export class RealisationModuleWidget extends Node {
 
   getPorts = () => {
     this.showRelatedObjects('ports');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+
+  getHamburgers = () => {
+    this.showRelatedObjects('hamburgers');
     document.getElementById('dropdown').classList.toggle('show');
   }
 }
@@ -1034,6 +1062,7 @@ export class SystemSlotWidget extends Node {
       this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
       this.addMenuItem(dropDown, 'functions', this.getFunctions, this.isEnabled('functions'));
       this.addMenuItem(dropDown, 'interfaces', this.getInterfaces, this.isEnabled('interfaces'));
+      this.addMenuItem(dropDown, 'hamburgers', this.getHamburgers, this.isEnabled('hamburgers'));
       dropDown.classList.toggle('show');
     }
   }
@@ -1045,6 +1074,11 @@ export class SystemSlotWidget extends Node {
 
   getInterfaces = () => {
     this.showRelatedObjects('interfaces');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+
+  getHamburgers = () => {
+    this.showRelatedObjects('hamburgers');
     document.getElementById('dropdown').classList.toggle('show');
   }
 }
