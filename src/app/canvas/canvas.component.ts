@@ -10,6 +10,7 @@ import {
 } from '../types';
 import {ObjectDetailsComponent} from '../object-list/object-details/object-details.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {StateService} from './state.service';
 
 const minScale = .2;
 const maxScale = 3;
@@ -28,22 +29,30 @@ export class CanvasComponent implements OnInit, OnChanges {
   context: Context;
   drawList: Shape[];
 
-  constructor(private objectListService: ObjectListService, private modal: NgbModal) {
-    this.objectMap = new Map<string, YacserObject>();
-    this.widgets = new Map<string, Node>();
+  constructor(private stateService: StateService, private objectListService: ObjectListService, private modal: NgbModal) {
+    // this.objectMap = new Map<string, YacserObject>();
+    // this.widgets = new Map<string, Node>();
   }
 
   ngOnInit() {
-    this.drawList = [];
-    this.context = new Context(
-      document.getElementById('cnvs') as HTMLCanvasElement, this.drawList, this.canvasObjectIds,
-      this.widgets, this.objectMap, this.objectListService, this.modal,
-      0, 0, 1, 1, 0, 0);
+//    this.drawList = [];
+    this.drawList = this.stateService.drawList;
+    this.widgets = this.stateService.widgets;
+    this.objectMap = this.stateService.objectMap;
+    this.context = this.stateService.getContext();
+    if (!this.context) {
+      this.context = new Context(
+        document.getElementById('cnvs') as HTMLCanvasElement, this.drawList, this.canvasObjectIds,
+        this.widgets, this.objectMap, this.objectListService, this.modal,
+        0, 0, 1, 1, 0, 0);
+      this.stateService.setContext(this.context);
+    }
+    this.context.canvas = document.getElementById('cnvs') as HTMLCanvasElement;
+    this.context.ctx = this.context.canvas.getContext('2d');
+    this.context.ctx.translate(this.context.windowX, this.context.windowY);
     document.onmousemove = (event: MouseEvent) => {
-      // this.context.cursorX = (event.offsetX - this.context.windowX) / this.context.currentScale;
-      // this.context.cursorY = (event.offsetY - this.context.windowY) / this.context.currentScale;
-      this.context.cursorX = (event.offsetX ) / this.context.currentScale;
-      this.context.cursorY = (event.offsetY ) / this.context.currentScale;
+      this.context.cursorX = (event.offsetX) / this.context.currentScale;
+      this.context.cursorY = (event.offsetY) / this.context.currentScale;
     };
     document.onkeydown = (e) => {
       console.log(e.keyCode + 'down');
@@ -93,7 +102,7 @@ export class CanvasComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.canvasObjectIds) {
       for (const object of this.objectListService.allObjects) {
-        this.objectMap.set(object.id, object);
+        this.stateService.objectMap.set(object.id, object);
       }
     }
   }
@@ -122,12 +131,26 @@ export class CanvasComponent implements OnInit, OnChanges {
   }
 
   drawTest(): void {
+    console.log('drawList ' + this.drawList.length);
     let index = 0;
     for (const objectId of this.canvasObjectIds) {
+      console.log('objectId ' + objectId);
       const object = this.objectMap.get(objectId);
-      const node = WidgetFactory.createWidget(object.type, this.context, object.id, 100 + index * 10, 100 + index * 10, object.name);
-      this.drawList.push(node);
+      console.log('object ' + object.type);
+      if (object) {
+        let widget = this.widgets.get(object.id);
+        console.log('widget ' + widget);
+        if (!widget) {
+          widget = WidgetFactory.createWidget(object.type, this.context, object.id, 100 + index * 10, 100 + index * 10, object.name);
+          this.drawList.push(widget);
+        } else {
+          widget.init(object);
+        }
+      }
       index++;
+    }
+    for (const shape of this.drawList) {
+      console.log('shape ' + shape.zIndex);
     }
   }
 }
@@ -363,22 +386,22 @@ export abstract class Node extends Shape {
     this.id = id;
     let object = this.context.objectMap.get(id);
     if (!object) {
-      for (let yObj of this.context.objectListService.allObjects) {
+      for (const yObj of this.context.objectListService.allObjects) {
         if (yObj.id === id) {
           object = yObj;
           this.context.objectMap.set(id, yObj);
         }
       }
     }
-    this.context.objectListService.setSelectedObject(object);
-    this.context.objectListService.getSelectedObject$()
-      .subscribe((response) => this.context.objectMap.set(response.id, response));
-
     this.context.widgets.set(id, this);
     this.zIndex = this.context.zIndex++;
     this.fontSize = 12;
     this.down = false;
 
+    this.init(object);
+  }
+
+  init(object: YacserObject): void {
     this.context.canvas.addEventListener('mousedown', (e) => {
       this.mouseDown(e);
     }, false);
@@ -388,10 +411,17 @@ export abstract class Node extends Shape {
     this.context.canvas.addEventListener('dblclick', (e) => {
       this.dblClick(e);
     }, false);
+    this.context.canvas.addEventListener('contextmenu', (e) => {
+      this.contextmenu(e);
+    }, false);
+    this.context.objectListService.setSelectedObject(object);
+    this.context.objectListService.getSelectedObject$()
+      .subscribe((response) => this.context.objectMap.set(response.id, response));
   }
 
-  isHit(event: MouseEvent): boolean {
+  abstract contextmenu(event: MouseEvent): void;
 
+  isHit(event: MouseEvent): boolean {
     const x = (event.offsetX - this.context.windowX) / this.context.currentScale;
     const y = (event.offsetY - this.context.windowY) / this.context.currentScale;
     const halfWidth = this.width / 2;
@@ -424,6 +454,7 @@ export abstract class Node extends Shape {
         Node.selectedNode = this;
       }
       this.down = true;
+      event.stopImmediatePropagation();
     }
   }
 
@@ -450,8 +481,6 @@ export abstract class Node extends Shape {
     if (this.down === true) {
       this.x = Math.round((this.context.cursorX - this.anchorX) / 10.0) * 10;
       this.y = Math.round((this.context.cursorY - this.anchorY) / 10.0) * 10;
-      // this.x = this.context.cursorX - this.anchorX;
-      // this.y = this.context.cursorY - this.anchorY;
     }
 
     ctx.save();
@@ -707,9 +736,6 @@ export class FunctionWidget extends Node {
     this.height = 50;
     this.label = label;
     this.color = 'Plum';
-    this.context.canvas.addEventListener('contextmenu', (e) => {
-      this.contextmenu(e);
-    }, false);
   }
 
   public draw() {
@@ -757,9 +783,6 @@ export class HamburgerWidget extends Node {
     this.height = 110;
     this.label = label;
     this.color = 'LightGreen';
-    this.context.canvas.addEventListener('contextmenu', (e) => {
-      this.contextmenu(e);
-    }, false);
   }
 
   public draw() {
@@ -807,9 +830,6 @@ export class PerformanceWidget extends Node {
     this.height = 50;
     this.label = label;
     this.color = 'YellowGreen';
-    this.context.canvas.addEventListener('contextmenu', (e) => {
-      this.contextmenu(e);
-    }, false);
   }
 
   public draw() {
@@ -845,9 +865,6 @@ export class PortRealisationWidget extends Node {
     this.height = 110;
     this.label = label;
     this.color = 'LightGreen';
-    this.context.canvas.addEventListener('contextmenu', (e) => {
-      this.contextmenu(e);
-    }, false);
   }
 
   public draw() {
@@ -895,9 +912,6 @@ export class RealisationModuleWidget extends Node {
     this.height = 110;
     this.label = label;
     this.color = 'LightGreen';
-    this.context.canvas.addEventListener('contextmenu', (e) => {
-      this.contextmenu(e);
-    }, false);
   }
 
   public draw() {
@@ -948,9 +962,6 @@ export class RealisationPortWidget extends Node {
     this.label = label;
     this.color = 'LightGreen';
     this.rotateState = 0;
-    this.context.canvas.addEventListener('contextmenu', (e) => {
-      this.contextmenu(e);
-    }, false);
   }
 
   public draw() {
@@ -996,9 +1007,6 @@ export class RequirementWidget extends Node {
     this.height = 50;
     this.label = label;
     this.color = 'Gold';
-    this.context.canvas.addEventListener('contextmenu', (e) => {
-      this.contextmenu(e);
-    }, false);
   }
 
   public draw() {
@@ -1039,9 +1047,6 @@ export class SystemInterfaceWidget extends Node {
     this.height = 50;
     this.label = label;
     this.color = 'DarkGrey';
-    this.context.canvas.addEventListener('contextmenu', (e) => {
-      this.contextmenu(e);
-    }, false);
   }
 
   public draw() {
@@ -1095,9 +1100,6 @@ export class SystemSlotWidget extends Node {
     this.height = 110;
     this.label = label;
     this.color = 'LightBlue';
-    this.context.canvas.addEventListener('contextmenu', (e) => {
-      this.contextmenu(e);
-    }, false);
   }
 
   public draw() {
@@ -1145,9 +1147,6 @@ export class ValueWidget extends Node {
     this.height = 50;
     this.label = label;
     this.color = 'white';
-    this.context.canvas.addEventListener('contextmenu', (e) => {
-      this.contextmenu(e);
-    }, false);
   }
 
   public draw() {
