@@ -19,6 +19,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.stateService.modelIdChanged.subscribe((modelId) => this.modelId = modelId);
+    this.stateService.canvasObjectIdsChanged.subscribe((canvasObjectIds) => this.canvasObjectIds = canvasObjectIds);
   }
 
 }

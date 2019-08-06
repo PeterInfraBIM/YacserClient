@@ -21,7 +21,7 @@ const scaleIncrement = .1;
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.css']
 })
-export class CanvasComponent implements OnInit {
+export class CanvasComponent implements OnInit, OnChanges {
   @Input() modelId: string;
   @Input() canvasObjectIds: string[];
   objectMap: Map<string, YacserObject>;
@@ -108,12 +108,18 @@ export class CanvasComponent implements OnInit {
     this.gameloop();
   }
 
-  gameloop()
-    :
-    void {
-    requestAnimationFrame(this.gameloop.bind(this)
-    )
-    ;
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.canvasObjectIds) {
+      if (this.objectListService.allObjects) {
+        for (const object of this.objectListService.allObjects) {
+          this.stateService.objectMap.set(object.id, object);
+        }
+      }
+    }
+  }
+
+  gameloop(): void {
+    requestAnimationFrame(this.gameloop.bind(this));
     const ctx = this.context.ctx;
     const windowX = this.context.windowX;
     const windowY = this.context.windowY;
@@ -126,9 +132,7 @@ export class CanvasComponent implements OnInit {
     ctx.restore();
   }
 
-  draw()
-    :
-    void {
+  draw(): void {
     this.drawList.sort((a, b) => {
       return a.zIndex > b.zIndex ? 1 : -1;
     });
@@ -139,6 +143,18 @@ export class CanvasComponent implements OnInit {
 
   drawTest(): void {
     console.log('drawList ' + this.drawList.length);
+    const drawListCopy = this.drawList.slice();
+    for (const widget of drawListCopy) {
+      if (widget instanceof Node) {
+        const node = widget as Node;
+        if (!this.canvasObjectIds.includes(node.id)) {
+          const widgetIndex = this.drawList.indexOf(node);
+          console.log('index ' + widgetIndex);
+          this.drawList.splice(widgetIndex, 1);
+          this.widgets.delete(node.id);
+        }
+      }
+    }
     let index = 0;
     for (const objectId of this.canvasObjectIds) {
       console.log('objectId ' + objectId);
