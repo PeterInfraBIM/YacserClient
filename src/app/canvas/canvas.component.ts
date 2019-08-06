@@ -10,7 +10,7 @@ import {
 } from '../types';
 import {ObjectDetailsComponent} from '../object-list/object-details/object-details.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {StateService} from './state.service';
+import {StateService} from '../state.service';
 
 const minScale = .2;
 const maxScale = 3;
@@ -21,7 +21,7 @@ const scaleIncrement = .1;
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.css']
 })
-export class CanvasComponent implements OnInit, OnChanges {
+export class CanvasComponent implements OnInit {
   @Input() modelId: string;
   @Input() canvasObjectIds: string[];
   objectMap: Map<string, YacserObject>;
@@ -29,13 +29,22 @@ export class CanvasComponent implements OnInit, OnChanges {
   context: Context;
   drawList: Shape[];
 
-  constructor(private stateService: StateService, private objectListService: ObjectListService, private modal: NgbModal) {
-    // this.objectMap = new Map<string, YacserObject>();
-    // this.widgets = new Map<string, Node>();
+  constructor(
+    private stateService: StateService,
+    private objectListService: ObjectListService,
+    private modal: NgbModal) {
   }
 
   ngOnInit() {
-//    this.drawList = [];
+    this.stateService.canvasObjectIdsChanged.subscribe((canvasObjectIds) => {
+      this.canvasObjectIds = canvasObjectIds;
+      if (this.objectListService.allObjects) {
+        for (const object of this.objectListService.allObjects) {
+          this.stateService.objectMap.set(object.id, object);
+        }
+      }
+      this.drawTest();
+    });
     this.drawList = this.stateService.drawList;
     this.widgets = this.stateService.widgets;
     this.objectMap = this.stateService.objectMap;
@@ -99,16 +108,12 @@ export class CanvasComponent implements OnInit, OnChanges {
     this.gameloop();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.canvasObjectIds) {
-      for (const object of this.objectListService.allObjects) {
-        this.stateService.objectMap.set(object.id, object);
-      }
-    }
-  }
-
-  gameloop(): void {
-    requestAnimationFrame(this.gameloop.bind(this));
+  gameloop()
+    :
+    void {
+    requestAnimationFrame(this.gameloop.bind(this)
+    )
+    ;
     const ctx = this.context.ctx;
     const windowX = this.context.windowX;
     const windowY = this.context.windowY;
@@ -121,7 +126,9 @@ export class CanvasComponent implements OnInit, OnChanges {
     ctx.restore();
   }
 
-  draw(): void {
+  draw()
+    :
+    void {
     this.drawList.sort((a, b) => {
       return a.zIndex > b.zIndex ? 1 : -1;
     });
@@ -136,8 +143,8 @@ export class CanvasComponent implements OnInit, OnChanges {
     for (const objectId of this.canvasObjectIds) {
       console.log('objectId ' + objectId);
       const object = this.objectMap.get(objectId);
-      console.log('object ' + object.type);
       if (object) {
+        console.log('object ' + object.type);
         let widget = this.widgets.get(object.id);
         console.log('widget ' + widget);
         if (!widget) {

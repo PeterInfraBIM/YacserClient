@@ -5,6 +5,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ObjectDetailsComponent} from './object-details/object-details.component';
 import {ObjectListService} from './object-list.service';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
+import {StateService} from "../state.service";
 
 @Component({
   selector: 'app-object-list',
@@ -23,7 +24,8 @@ export class ObjectListComponent implements OnInit, OnChanges {
 
   constructor(
     private modal: NgbModal,
-    private objectListService: ObjectListService) {
+    private objectListService: ObjectListService,
+    private stateService: StateService) {
     this.newObjectType = YacserObjectType.Function;
   }
 
@@ -75,9 +77,10 @@ export class ObjectListComponent implements OnInit, OnChanges {
     } else {
       this.canvasObjectIds.push(object.id);
     }
+    this.stateService.setCanvasObjectIds(this.canvasObjectIds);
   }
 
   inCanvas(object: YacserObject): boolean {
-    return this.canvasObjectIds.includes(object.id);
+    return this.canvasObjectIds ? this.canvasObjectIds.includes(object.id) : false;
   }
 }

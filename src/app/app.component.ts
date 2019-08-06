@@ -1,23 +1,24 @@
-import {Component} from '@angular/core';
-import {YacserModel, YacserObject} from './types';
+import {Component, OnInit} from '@angular/core';
+import {YacserModel} from './types';
+import {StateService} from "./state.service";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   modelMap: Map<string, YacserModel>;
   modelId: string;
   canvasObjectIds: string[];
 
-  constructor() {
+  constructor(private stateService: StateService) {
     this.modelMap = new Map<string, YacserModel>();
     this.canvasObjectIds = [] as string[];
   }
 
-  getModelId(modelId: string): void {
-    this.modelId = modelId;
-    this.canvasObjectIds.splice(0, this.canvasObjectIds.length);
+  ngOnInit(): void {
+    this.stateService.modelIdChanged.subscribe((modelId) => this.modelId = modelId);
   }
+
 }

@@ -8,7 +8,7 @@
         <button ngbPanelToggle class="btn btn-link"><h5>Models</h5></button>
       </ng-template>
       <ng-template ngbPanelContent>
-        <app-model-list (modelId)="getModelId($event)" [modelMap]="modelMap"></app-model-list>
+        <app-model-list [modelMap]="modelMap"></app-model-list>
       </ng-template>
     </ngb-panel>
     <ngb-panel>

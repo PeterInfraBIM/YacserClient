@@ -7,6 +7,7 @@ import gql from 'graphql-tag';
 
 import {YacserModel, Query, Mutation} from '../types';
 import {faFileDownload, faFileUpload} from '@fortawesome/free-solid-svg-icons';
+import {StateService} from "../state.service";
 
 const CREATE_MODEL = gql`
     mutation createModel($modelId: ID!, $name: String, $description: String){
@@ -53,11 +54,11 @@ export class ModelListComponent implements OnInit {
   models: Observable<YacserModel[]>;
   newModel: Observable<YacserModel>;
   filePath: string;
-  @Output() modelId = new EventEmitter<string>();
+//  @Output() modelId = new EventEmitter<string>();
   faFileUpload = faFileUpload;
   faFileDownload = faFileDownload;
 
-  constructor(private apollo: Apollo) {
+  constructor(private apollo: Apollo, private stateService: StateService) {
   }
 
   ngOnInit() {
@@ -86,7 +87,8 @@ export class ModelListComponent implements OnInit {
       const key = result.id.substring(result.id.lastIndexOf('/') + 1) + '.ttl';
       this.modelMap.set(key, result);
       console.log('description: ' + this.modelMap.get(key).description);
-      this.modelId.emit(result.id);
+//      this.modelId.emit(result.id);
+      this.stateService.setModelId(result.id);
     });
   }
 
