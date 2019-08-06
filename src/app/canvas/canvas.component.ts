@@ -38,11 +38,7 @@ export class CanvasComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.stateService.canvasObjectIdsChanged.subscribe((canvasObjectIds) => {
       this.canvasObjectIds = canvasObjectIds;
-      if (this.objectListService.allObjects) {
-        for (const object of this.objectListService.allObjects) {
-          this.stateService.objectMap.set(object.id, object);
-        }
-      }
+      this.onCanvasObjectIdsChange();
       this.drawTest();
     });
     this.drawList = this.stateService.drawList;
@@ -110,10 +106,14 @@ export class CanvasComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.canvasObjectIds) {
-      if (this.objectListService.allObjects) {
-        for (const object of this.objectListService.allObjects) {
-          this.stateService.objectMap.set(object.id, object);
-        }
+      this.onCanvasObjectIdsChange();
+    }
+  }
+
+  private onCanvasObjectIdsChange() {
+    if (this.objectListService.allObjects) {
+      for (const object of this.objectListService.allObjects) {
+        this.stateService.objectMap.set(object.id, object);
       }
     }
   }
@@ -149,9 +149,14 @@ export class CanvasComponent implements OnInit, OnChanges {
         const node = widget as Node;
         if (!this.canvasObjectIds.includes(node.id)) {
           const widgetIndex = this.drawList.indexOf(node);
-          console.log('index ' + widgetIndex);
           this.drawList.splice(widgetIndex, 1);
           this.widgets.delete(node.id);
+        }
+      } else if (widget instanceof Edge) {
+        const edge = widget as Edge;
+        if (!this.canvasObjectIds.includes(edge.startNode.id) || !this.canvasObjectIds.includes(edge.endNode.id)) {
+          const widgetIndex = this.drawList.indexOf(edge);
+          this.drawList.splice(widgetIndex, 1);
         }
       }
     }
