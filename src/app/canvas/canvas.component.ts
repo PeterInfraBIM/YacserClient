@@ -22,12 +22,14 @@ const scaleIncrement = .1;
   styleUrls: ['./canvas.component.css']
 })
 export class CanvasComponent implements OnInit, OnChanges {
+  public static mouseDown = false;
   @Input() modelId: string;
   @Input() canvasObjectIds: string[];
   objectMap: Map<string, YacserObject>;
   widgets: Map<string, Node>;
   context: Context;
   drawList: Shape[];
+
 
   constructor(
     private stateService: StateService,
@@ -55,9 +57,35 @@ export class CanvasComponent implements OnInit, OnChanges {
     this.context.canvas = document.getElementById('cnvs') as HTMLCanvasElement;
     this.context.ctx = this.context.canvas.getContext('2d');
     this.context.ctx.translate(this.context.windowX, this.context.windowY);
+    document.onmousedown = (event: MouseEvent) => {
+      console.log('mousedown');
+      if (event.button === 2) {
+        return;
+      }
+      CanvasComponent.mouseDown = true;
+      this.context.canvas.style.cursor = 'grabbing';
+    };
+    document.onmouseup = (event: MouseEvent) => {
+      console.log('mouseup');
+      CanvasComponent.mouseDown = false;
+      this.context.canvas.style.cursor = 'default';
+    };
     document.onmousemove = (event: MouseEvent) => {
-      this.context.cursorX = (event.offsetX) / this.context.currentScale;
-      this.context.cursorY = (event.offsetY) / this.context.currentScale;
+      if (CanvasComponent.mouseDown) {
+        if (Node.selectedNode) {
+          this.context.cursorX = event.offsetX / this.context.currentScale;
+          this.context.cursorY = event.offsetY / this.context.currentScale;
+        } else {
+          const displacementX = (event.offsetX - this.context.cursorX);
+          const displacementY = (event.offsetY - this.context.cursorY);
+          this.context.ctx.translate(displacementX, displacementY);
+          this.context.windowX += displacementX;
+          this.context.windowY += displacementY;
+          this.context.cursorX = event.offsetX;
+          this.context.cursorY = event.offsetY;
+
+        }
+      }
     };
     document.onkeydown = (e) => {
       console.log(e.keyCode + 'down');
@@ -98,6 +126,23 @@ export class CanvasComponent implements OnInit, OnChanges {
           }
           console.log('zoom in: currentScale=' + this.context.currentScale);
           break;
+      }
+    };
+    this.context.canvas.onwheel = (event: WheelEvent) => {
+      console.log('onwheel ' + event.deltaY);
+      if (event.shiftKey) {
+        if (event.deltaY > 0) {
+          this.context.currentScale += scaleIncrement;
+          if (this.context.currentScale > maxScale) {
+            this.context.currentScale = maxScale;
+          }
+        } else {
+          this.context.currentScale -= scaleIncrement;
+          if (this.context.currentScale < minScale) {
+            this.context.currentScale = minScale;
+          }
+        }
+        event.stopPropagation();
       }
     };
     this.drawTest();
@@ -401,7 +446,7 @@ export class Edge extends Shape {
 }
 
 export abstract class Node extends Shape {
-  protected static selectedNode;
+  static selectedNode;
   public id: string;
   protected label: string;
   protected fontSize: number;
@@ -432,7 +477,7 @@ export abstract class Node extends Shape {
   init(object: YacserObject): void {
     this.context.canvas.addEventListener('mousedown', (e) => {
       this.mouseDown(e);
-    }, false);
+    }, true);
     this.context.canvas.addEventListener('mouseup', (e) => {
       this.mouseUp(e);
     }, false);
@@ -465,6 +510,8 @@ export abstract class Node extends Shape {
       return;
     }
     if (this.isHit(event)) {
+      this.context.cursorX = event.offsetX / this.context.currentScale;
+      this.context.cursorY = event.offsetY / this.context.currentScale;
       const x = (event.offsetX - this.context.windowX) / this.context.currentScale;
       const y = (event.offsetY - this.context.windowY) / this.context.currentScale;
       this.anchorX = x - this.x + this.context.windowX / this.context.currentScale;
@@ -482,7 +529,12 @@ export abstract class Node extends Shape {
         Node.selectedNode = this;
       }
       this.down = true;
+      CanvasComponent.mouseDown = true;
       event.stopImmediatePropagation();
+    } else {
+      Node.selectedNode = null;
+      this.context.cursorX = event.offsetX;
+      this.context.cursorY = event.offsetY;
     }
   }
 
@@ -493,6 +545,7 @@ export abstract class Node extends Shape {
     if (this.isHit(event)) {
       console.log(this.label + 'mouseUp x=' + event.offsetX + ' y=' + event.offsetY);
       this.down = false;
+      CanvasComponent.mouseDown = false;
     }
   }
 
@@ -1006,6 +1059,7 @@ export class RealisationPortWidget extends Node {
       this.addMenuItem(dropDown, 'assembly', this.getAssembly, this.isEnabled('assembly'));
       this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
       this.addMenuItem(dropDown, 'owner', this.getOwner, this.isEnabled('owner'));
+      this.addMenuItem(dropDown, 'portRealisations', this.getPortRealisations, this.isEnabled('portRealisations'));
       this.addMenuItem(dropDown, '', null, false);
       this.addMenuItem(dropDown, 'rotate', this.rotate, true);
       dropDown.classList.toggle('show');
@@ -1014,6 +1068,11 @@ export class RealisationPortWidget extends Node {
 
   getOwner = () => {
     this.showRelatedObject('owner');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+
+  getPortRealisations = () => {
+    this.showRelatedObjects('portRealisations');
     document.getElementById('dropdown').classList.toggle('show');
   }
 
@@ -1094,6 +1153,7 @@ export class SystemInterfaceWidget extends Node {
       this.addMenuItem(dropDown, 'systemSlot1', this.getSystemSlot1, this.isEnabled('systemSlot1'));
       this.addMenuItem(dropDown, 'functionInputs', this.getFunctionInputs, this.isEnabled('functionInputs'));
       this.addMenuItem(dropDown, 'functionOutputs', this.getFunctionOutputs, this.isEnabled('functionOutputs'));
+      this.addMenuItem(dropDown, 'portRealisations', this.getPortRealisations, this.isEnabled('portRealisations'));
       dropDown.classList.toggle('show');
     }
   }
@@ -1115,6 +1175,11 @@ export class SystemInterfaceWidget extends Node {
 
   getFunctionOutputs = () => {
     this.showRelatedObjects('functionOutputs');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+
+  getPortRealisations = () => {
+    this.showRelatedObjects('portRealisations');
     document.getElementById('dropdown').classList.toggle('show');
   }
 }
