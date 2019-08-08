@@ -50,7 +50,7 @@ export class CanvasComponent implements OnInit, OnChanges {
     if (!this.context) {
       this.context = new Context(
         document.getElementById('cnvs') as HTMLCanvasElement, this.drawList, this.canvasObjectIds,
-        this.widgets, this.objectMap, this.objectListService, this.modal,
+        this.widgets, this.objectMap, this.objectListService, this.stateService, this.modal,
         0, 0, 1, 1, 0, 0);
       this.stateService.setContext(this.context);
     }
@@ -237,6 +237,7 @@ export class Context {
               public widgets: Map<string, Node>,
               public objectMap: Map<string, YacserObject>,
               public objectListService: ObjectListService,
+              public stateService: StateService,
               public modal: NgbModal,
               public windowX: number,
               public windowY: number,
@@ -794,17 +795,24 @@ export abstract class Node extends Shape {
   }
 
   getAssembly = () => {
-    this.showRelatedObject('assembly');
     document.getElementById('dropdown').classList.toggle('show');
+    this.showRelatedObject('assembly');
   }
 
   getParts = () => {
-    this.showRelatedObjects('parts');
     document.getElementById('dropdown').classList.toggle('show');
+    this.showRelatedObjects('parts');
   }
 
   isEnabled(relation: string): boolean {
     return WidgetFactory.exists(this.context, this.id, relation);
+  }
+
+  remove = () => {
+    document.getElementById('dropdown').classList.toggle('show');
+    const index = this.context.canvasObjectIds.indexOf(this.id);
+    this.context.canvasObjectIds.splice(index, 1);
+    this.context.stateService.setCanvasObjectIds(this.context.canvasObjectIds);
   }
 }
 
@@ -832,11 +840,19 @@ export class FunctionWidget extends Node {
       this.clearMenu(dropDown);
       this.addMenuItem(dropDown, 'assembly', this.getAssembly, this.isEnabled('assembly'));
       this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
+      this.addMenuItem(dropDown, 'owner', this.getOwner, this.isEnabled('owner'));
       this.addMenuItem(dropDown, 'requirements', this.getRequirements, this.isEnabled('requirements'));
       this.addMenuItem(dropDown, 'input', this.getInput, this.isEnabled('input'));
       this.addMenuItem(dropDown, 'output', this.getOutput, this.isEnabled('output'));
+      this.addMenuItem(dropDown, '---', null, false);
+      this.addMenuItem(dropDown, 'remove', this.remove, true);
       dropDown.classList.toggle('show');
     }
+  }
+
+  getOwner = () => {
+    this.showRelatedObject('owner');
+    document.getElementById('dropdown').classList.toggle('show');
   }
 
   getRequirements = () => {
@@ -882,6 +898,8 @@ export class HamburgerWidget extends Node {
       this.addMenuItem(dropDown, 'functionalUnit', this.getFunctionalUnit, this.isEnabled('functionalUnit'));
       this.addMenuItem(dropDown, 'technicalSolution', this.getTechnicalSolution, this.isEnabled('technicalSolution'));
       this.addMenuItem(dropDown, 'ports', this.getPorts, this.isEnabled('ports'));
+      this.addMenuItem(dropDown, '---', null, false);
+      this.addMenuItem(dropDown, 'remove', this.remove, true);
       dropDown.classList.toggle('show');
     }
   }
@@ -927,6 +945,8 @@ export class PerformanceWidget extends Node {
       this.addMenuItem(dropDown, 'assembly', this.getAssembly, this.isEnabled('assembly'));
       this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
       this.addMenuItem(dropDown, 'value', this.getValue, this.isEnabled('value'));
+      this.addMenuItem(dropDown, '---', null, false);
+      this.addMenuItem(dropDown, 'remove', this.remove, true);
       dropDown.classList.toggle('show');
     }
   }
@@ -964,6 +984,8 @@ export class PortRealisationWidget extends Node {
       this.addMenuItem(dropDown, 'owner', this.getOwner, this.isEnabled('owner'));
       this.addMenuItem(dropDown, 'interface', this.getInterface, this.isEnabled('interface'));
       this.addMenuItem(dropDown, 'port', this.getPort, this.isEnabled('port'));
+      this.addMenuItem(dropDown, '---', null, false);
+      this.addMenuItem(dropDown, 'remove', this.remove, true);
       dropDown.classList.toggle('show');
     }
   }
@@ -1011,6 +1033,8 @@ export class RealisationModuleWidget extends Node {
       this.addMenuItem(dropDown, 'performances', this.getPerformances, this.isEnabled('performances'));
       this.addMenuItem(dropDown, 'ports', this.getPorts, this.isEnabled('ports'));
       this.addMenuItem(dropDown, 'hamburgers', this.getHamburgers, this.isEnabled('hamburgers'));
+      this.addMenuItem(dropDown, '---', null, false);
+      this.addMenuItem(dropDown, 'remove', this.remove, true);
       dropDown.classList.toggle('show');
     }
   }
@@ -1060,8 +1084,10 @@ export class RealisationPortWidget extends Node {
       this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
       this.addMenuItem(dropDown, 'owner', this.getOwner, this.isEnabled('owner'));
       this.addMenuItem(dropDown, 'portRealisations', this.getPortRealisations, this.isEnabled('portRealisations'));
-      this.addMenuItem(dropDown, '', null, false);
+      this.addMenuItem(dropDown, '---', null, false);
       this.addMenuItem(dropDown, 'rotate', this.rotate, true);
+      this.addMenuItem(dropDown, '---', null, false);
+      this.addMenuItem(dropDown, 'remove', this.remove, true);
       dropDown.classList.toggle('show');
     }
   }
@@ -1111,6 +1137,8 @@ export class RequirementWidget extends Node {
       this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
       this.addMenuItem(dropDown, 'minValue', this.getMinValue, this.isEnabled('minValue'));
       this.addMenuItem(dropDown, 'maxValue', this.getMaxValue, this.isEnabled('maxValue'));
+      this.addMenuItem(dropDown, '---', null, false);
+      this.addMenuItem(dropDown, 'remove', this.remove, true);
       dropDown.classList.toggle('show');
     }
   }
@@ -1154,6 +1182,8 @@ export class SystemInterfaceWidget extends Node {
       this.addMenuItem(dropDown, 'functionInputs', this.getFunctionInputs, this.isEnabled('functionInputs'));
       this.addMenuItem(dropDown, 'functionOutputs', this.getFunctionOutputs, this.isEnabled('functionOutputs'));
       this.addMenuItem(dropDown, 'portRealisations', this.getPortRealisations, this.isEnabled('portRealisations'));
+      this.addMenuItem(dropDown, '---', null, false);
+      this.addMenuItem(dropDown, 'remove', this.remove, true);
       dropDown.classList.toggle('show');
     }
   }
@@ -1211,6 +1241,8 @@ export class SystemSlotWidget extends Node {
       this.addMenuItem(dropDown, 'functions', this.getFunctions, this.isEnabled('functions'));
       this.addMenuItem(dropDown, 'interfaces', this.getInterfaces, this.isEnabled('interfaces'));
       this.addMenuItem(dropDown, 'hamburgers', this.getHamburgers, this.isEnabled('hamburgers'));
+      this.addMenuItem(dropDown, '---', null, false);
+      this.addMenuItem(dropDown, 'remove', this.remove, true);
       dropDown.classList.toggle('show');
     }
   }
@@ -1253,6 +1285,8 @@ export class ValueWidget extends Node {
       dropDown.style.left = this.x * this.context.currentScale + this.context.windowX + 'px';
       dropDown.style.top = this.y * this.context.currentScale + this.context.windowY + 'px';
       this.clearMenu(dropDown);
+      this.addMenuItem(dropDown, '---', null, false);
+      this.addMenuItem(dropDown, 'remove', this.remove, true);
       dropDown.classList.toggle('show');
     }
   }
