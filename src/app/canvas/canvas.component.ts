@@ -454,6 +454,10 @@ export abstract class Node extends Shape {
   protected down: boolean;
   protected anchorX: number;
   protected anchorY: number;
+  private _contextmenu = this.contextmenu.bind(this);
+  private _mousedown=  this.mouseDown.bind(this);
+  private _mouseup=  this.mouseUp.bind(this);
+  private _dblclick=  this.dblClick.bind(this);
 
   protected constructor(protected context: Context, id: string) {
     super();
@@ -476,18 +480,10 @@ export abstract class Node extends Shape {
   }
 
   init(object: YacserObject): void {
-    this.context.canvas.addEventListener('mousedown', (e) => {
-      this.mouseDown(e);
-    }, true);
-    this.context.canvas.addEventListener('mouseup', (e) => {
-      this.mouseUp(e);
-    }, false);
-    this.context.canvas.addEventListener('dblclick', (e) => {
-      this.dblClick(e);
-    }, false);
-    this.context.canvas.addEventListener('contextmenu', (e) => {
-      this.contextmenu(e);
-    }, false);
+    this.context.canvas.addEventListener('mousedown', this._mousedown, true);
+    this.context.canvas.addEventListener('mouseup', this._mouseup, false);
+    this.context.canvas.addEventListener('dblclick', this._dblclick, false);
+    this.context.canvas.addEventListener('contextmenu', this._contextmenu, false);
     this.context.objectListService.setSelectedObject(object);
     this.context.objectListService.getSelectedObject$()
       .subscribe((response) => this.context.objectMap.set(response.id, response));
@@ -810,6 +806,11 @@ export abstract class Node extends Shape {
 
   remove = () => {
     document.getElementById('dropdown').classList.toggle('show');
+    this.context.canvas.removeEventListener('mousedown', this._mousedown, true);
+    this.context.canvas.removeEventListener('mouseup', this._mouseup, false);
+    this.context.canvas.removeEventListener('dblclick', this._dblclick, false);
+    this.context.canvas.removeEventListener('contextmenu', this._contextmenu, false);
+    Node.selectedNode = null;
     const index = this.context.canvasObjectIds.indexOf(this.id);
     this.context.canvasObjectIds.splice(index, 1);
     this.context.stateService.setCanvasObjectIds(this.context.canvasObjectIds);
