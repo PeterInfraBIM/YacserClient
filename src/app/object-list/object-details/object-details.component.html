@@ -1,16 +1,16 @@
 <div class="modal-header bg-info">
-  <h4 class="modal-title text-white">Object Details</h4>
+  <h4 class="modal-title text-white"><span class="small">{{selectedObject.type}}</span><br>{{selectedObject.name}}</h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
-    <span aria-hidden="true">&times;</span>
+    <span aria-hidden="true"><fa-icon [icon]="faWindowClose"></fa-icon></span>
   </button>
 </div>
 <div class="modal-body">
   <div *ngIf="selectedObject" class="card">
-    <div class="card-header">
-      <h3 class="card-title">{{selectedObject.name}}</h3>
-      <h5 class="card-subtitle">{{selectedObject.type}}</h5>
-    </div>
-    <div class="card-body">
+<!--    <div class="card-header">-->
+<!--      <h3 class="card-title">{{selectedObject.name}}</h3>-->
+<!--      <h5 class="card-subtitle">{{selectedObject.type}}</h5>-->
+<!--    </div>-->
+    <div class="card-body" style="height: 400px; overflow-y: auto">
       <app-literal-editor [object]="selectedObject" attribute="name"
                           (newValue)="onNewValue($event, 'name')"></app-literal-editor>
       <app-literal-editor [object]="selectedObject" attribute="description"

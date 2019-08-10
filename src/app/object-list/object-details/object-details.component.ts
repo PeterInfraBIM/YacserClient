@@ -11,6 +11,7 @@ import {
   YacserSystemSlot,
   YacserValue
 } from '../../types';
+import {faWindowClose} from '@fortawesome/free-solid-svg-icons/faWindowClose';
 
 @Component({
   selector: 'app-object-details',
@@ -20,6 +21,7 @@ import {
 export class ObjectDetailsComponent implements OnInit {
   selectedObject: YacserObject;
   modelId: string;
+  faWindowClose = faWindowClose;
 
   constructor(private modal: NgbModal,
               public activeModal: NgbActiveModal,
