@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {YacserObject} from '../../../../types';
+import {faEdit, faSave, faWindowClose, faMinusSquare, faPlusSquare} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-link-editor',
@@ -18,6 +19,11 @@ export class LinkEditorComponent implements OnInit {
   @Input() isEditable = true;
   @Output() newValue = new EventEmitter<YacserObject>();
   @Output() newValues = new EventEmitter<YacserObject[]>()
+  faEdit = faEdit;
+  faSave = faSave;
+  faWindowClose = faWindowClose;
+  faMinusSquare = faMinusSquare;
+  faPlusSquare = faPlusSquare;
 
   constructor() {
   }
@@ -37,6 +43,18 @@ export class LinkEditorComponent implements OnInit {
       this.newValue.emit(this.value);
     } else if (!this.isEditing && this.isMultiple && (this.add.length > 0 || this.remove.length > 0)) {
       this.newValues.emit(this.add.concat(this.remove));
+      this.remove = [];
+      this.add = [];
+    }
+  }
+
+  onClickClose(): void {
+    this.isEditing = !this.isEditing;
+    if (this.isMultiple) {
+      this.remove = [];
+      this.add = [];
+    } else {
+      this.value = this.object[this.attribute];
     }
   }
 

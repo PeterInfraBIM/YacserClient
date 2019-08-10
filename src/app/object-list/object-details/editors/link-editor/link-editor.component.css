@@ -1,3 +1,11 @@
 .removed {
   text-decoration: line-through;
 }
+
+ul {
+  margin-bottom: 0;
+}
+
+ul li {
+  margin-top: 8px;
+}

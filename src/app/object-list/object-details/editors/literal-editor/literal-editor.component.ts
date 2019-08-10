@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {YacserObject} from '../../../../types';
+import {faEdit, faSave, faWindowClose} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-literal-editor',
@@ -13,6 +14,9 @@ export class LiteralEditorComponent implements OnInit {
   @Input() attribute: string;
   @Input() inputType = 'text';
   @Output() newValue = new EventEmitter();
+  faEdit = faEdit;
+  faSave = faSave;
+  faWindowClose = faWindowClose;
 
   constructor() {
     this.isEditing = false;
@@ -27,6 +31,11 @@ export class LiteralEditorComponent implements OnInit {
     if (!this.isEditing && this.value !== this.object[this.attribute]) {
       this.newValue.emit(this.value);
     }
+  }
+
+  onClickClose(): void {
+    this.isEditing = !this.isEditing;
+    this.value = this.object[this.attribute];
   }
 
 }

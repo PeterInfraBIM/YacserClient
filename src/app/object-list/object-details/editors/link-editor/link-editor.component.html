@@ -1,58 +1,112 @@
 <div *ngIf="isEditing && !isMultiple">
-  <p>{{attribute}}: <select [(ngModel)]="value" [compareWith]="compareFn">
-    <option [ngValue]="null">null</option>
-    <option *ngFor="let link of links" [ngValue]="link">
-      {{link.name}}
-    </option>
-  </select>
-    <button type='button' (click)="onClickEdit()">...</button>
-  </p>
+  <div class="input-group input-group-sm">
+    <div class="input-group-prepend">
+      <button class="btn btn-outline-info btn-sm" type='button' (click)="onClickClose()"
+              ngbTooltip="Close without saving changes">
+        <fa-icon [icon]="faWindowClose"></fa-icon>
+      </button>
+      <span class="input-group-text">{{attribute}}</span>
+    </div>
+    <select class="form-control form-control-sm" [(ngModel)]="value" [compareWith]="compareFn">
+      <option [ngValue]="null">null</option>
+      <option *ngFor="let link of links" [ngValue]="link">
+        {{link.name}}
+      </option>
+    </select>
+    <div class="input-group-append">
+      <button class="btn btn-outline-info btn-sm" type='button' (click)="onClickEdit()" ngbTooltip="Save changes">
+        <fa-icon [icon]="faSave"></fa-icon>
+      </button>
+    </div>
+  </div>
 </div>
 <div *ngIf="isEditing && isMultiple">
-  <p>{{attribute}}: </p>
-  <table class="table table-sm">
-    <tr *ngFor="let instance of object[attribute]">
-      <td>
-        <button [class]="remove.includes(instance)?'btn btn-sm btn-outline-success':'btn btn-sm  btn-outline-danger'"
-                (click)="onRemoveClick(instance)">
-          <span *ngIf="remove.includes(instance)">add</span><span *ngIf="!remove.includes(instance)">remove</span>
-        </button>
-      </td>
-      <td><span [class]="remove.includes(instance)?'removed':''">{{instance.name}}</span></td>
-    </tr>
+  <div class="input-group input-group-sm">
+    <div class="input-group-prepend">
+      <button class="btn btn-outline-info btn-sm" type='button' (click)="onClickClose()"
+              ngbTooltip="Close without saving changes">
+        <fa-icon [icon]="faWindowClose"></fa-icon>
+      </button>
+      <span class="input-group-text">{{attribute}}</span>
+    </div>
+    <span class="input-group-sm"
+      *ngFor="let instance of object[attribute]; let lastItem = last">&nbsp;{{instance.name}}{{lastItem ? '&nbsp;' : ', '}}</span>
+    <div class="input-group-append input-group-sm">
+      <button class="btn btn-outline-info btn-sm" type='button' (click)="onClickEdit()" ngbTooltip="Save changes">
+        <fa-icon [icon]="faSave"></fa-icon>
+      </button>
+    </div>
+  </div>
+  <ul style="list-style: none">
+    <li *ngFor="let instance of object[attribute]">
+      <div class="input-group input-group-sm">
+        <div class="input-group-prepend">
+          <button
+            [class]="remove.includes(instance)?'btn btn-sm btn-outline-success':'btn btn-sm  btn-outline-danger'"
+            (click)="onRemoveClick(instance)">
+          <span *ngIf="remove.includes(instance)">
+            <fa-icon [icon]="faPlusSquare"></fa-icon></span>
+            <span *ngIf="!remove.includes(instance)">
+            <fa-icon [icon]="faMinusSquare"></fa-icon></span>
+          </button>
+        </div>
+        <span
+          [class]="remove.includes(instance)?'removed':''">&nbsp;{{instance.name}}&nbsp;</span>
+      </div>
+    </li>
+  </ul>
+  <ul style="list-style: none">
     <ng-container *ngIf="add.length>0">
-      <tr *ngFor="let instance of add">
-        <td>
-          <button [class]="add.includes(instance)?'btn btn-sm btn-outline-danger':'btn btn-sm  btn-outline-success'"
-                  (click)="onAddClick(instance)">
-            <span *ngIf="add.includes(instance)">remove</span><span *ngIf="!add.includes(instance)">add</span></button>
-        </td>
-        <td>{{instance.name}}</td>
-      </tr>
+      <li *ngFor="let instance of add">
+        <div class="input-group input-group-sm">
+          <div class="input-group-prepend">
+            <button [class]="add.includes(instance)?'btn btn-sm btn-outline-danger':'btn btn-sm  btn-outline-success'"
+                    (click)="onAddClick(instance)">
+            <span *ngIf="add.includes(instance)">
+              <fa-icon [icon]="faMinusSquare"></fa-icon></span>
+              <span *ngIf="!add.includes(instance)">
+              <fa-icon [icon]="faPlusSquare"></fa-icon></span></button>
+          </div>
+          <span
+            [class]="remove.includes(instance)?'removed':''">&nbsp;{{instance.name}}&nbsp;</span>
+        </div>
+      </li>
     </ng-container>
-    <tr>
-      <td>
-        <button class="btn btn-outline-success btn-sm" (click)="onAddClick(value)" [disabled]="!value">add</button>
-      </td>
-      <td><select [(ngModel)]="value" [compareWith]="compareFn">
-        <option [ngValue]="null">null</option>
-        <option *ngFor="let link of links" [ngValue]="link">
-          {{link.name}}
-        </option>
-      </select></td>
-    </tr>
-  </table>
-  <button type='button' (click)="onClickEdit()">...</button>
+    <li>
+      <div class="input-group input-group-sm">
+        <div class="input-group-prepend">
+          <button class="btn btn-outline-success btn-sm" (click)="onAddClick(value)" [disabled]="!value">
+            <fa-icon [icon]="faPlusSquare"></fa-icon>
+          </button>
+        </div>
+        <select class="form-control-sm" [(ngModel)]="value" [compareWith]="compareFn">
+          <option [ngValue]="null">null</option>
+          <option *ngFor="let link of links" [ngValue]="link">
+            {{link.name}}
+          </option>
+        </select>
+      </div>
+    </li>
+  </ul>
 </div>
 <div *ngIf="!isEditing && !isMultiple">
-  <p>{{attribute}}: {{object[attribute] ? object[attribute].name : ''}}
-    <button *ngIf="isEditable" type='button' (click)="onClickEdit()">...</button>
+  <p>
+    <button [disabled]="!isEditable" class="btn btn-outline-info btn-sm" type='button' (click)="onClickEdit()"
+            ngbTooltip="Start editor">
+      <fa-icon [icon]="faEdit"></fa-icon>
+    </button>
+    {{attribute}}: {{object[attribute] ? object[attribute].name : ''}}
   </p>
 </div>
 <div *ngIf="!isEditing && isMultiple">
-  <p>{{attribute}}: <span
+  <p>
+    <button [disabled]="!isEditable" class="btn btn-outline-info btn-sm" type='button' (click)="onClickEdit()"
+            ngbTooltip="Start editor">
+      <fa-icon [icon]="faEdit"></fa-icon>
+    </button>
+    {{attribute}}: <span
     *ngFor="let instance of object[attribute]; let lastItem = last">{{instance.name}}{{lastItem ? '' : ', '}}</span>
-    <button *ngIf="isEditable" type='button' (click)="onClickEdit()">...</button>
   </p>
 </div>
+<hr>
 

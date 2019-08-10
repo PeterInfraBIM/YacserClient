@@ -1,12 +1,25 @@
-<div>
-  <div *ngIf="isEditing">
-    <p>{{attribute}}: <input [type]="inputType" [placeholder]="'Enter ' + attribute" [(ngModel)]="value">
-      <button type='button' (click)="onClickEdit()">...</button>
-    </p>
-  </div>
-  <div *ngIf="!isEditing">
-    <p>{{attribute}}: {{object[attribute]}}
-      <button type='button' (click)="onClickEdit()">...</button>
-    </p>
+<div *ngIf="isEditing">
+  <div class="input-group input-group-sm">
+    <div class="input-group-prepend">
+      <button class="btn btn-outline-info btn-sm" type='button' (click)="onClickClose()"
+              ngbTooltip="Close without saving changes">
+        <fa-icon [icon]="faWindowClose"></fa-icon>
+      </button>
+      <span class="input-group-text">{{attribute}}</span>
+    </div>
+    <input class="form-control form-control-sm" [type]="inputType" [placeholder]="'Enter ' + attribute"
+           [(ngModel)]="value">
+    <div class="input-group-append">
+      <button class="btn btn-outline-info btn-sm" type='button' (click)="onClickEdit()" ngbTooltip="Save changes">
+        <fa-icon [icon]="faSave"></fa-icon>
+      </button>
+    </div>
   </div>
 </div>
+<div *ngIf="!isEditing">
+  <button class="btn btn-outline-info btn-sm" type='button' (click)="onClickEdit()" ngbTooltip="Start editor">
+    <fa-icon [icon]="faEdit"></fa-icon>
+  </button>
+  {{attribute}}: {{object[attribute]}}
+</div>
+<hr>

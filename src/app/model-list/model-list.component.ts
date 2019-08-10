@@ -7,7 +7,7 @@ import gql from 'graphql-tag';
 
 import {YacserModel, Query, Mutation} from '../types';
 import {faFileDownload, faFileUpload} from '@fortawesome/free-solid-svg-icons';
-import {StateService} from "../state.service";
+import {StateService} from '../state.service';
 
 const CREATE_MODEL = gql`
     mutation createModel($modelId: ID!, $name: String, $description: String){
@@ -54,7 +54,6 @@ export class ModelListComponent implements OnInit {
   models: Observable<YacserModel[]>;
   newModel: Observable<YacserModel>;
   filePath: string;
-//  @Output() modelId = new EventEmitter<string>();
   faFileUpload = faFileUpload;
   faFileDownload = faFileDownload;
 
