@@ -1,25 +1,10 @@
-<div class="container">
-  <table class="table table-hover table-sm">
-    <thead class="thead-light">
+<div *ngIf="modelId" class="container">
+  <table class="table table-sm table-borderless">
+    <thead>
     <tr>
-      <th>canvas</th>
-      <th>name</th>
-      <th>description</th>
-      <th>type</th>
+      <th colspan="4">Create object</th>
     </tr>
     </thead>
-    <tbody>
-    <tr class="select" (click)="toggleCanvas(object)" (dblclick)="openObjectDetails(object)"
-        *ngFor="let object of objects">
-      <td align="center"><input type="checkbox" [checked]="inCanvas(object)"></td>
-      <td>{{object.name}}</td>
-      <td>>
-        <span class="description">{{object.description}}</span>
-      </td>
-      <td>
-        <span class="type">{{object.type}}</span>
-      </td>
-    </tr>
     <tr>
       <td align="center">
         <button class="btn btn-primary" (click)="createObject()" ngbTooltip="Create object">
@@ -33,8 +18,32 @@
                 [selected]="type === newObjectType">{{type}}</option>
       </select></td>
     </tr>
-    </tbody>
   </table>
+  <div *ngIf="objects" style="overflow-y: auto; height: 320px">
+    <table class="table table-hover table-sm table-borderless">
+      <thead>
+      <tr>
+        <th>canvas</th>
+        <th>name</th>
+        <th>description</th>
+        <th>type</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="select" (click)="toggleCanvas(object)" (dblclick)="openObjectDetails(object)"
+          *ngFor="let object of objects">
+        <td align="center"><input type="checkbox" [checked]="inCanvas(object)"></td>
+        <td>{{object.name}}</td>
+        <td>
+          <span class="description">{{object.description}}</span>
+        </td>
+        <td>
+          <span class="type">{{object.type}}</span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 <!--  </div>-->
 <!--</div>-->

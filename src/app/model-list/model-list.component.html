@@ -1,5 +1,5 @@
 <div class="container">
-  <table class="table table-sm">
+  <table class="table table-sm table-borderless table-hover">
     <thead>
     <tr>
       <th>download</th>
@@ -12,25 +12,15 @@
     <tbody>
     <tr *ngFor="let file of modelFiles">
       <td>
-        <button class="btn btn-link" (click)="onLoadClick(file)"><fa-icon [icon]="faFileDownload" size="2x"></fa-icon></button>
+        <button class="btn btn-link" (click)="onLoadClick(file)"><fa-icon [icon]="faFileDownload"></fa-icon></button>
       </td>
       <td>{{file}}</td>
       <td><span>{{modelMap.get(file) ? modelMap.get(file).name : ''}}</span></td>
       <td><span>{{modelMap.get(file) ? modelMap.get(file).description : ''}}</span></td>
       <td>
-        <button class="btn btn-link" (click)="onSaveClick(file)" [disabled]="!modelMap.get(file)"><fa-icon [icon]="faFileUpload" size="2x"></fa-icon></button>
+        <button class="btn btn-link" (click)="onSaveClick(file)" [disabled]="!modelMap.get(file)"><fa-icon [icon]="faFileUpload"></fa-icon></button>
       </td>
     </tr>
     </tbody>
   </table>
-  <!--  <p>file path: <input type="text" placeholder="Enter model file path" [(ngModel)]="filePath">-->
-  <!--    <button class="btn" (click)="onLoadClick(filePath)">Load</button>-->
-  <!--  </p>-->
-  <!--  <ngb-accordion>-->
-  <!--    <ngb-panel *ngFor="let model of models | async" title="{{model.name}}">-->
-  <!--      <ng-template ngbPanelContent>-->
-  <!--        <p>{{model.description}}</p>-->
-  <!--      </ng-template>-->
-  <!--    </ngb-panel>-->
-  <!--  </ngb-accordion>-->
 </div>
