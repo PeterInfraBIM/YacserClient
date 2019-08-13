@@ -1,6 +1,27 @@
 <div class="container">
+  <table class="table table-sm table-borderless">
+    <thead>
+    <tr>
+      <th colspan="4">Create model</th>
+    </tr>
+    </thead>
+    <tr>
+      <td align="center">
+        <button class="btn btn-primary" [disabled]="!newModelName || !newModelId" (click)="onCreateModel()" ngbTooltip="Create model">
+          <fa-icon [icon]="faPlus"></fa-icon>
+        </button>
+      </td>
+      <td><input class="form-control" [(ngModel)]="newModelId" placeholder="enter ID"></td>
+      <td><input class="form-control" [(ngModel)]="newModelName" placeholder="enter name"></td>
+      <td><input class="form-control" [(ngModel)]="newModelDescription" placeholder="enter description"></td>
+    </tr>
+  </table>
+  <hr>
   <table class="table table-sm table-borderless table-hover">
     <thead>
+    <tr>
+      <th colspan="5">Created models</th>
+    </tr>
     <tr>
       <th>download</th>
       <th>file</th>
@@ -12,13 +33,17 @@
     <tbody>
     <tr *ngFor="let file of modelFiles">
       <td>
-        <button class="btn btn-link" (click)="onLoadClick(file)"><fa-icon [icon]="faFileDownload"></fa-icon></button>
+        <button class="btn btn-link btn-sm" (click)="onLoadClick(file)">
+          <fa-icon [icon]="faFileDownload"></fa-icon>
+        </button>
       </td>
       <td>{{file}}</td>
       <td><span>{{modelMap.get(file) ? modelMap.get(file).name : ''}}</span></td>
-      <td><span>{{modelMap.get(file) ? modelMap.get(file).description : ''}}</span></td>
+      <td><span class="description">{{modelMap.get(file) ? modelMap.get(file).description : ''}}</span></td>
       <td>
-        <button class="btn btn-link" (click)="onSaveClick(file)" [disabled]="!modelMap.get(file)"><fa-icon [icon]="faFileUpload"></fa-icon></button>
+        <button class="btn btn-link btn-sm" (click)="onSaveClick(file)" [disabled]="!modelMap.get(file)">
+          <fa-icon [icon]="faFileUpload"></fa-icon>
+        </button>
       </td>
     </tr>
     </tbody>

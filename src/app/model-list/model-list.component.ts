@@ -6,7 +6,7 @@ import {map} from 'rxjs/operators';
 import gql from 'graphql-tag';
 
 import {YacserModel, Query, Mutation} from '../types';
-import {faFileDownload, faFileUpload} from '@fortawesome/free-solid-svg-icons';
+import {faFileDownload, faFileUpload, faPlus} from '@fortawesome/free-solid-svg-icons';
 import {StateService} from '../state.service';
 
 const CREATE_MODEL = gql`
@@ -52,10 +52,14 @@ export class ModelListComponent implements OnInit {
   @Input() modelMap: Map<string, YacserModel>;
   modelFiles: string[];
   models: Observable<YacserModel[]>;
-  newModel: Observable<YacserModel>;
+  newModel: YacserModel;
+  newModelId: string;
+  newModelName: string;
+  newModelDescription: string;
   filePath: string;
   faFileUpload = faFileUpload;
   faFileDownload = faFileDownload;
+  faPlus = faPlus;
 
   constructor(private apollo: Apollo, private stateService: StateService) {
   }
@@ -78,7 +82,7 @@ export class ModelListComponent implements OnInit {
   }
 
   onCreateModel() {
-    this.newModel = this.createModel('xxx', 'yyy', 'zzz');
+    this.createModel(this.newModelId, this.newModelName, this.newModelDescription).subscribe((result) => this.newModel = result);
   }
 
   onLoadClick(filePath: string): void {
@@ -86,7 +90,6 @@ export class ModelListComponent implements OnInit {
       const key = result.id.substring(result.id.lastIndexOf('/') + 1) + '.ttl';
       this.modelMap.set(key, result);
       console.log('description: ' + this.modelMap.get(key).description);
-//      this.modelId.emit(result.id);
       this.stateService.setModelId(result.id);
     });
   }
@@ -95,15 +98,14 @@ export class ModelListComponent implements OnInit {
   }
 
   createModel(modelId: string, name: string, description: string): Observable<YacserModel> {
-    return this.apollo.mutate<Mutation>(
-      {
-        mutation: CREATE_MODEL,
-        variables: {
-          modelId,
-          name,
-          description
-        }
-      }).pipe(map(result => result.data.createModel));
+    return this.apollo.mutate<Mutation>({
+      mutation: CREATE_MODEL,
+      variables: {
+        modelId,
+        name,
+        description
+      }
+    }).pipe(map(result => result.data.createModel));
   }
 
   loadModel(filePath: string):
