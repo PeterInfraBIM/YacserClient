@@ -10,7 +10,7 @@ import {faEdit, faSave, faWindowClose} from '@fortawesome/free-solid-svg-icons';
 export class LiteralEditorComponent implements OnInit {
   isEditing: boolean;
   value: string;
-  @Input() object: YacserObject;
+  @Input() object: object;
   @Input() attribute: string;
   @Input() inputType = 'text';
   @Output() newValue = new EventEmitter();

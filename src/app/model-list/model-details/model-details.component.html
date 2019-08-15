@@ -4,3 +4,7 @@
     <span aria-hidden="true"><fa-icon [icon]="faWindowClose"></fa-icon></span>
   </button>
 </div>
+<div class="modal-body">
+  <app-literal-editor [object]="stateService.model" attribute="name"
+                      (newValue)="onNewValue($event, 'name')"></app-literal-editor>
+</div>

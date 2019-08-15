@@ -17,4 +17,7 @@ export class ModelDetailsComponent implements OnInit {
   ngOnInit() {
   }
 
+  onNewValue(newValue: any, attribute: string): void {
+  //  this.objectListService.updateObject(this.selectedObject, attribute, newValue);
+  }
 }
