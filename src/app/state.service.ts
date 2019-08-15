@@ -1,6 +1,6 @@
 import {EventEmitter, Injectable} from '@angular/core';
 import {Context, Node, Shape, WidgetFactory} from './canvas/canvas.component';
-import {YacserObject} from './types';
+import {YacserModel, YacserObject} from './types';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +8,7 @@ import {YacserObject} from './types';
 export class StateService {
   modelId: string;
   modelIdChanged = new EventEmitter<string>();
+  model: YacserModel;
   context: Context;
   drawList: Shape[];
   drawListChanged = new EventEmitter<Shape[]>();
@@ -47,4 +48,6 @@ export class StateService {
     return this.context;
   }
 
+  setModel(result: YacserModel) {this.model = result;
+  }
 }

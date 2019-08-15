@@ -15,8 +15,9 @@ import {ObjectListComponent} from './object-list/object-list.component';
 import {ObjectDetailsComponent} from './object-list/object-details/object-details.component';
 import {LiteralEditorComponent} from './object-list/object-details/editors/literal-editor/literal-editor.component';
 import {LinkEditorComponent} from './object-list/object-details/editors/link-editor/link-editor.component';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { CanvasComponent } from './canvas/canvas.component';
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {CanvasComponent} from './canvas/canvas.component';
+import {ModelDetailsComponent} from './model-list/model-details/model-details.component';
 
 const fragmentMatcher = new IntrospectionFragmentMatcher({
   introspectionQueryResultData
@@ -30,7 +31,8 @@ const fragmentMatcher = new IntrospectionFragmentMatcher({
     ObjectDetailsComponent,
     LiteralEditorComponent,
     LinkEditorComponent,
-    CanvasComponent
+    CanvasComponent,
+    ModelDetailsComponent
   ],
   imports: [
     BrowserModule,
@@ -43,6 +45,7 @@ const fragmentMatcher = new IntrospectionFragmentMatcher({
     FontAwesomeModule
   ],
   entryComponents: [
+    ModelDetailsComponent,
     ObjectDetailsComponent
   ],
   providers: [],

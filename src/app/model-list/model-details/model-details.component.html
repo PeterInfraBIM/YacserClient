@@ -1,0 +1,6 @@
+<div class="modal-header bg-info">
+  <h4 *ngIf="stateService.model" class="modal-title text-white">{{stateService.model.name}}</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true"><fa-icon [icon]="faWindowClose"></fa-icon></span>
+  </button>
+</div>

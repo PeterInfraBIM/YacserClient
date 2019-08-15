@@ -31,7 +31,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let file of modelFiles">
+    <tr *ngFor="let file of modelFiles" (dblclick)="openModelDetails(file)">
       <td>
         <button class="btn btn-link btn-sm" (click)="onLoadClick(file)">
           <fa-icon [icon]="faFileDownload"></fa-icon>

@@ -8,6 +8,9 @@ import gql from 'graphql-tag';
 import {YacserModel, Query, Mutation} from '../types';
 import {faFileDownload, faFileUpload, faPlus} from '@fortawesome/free-solid-svg-icons';
 import {StateService} from '../state.service';
+import {ObjectDetailsComponent} from "../object-list/object-details/object-details.component";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {ModelDetailsComponent} from "./model-details/model-details.component";
 
 const CREATE_MODEL = gql`
     mutation createModel($modelId: ID!, $name: String, $description: String){
@@ -43,6 +46,12 @@ const LOAD_MODEL = gql`
     }
 `;
 
+const SAVE_MODEL = gql`
+    mutation saveModel($modelId: ID!, $filePath: String!){
+        saveModel(modelId: $modelId, filePath: $filePath)
+    }
+`;
+
 @Component({
   selector: 'app-model-list',
   templateUrl: './model-list.component.html',
@@ -61,7 +70,7 @@ export class ModelListComponent implements OnInit {
   faFileDownload = faFileDownload;
   faPlus = faPlus;
 
-  constructor(private apollo: Apollo, private stateService: StateService) {
+  constructor(private apollo: Apollo, private stateService: StateService, private modal: NgbModal) {
   }
 
   ngOnInit() {
@@ -81,8 +90,23 @@ export class ModelListComponent implements OnInit {
     }).valueChanges.pipe(map(result => result.data.allModels));
   }
 
+  openModelDetails(filePath: string) {
+    if (this.modelMap.get(filePath)) {
+      this.modal.open(ModelDetailsComponent);
+    } else {
+      alert('First download model.');
+    }
+  }
+
   onCreateModel() {
-    this.createModel(this.newModelId, this.newModelName, this.newModelDescription).subscribe((result) => this.newModel = result);
+    this.createModel(this.newModelId, this.newModelName, this.newModelDescription).subscribe((result) => {
+      this.newModel = result;
+      const filePath = this.newModel.id.substring(this.newModel.id.lastIndexOf('/') + 1) + '.ttl';
+      this.modelMap.set(filePath, this.newModel);
+      this.modelFiles.push(filePath);
+      this.onSaveClick(filePath);
+      this.onLoadClick(filePath);
+    });
   }
 
   onLoadClick(filePath: string): void {
@@ -91,10 +115,14 @@ export class ModelListComponent implements OnInit {
       this.modelMap.set(key, result);
       console.log('description: ' + this.modelMap.get(key).description);
       this.stateService.setModelId(result.id);
+      this.stateService.setModel(result);
     });
   }
 
   onSaveClick(filePath: string): void {
+    this.saveModel(filePath).subscribe((result) => {
+      console.log('Create model result: ' + result);
+    });
   }
 
   createModel(modelId: string, name: string, description: string): Observable<YacserModel> {
@@ -108,14 +136,21 @@ export class ModelListComponent implements OnInit {
     }).pipe(map(result => result.data.createModel));
   }
 
-  loadModel(filePath: string):
-    Observable<YacserModel> {
+  loadModel(filePath: string): Observable<YacserModel> {
     return this.apollo.mutate<Mutation>({
       mutation: LOAD_MODEL,
       variables: {
         filePath
       }
     }).pipe(map(result => result.data.loadModel));
+  }
+
+  saveModel(filePath: string): Observable<boolean> {
+    const modelId = this.modelMap.get(filePath).id;
+    return this.apollo.mutate<Mutation>({
+      mutation: SAVE_MODEL,
+      variables: {modelId, filePath}
+    }).pipe(map(result => result.data.saveModel));
   }
 
 }
