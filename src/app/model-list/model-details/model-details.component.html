@@ -1,10 +1,12 @@
 <div class="modal-header bg-info">
-  <h4 *ngIf="stateService.model" class="modal-title text-white">{{stateService.model.name}}</h4>
+  <h4 *ngIf="selectedModel" class="modal-title text-white">{{selectedModel.name}}</h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true"><fa-icon [icon]="faWindowClose"></fa-icon></span>
   </button>
 </div>
 <div class="modal-body">
-  <app-literal-editor [object]="stateService.model" attribute="name"
+  <app-literal-editor [object]="selectedModel" attribute="name"
                       (newValue)="onNewValue($event, 'name')"></app-literal-editor>
+  <app-literal-editor [object]="selectedModel" attribute="description"
+                      (newValue)="onNewValue($event, 'description')"></app-literal-editor>
 </div>

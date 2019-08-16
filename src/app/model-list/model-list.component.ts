@@ -11,6 +11,7 @@ import {StateService} from '../state.service';
 import {ObjectDetailsComponent} from "../object-list/object-details/object-details.component";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {ModelDetailsComponent} from "./model-details/model-details.component";
+import {ObjectListService} from "../object-list/object-list.service";
 
 const CREATE_MODEL = gql`
     mutation createModel($modelId: ID!, $name: String, $description: String){
@@ -70,7 +71,7 @@ export class ModelListComponent implements OnInit {
   faFileDownload = faFileDownload;
   faPlus = faPlus;
 
-  constructor(private apollo: Apollo, private stateService: StateService, private modal: NgbModal) {
+  constructor(private apollo: Apollo, private stateService: StateService, private modal: NgbModal, private objectListService: ObjectListService) {
   }
 
   ngOnInit() {
@@ -88,11 +89,16 @@ export class ModelListComponent implements OnInit {
     this.models = this.apollo.watchQuery<Query>({
       query: ALL_MODELS
     }).valueChanges.pipe(map(result => result.data.allModels));
+    this.objectListService.selectedModelUpdated.subscribe((result) => {
+      const key = result.id.substring(result.id.lastIndexOf('/') + 1) + '.ttl';
+      this.modelMap.set(key, result);
+      this.ngOnInit();
+    });
   }
 
   openModelDetails(filePath: string) {
     if (this.modelMap.get(filePath)) {
-      this.modal.open(ModelDetailsComponent);
+      const modal = this.modal.open(ModelDetailsComponent);
     } else {
       alert('First download model.');
     }

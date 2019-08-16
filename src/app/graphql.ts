@@ -1,5 +1,29 @@
 import gql from 'graphql-tag';
 
+export const MODEL = gql`
+    query model($modelId: ID!){
+        model (modelId: $modelId){
+            id
+            name
+            description
+        }
+    }
+`;
+
+export const ALL_MODEL_FILES = gql`
+    query allModelFiles{allModelFiles}
+`;
+
+export const UPDATE_MODEL = gql`
+    mutation updateModel($input: UpdateYacserModelInput!) {
+        updateModel (input: $input){
+            id
+            name
+            description
+        }
+    }
+`;
+
 export const OBJECT_FIELDS = gql`
     fragment ObjectFields on YacserObject {
         id

@@ -4,6 +4,16 @@ export interface YacserModel {
   description: string;
 }
 
+export class UpdateYacserModelInput {
+  modelId: string;
+  updateName: string;
+  updateDescription: string;
+
+  constructor(modelId: string) {
+    this.modelId = modelId;
+  }
+}
+
 export interface YacserObject {
   id: string;
   name: string;
@@ -233,6 +243,7 @@ export class UpdateValueInput {
 export interface Query {
   allModelFiles: string[];
   allModels: YacserModel[];
+  model: YacserModel;
   allObjects: YacserObject[];
   function: YacserFunction;
   hamburger: YacserHamburger;

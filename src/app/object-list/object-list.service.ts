@@ -3,7 +3,7 @@ import {
   Mutation,
   Query,
   UpdateFunctionInput,
-  UpdateHamburgerInput,
+  UpdateHamburgerInput, UpdateYacserModelInput,
   UpdatePerformanceInput, UpdatePortRealisationInput,
   UpdateRealisationModuleInput, UpdateRealisationPortInput,
   UpdateRequirementInput,
@@ -11,7 +11,7 @@ import {
   UpdateSystemSlotInput,
   UpdateValueInput,
   YacserFunction,
-  YacserHamburger,
+  YacserHamburger, YacserModel,
   YacserObject,
   YacserObjectType,
   YacserPerformance, YacserPortRealisation,
@@ -24,17 +24,18 @@ import {Apollo} from 'apollo-angular';
 import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import {
+  ALL_MODEL_FILES,
   ALL_OBJECTS,
   CREATE_OBJECT,
   FUNCTION,
-  HAMBURGER,
+  HAMBURGER, MODEL,
   PERFORMANCE, PORT_REALISATION,
   REALISATION_MODULE, REALISATION_PORT,
   REQUIREMENT,
   SYSTEM_INTERFACE,
   SYSTEM_SLOT,
   UPDATE_FUNCTION,
-  UPDATE_HAMBURGER,
+  UPDATE_HAMBURGER, UPDATE_MODEL,
   UPDATE_PERFORMANCE, UPDATE_PORT_REALISATION,
   UPDATE_REALISATION_MODULE, UPDATE_REALISATION_PORT,
   UPDATE_REQUIREMENT,
@@ -47,6 +48,7 @@ import {
 })
 export class ObjectListService {
   public allObjectsUpdated = new EventEmitter<YacserObject[]>();
+  public selectedModelUpdated = new EventEmitter<YacserModel>();
   public allObjects: YacserObject[];
   private selectedObject: YacserObject;
 
@@ -63,6 +65,16 @@ export class ObjectListService {
       this.allObjects = result.data.allObjects;
       this.allObjectsUpdated.emit(this.allObjects);
     });
+  }
+
+  getModel$(modelId: string): Observable<YacserModel> {
+    return this.apollo.watchQuery<Query>({
+        query: MODEL,
+        variables: {
+          modelId
+        }
+      }
+    ).valueChanges.pipe(map(result => result.data.model));
   }
 
   getSelectedObject$(): Observable<YacserObject> {
@@ -809,7 +821,26 @@ export class ObjectListService {
       variables: {input: updateInput},
       refetchQueries
     }).subscribe(
-      (result) => console.log(result.data[response]),
+      (result) => {
+        console.log(response + ' ' + result.data[response]);
+        if (response === 'updateModel') {
+          this.selectedModelUpdated.emit(result.data.updateModel);
+        }
+      },
       (error) => console.log(error.toString()));
+  }
+
+  updateModel(model: YacserModel, attribute: string, newValue: any) {
+    const updateYacserModelInput = new UpdateYacserModelInput(model.id);
+    switch (attribute) {
+      case 'name':
+        updateYacserModelInput.updateName = newValue;
+        break;
+      case 'description':
+        updateYacserModelInput.updateDescription = newValue;
+        break;
+    }
+    const refetchQueries = [];
+    this.update(updateYacserModelInput, UPDATE_MODEL, 'updateModel', refetchQueries);
   }
 }
