@@ -1,5 +1,5 @@
 import {EventEmitter, Injectable} from '@angular/core';
-import {Context, Node, Shape, WidgetFactory} from './canvas/canvas.component';
+import {Context, Edge, Node, Shape, WidgetFactory} from './canvas/canvas.component';
 import {YacserModel, YacserObject} from './types';
 
 @Injectable({
@@ -30,10 +30,10 @@ export class StateService {
     this.drawListChanged.emit(this.drawList);
   }
 
-  setDrawList(drawList: Shape[]) {
-    this.drawList = drawList;
-    this.drawListChanged.emit(this.drawList);
-  }
+  // setDrawList(drawList: Shape[]) {
+  //   this.drawList = drawList;
+  //   this.drawListChanged.emit(this.drawList);
+  // }
 
   setCanvasObjectIds(canvasObjectIds: string[]) {
     this.canvasObjectIds = canvasObjectIds;
@@ -48,6 +48,8 @@ export class StateService {
     return this.context;
   }
 
-  setModel(result: YacserModel) {this.model = result;
+  setModel(result: YacserModel) {
+    this.model = result;
   }
 }
+

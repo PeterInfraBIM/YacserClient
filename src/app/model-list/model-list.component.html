@@ -7,7 +7,8 @@
     </thead>
     <tr>
       <td align="center">
-        <button class="btn btn-primary" [disabled]="!newModelName || !newModelId" (click)="onCreateModel()" ngbTooltip="Create model">
+        <button class="btn btn-primary" [disabled]="!newModelName || !newModelId" (click)="onCreateModel()"
+                ngbTooltip="Create model">
           <fa-icon [icon]="faPlus"></fa-icon>
         </button>
       </td>
@@ -17,34 +18,36 @@
     </tr>
   </table>
   <hr>
-  <table class="table table-sm table-borderless table-hover">
+  <table *ngIf="modelFiles" class="table table-sm table-borderless table-hover">
     <thead>
     <tr>
-      <th colspan="5">Created models</th>
+      <th colspan="4">Created models</th>
     </tr>
     <tr>
-      <th>download</th>
+      <th>load/edit/save</th>
       <th>file</th>
       <th>name</th>
       <th>description</th>
-      <th>upload</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let file of modelFiles" (dblclick)="openModelDetails(file)">
       <td>
-        <button class="btn btn-link btn-sm" (click)="onLoadClick(file)">
+        <button class="btn btn-link btn-sm" (click)="onLoadClick(file)" ngbTooltip="Load model">
           <fa-icon [icon]="faFileDownload"></fa-icon>
+        </button>
+        <button class="btn btn-link btn-sm" (click)="openModelDetails(file)" ngbTooltip="Edit model"
+                [disabled]="!modelMap.get(file)">
+          <fa-icon [icon]="faEdit"></fa-icon>
+        </button>
+        <button class="btn btn-link btn-sm" (click)="onSaveClick(file)" ngbTooltip="Save model"
+                [disabled]="!modelMap.get(file)">
+          <fa-icon [icon]="faFileUpload"></fa-icon>
         </button>
       </td>
       <td>{{file}}</td>
       <td><span>{{modelMap.get(file) ? modelMap.get(file).name : ''}}</span></td>
       <td><span class="description">{{modelMap.get(file) ? modelMap.get(file).description : ''}}</span></td>
-      <td>
-        <button class="btn btn-link btn-sm" (click)="onSaveClick(file)" [disabled]="!modelMap.get(file)">
-          <fa-icon [icon]="faFileUpload"></fa-icon>
-        </button>
-      </td>
     </tr>
     </tbody>
   </table>

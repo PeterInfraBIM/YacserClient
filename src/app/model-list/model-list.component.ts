@@ -6,12 +6,11 @@ import {map} from 'rxjs/operators';
 import gql from 'graphql-tag';
 
 import {YacserModel, Query, Mutation} from '../types';
-import {faFileDownload, faFileUpload, faPlus} from '@fortawesome/free-solid-svg-icons';
+import {faFileDownload, faEdit, faFileUpload, faPlus} from '@fortawesome/free-solid-svg-icons';
 import {StateService} from '../state.service';
-import {ObjectDetailsComponent} from "../object-list/object-details/object-details.component";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {ModelDetailsComponent} from "./model-details/model-details.component";
-import {ObjectListService} from "../object-list/object-list.service";
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {ModelDetailsComponent} from './model-details/model-details.component';
+import {ObjectListService} from '../object-list/object-list.service';
 
 const CREATE_MODEL = gql`
     mutation createModel($modelId: ID!, $name: String, $description: String){
@@ -66,12 +65,16 @@ export class ModelListComponent implements OnInit {
   newModelId: string;
   newModelName: string;
   newModelDescription: string;
-  filePath: string;
+  faEdit = faEdit;
   faFileUpload = faFileUpload;
   faFileDownload = faFileDownload;
   faPlus = faPlus;
 
-  constructor(private apollo: Apollo, private stateService: StateService, private modal: NgbModal, private objectListService: ObjectListService) {
+  constructor(
+    private apollo: Apollo,
+    private stateService: StateService,
+    private modal: NgbModal,
+    private objectListService: ObjectListService) {
   }
 
   ngOnInit() {

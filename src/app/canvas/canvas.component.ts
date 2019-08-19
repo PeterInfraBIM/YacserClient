@@ -405,6 +405,19 @@ export class WidgetFactory {
     }
     return null;
   }
+
+  public static getEdge(context: Context, startNode: Node, endNode: Node): Edge {
+    for (const shape of context.drawList) {
+      if (shape instanceof Edge) {
+        const edge = shape as Edge;
+        if ((edge.startNode === startNode && edge.endNode === endNode)
+          || (edge.startNode === endNode && edge.endNode === startNode)) {
+          return edge;
+        }
+      }
+    }
+    return null;
+  }
 }
 
 export class Edge extends Shape {
@@ -455,9 +468,9 @@ export abstract class Node extends Shape {
   protected anchorX: number;
   protected anchorY: number;
   private _contextmenu = this.contextmenu.bind(this);
-  private _mousedown=  this.mouseDown.bind(this);
-  private _mouseup=  this.mouseUp.bind(this);
-  private _dblclick=  this.dblClick.bind(this);
+  private _mousedown = this.mouseDown.bind(this);
+  private _mouseup = this.mouseUp.bind(this);
+  private _dblclick = this.dblClick.bind(this);
 
   protected constructor(protected context: Context, id: string) {
     super();
@@ -756,11 +769,22 @@ export abstract class Node extends Shape {
     const relatedObject = WidgetFactory.getRelatedObject(this.context, this.id, relation);
     if (relatedObject) {
       if (this.context.widgets.get(relatedObject.id)) {
+        // Related object already on Canvas
         const endNode = this.context.widgets.get(relatedObject.id);
-        if (!WidgetFactory.isAlreadyRelated(this.context, relation, this, endNode)) {
+        const edge = WidgetFactory.getEdge(this.context, this, endNode);
+        if (!edge) {
+          // Related object not yet connected
           this.context.drawList.push(new Edge(this.context, relation, this, endNode));
+        } else {
+          // Reverse direction?
+          if (edge.startNode !== this) {
+            edge.startNode = this;
+            edge.endNode = endNode;
+            edge.label = relation;
+          }
         }
       } else {
+        // Related object not yet on Canvas
         const widget = WidgetFactory.createWidget(relatedObject.type, this.context, relatedObject.id,
           this.x + 100, this.y + 100, relatedObject.name);
         this.context.drawList.push(new Edge(this.context, relation, this, widget));
@@ -776,8 +800,15 @@ export abstract class Node extends Shape {
       for (const part of parts) {
         if (this.context.widgets.get(part.id)) {
           const endNode = this.context.widgets.get(part.id);
-          if (!WidgetFactory.isAlreadyRelated(this.context, relation, this, endNode)) {
+          const edge = WidgetFactory.getEdge(this.context, this, endNode);
+          if (!edge) {
             this.context.drawList.push(new Edge(this.context, relation, this, endNode));
+          } else {
+            if (edge.startNode !== this) {
+              edge.startNode = this;
+              edge.endNode = endNode;
+              edge.label = relation;
+            }
           }
         } else {
           const widget = WidgetFactory
