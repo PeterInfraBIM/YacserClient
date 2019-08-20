@@ -58,6 +58,11 @@ export class CanvasComponent implements OnInit, OnChanges {
     this.context.ctx = this.context.canvas.getContext('2d');
     this.context.ctx.translate(this.context.windowX, this.context.windowY);
     document.onmousedown = (event: MouseEvent) => {
+//      console.log('target: ' + event.target);
+      if (!(event.target instanceof HTMLCanvasElement)) {
+        return;
+      }
+//      console.log('Canvas hit');
       console.log('mousedown');
       if (event.button === 2) {
         return;
@@ -66,6 +71,11 @@ export class CanvasComponent implements OnInit, OnChanges {
       this.context.canvas.style.cursor = 'grabbing';
     };
     document.onmouseup = (event: MouseEvent) => {
+//      console.log('target: ' + event.target);
+      if (!(event.target instanceof HTMLCanvasElement)) {
+        return;
+      }
+//      console.log('Canvas hit');
       console.log('mouseup');
       CanvasComponent.mouseDown = false;
       this.context.canvas.style.cursor = 'default';
