@@ -260,6 +260,7 @@ export interface Query {
 export interface Mutation {
   createModel: YacserModel;
   createObject: YacserObject;
+  deleteObject: boolean;
   loadModel: YacserModel;
   updateFunction: YacserFunction;
   updateHamburger: YacserHamburger;

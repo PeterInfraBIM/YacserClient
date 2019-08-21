@@ -28,6 +28,7 @@
       </tr>
       <tr>
         <th>canvas</th>
+        <th>edit/delete</th>
         <th>name</th>
         <th>description</th>
         <th>type</th>
@@ -37,6 +38,14 @@
       <tr class="select" (click)="toggleCanvas(object)" (dblclick)="openObjectDetails(object)"
           *ngFor="let object of objects">
         <td align="center"><input type="checkbox" [checked]="inCanvas(object)"></td>
+        <td>
+          <button class="btn btn-link btn-sm" (click)="openObjectDetails(object)" ngbTooltip="Edit object">
+            <fa-icon [icon]="faEdit"></fa-icon>
+          </button>
+          <button class="btn btn-link btn-sm" (click)="onDeleteClick(object)" ngbTooltip="Delete object">
+            <fa-icon [icon]="faTrash"></fa-icon>
+          </button>
+        </td>
         <td>{{object.name}}</td>
         <td>
           <span class="description">{{object.description}}</span>

@@ -114,7 +114,6 @@ export class ModelListComponent implements OnInit {
       this.modelMap.set(filePath, this.newModel);
       this.modelFiles.push(filePath);
       this.onSaveClick(filePath);
-      this.onLoadClick(filePath);
     });
   }
 
@@ -131,6 +130,7 @@ export class ModelListComponent implements OnInit {
   onSaveClick(filePath: string): void {
     this.saveModel(filePath).subscribe((result) => {
       console.log('Create model result: ' + result);
+      this.onLoadClick(filePath);
     });
   }
 

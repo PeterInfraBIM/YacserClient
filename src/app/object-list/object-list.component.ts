@@ -1,11 +1,10 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {YacserObject, YacserObjectType} from '../types';
-import {Apollo} from 'apollo-angular';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ObjectDetailsComponent} from './object-details/object-details.component';
 import {ObjectListService} from './object-list.service';
-import {faPlus} from '@fortawesome/free-solid-svg-icons';
-import {StateService} from "../state.service";
+import {faEdit, faPlus, faTrash} from '@fortawesome/free-solid-svg-icons';
+import {StateService} from '../state.service';
 
 @Component({
   selector: 'app-object-list',
@@ -20,7 +19,9 @@ export class ObjectListComponent implements OnInit, OnChanges {
   newObjectName: string;
   newObjectDescription: string;
   newObjectType: YacserObjectType;
+  faEdit = faEdit;
   faPlus = faPlus;
+  faTrash = faTrash;
 
   constructor(
     private modal: NgbModal,
@@ -49,6 +50,10 @@ export class ObjectListComponent implements OnInit, OnChanges {
     console.log('object:' + object.name);
     this.objectListService.setSelectedObject(object);
     const modal = this.modal.open(ObjectDetailsComponent);
+  }
+
+  onDeleteClick(object: YacserObject): void {
+    alert('Not yet implemented!');
   }
 
   createObject(): void {

@@ -26,7 +26,7 @@ import {Observable} from 'rxjs';
 import {
   ALL_MODEL_FILES,
   ALL_OBJECTS,
-  CREATE_OBJECT,
+  CREATE_OBJECT, DELETE_OBJECT,
   FUNCTION,
   HAMBURGER, MODEL,
   PERFORMANCE, PORT_REALISATION,
@@ -185,6 +185,18 @@ export class ObjectListService {
         refetchQueries: [{query: ALL_OBJECTS, variables: {modelId}}]
       }).pipe(map(
       (result) => result.data.createObject));
+  }
+
+  public deleteObject(id: string): Observable<boolean> {
+    return this.apollo.mutate<Mutation>(
+      {
+        mutation: DELETE_OBJECT,
+        variables: {
+          id
+        }
+      }
+    ).pipe(map(
+      (result) => result.data.deleteObject));
   }
 
   public updateObject(object: YacserObject, attribute: string, value: any) {

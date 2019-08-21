@@ -66,6 +66,8 @@ export type Mutation = {
   createModel?: Maybe<YacserModel>;
   /** Create a YACSER object. */
   createObject?: Maybe<YacserObject>;
+  /** Delete a YACSER object. */
+  deleteObject?: Maybe<Scalars["Boolean"]>;
   /** Update Function object. */
   updateFunction?: Maybe<Function>;
   /** Update Hamburger object. */
@@ -107,6 +109,11 @@ export type MutationCreateObjectArgs = {
   type: YacserObjectType;
   name?: Maybe<Scalars["String"]>;
   description?: Maybe<Scalars["String"]>;
+};
+
+/** All mutations that are defined for this YACSER graphQL server */
+export type MutationDeleteObjectArgs = {
+  id: Scalars["ID"];
 };
 
 /** All mutations that are defined for this YACSER graphQL server */
@@ -672,6 +679,39 @@ export enum YacserObjectType {
   SystemSlot = "SystemSlot",
   Value = "Value"
 }
+export type ModelQueryVariables = {
+  modelId: Scalars["ID"];
+};
+
+export type ModelQuery = { __typename?: "Query" } & {
+  model: Maybe<
+    { __typename?: "YacserModel" } & Pick<
+      YacserModel,
+      "id" | "name" | "description"
+    >
+  >;
+};
+
+export type AllModelFilesQueryVariables = {};
+
+export type AllModelFilesQuery = { __typename?: "Query" } & Pick<
+  Query,
+  "allModelFiles"
+>;
+
+export type UpdateModelMutationVariables = {
+  input: UpdateYacserModelInput;
+};
+
+export type UpdateModelMutation = { __typename?: "Mutation" } & {
+  updateModel: Maybe<
+    { __typename?: "YacserModel" } & Pick<
+      YacserModel,
+      "id" | "name" | "description"
+    >
+  >;
+};
+
 export type ObjectFieldsFragment = {
   __typename?:
     | "Function"
@@ -1386,6 +1426,56 @@ export const ObjectFieldsFragmentDoc = gql`
     type
   }
 `;
+export const ModelDocument = gql`
+  query model($modelId: ID!) {
+    model(modelId: $modelId) {
+      id
+      name
+      description
+    }
+  }
+`;
+
+@Injectable({
+  providedIn: "root"
+})
+export class ModelGQL extends Apollo.Query<ModelQuery, ModelQueryVariables> {
+  document = ModelDocument;
+}
+export const AllModelFilesDocument = gql`
+  query allModelFiles {
+    allModelFiles
+  }
+`;
+
+@Injectable({
+  providedIn: "root"
+})
+export class AllModelFilesGQL extends Apollo.Query<
+  AllModelFilesQuery,
+  AllModelFilesQueryVariables
+> {
+  document = AllModelFilesDocument;
+}
+export const UpdateModelDocument = gql`
+  mutation updateModel($input: UpdateYacserModelInput!) {
+    updateModel(input: $input) {
+      id
+      name
+      description
+    }
+  }
+`;
+
+@Injectable({
+  providedIn: "root"
+})
+export class UpdateModelGQL extends Apollo.Mutation<
+  UpdateModelMutation,
+  UpdateModelMutationVariables
+> {
+  document = UpdateModelDocument;
+}
 export const AllObjectsDocument = gql`
   query allObjects($modelId: ID!) {
     allObjects(modelId: $modelId) {

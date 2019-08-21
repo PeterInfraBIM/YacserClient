@@ -49,6 +49,12 @@ export const CREATE_OBJECT = gql`
     ${OBJECT_FIELDS}
 `;
 
+export const DELETE_OBJECT = gql`
+  mutation deleteObject($id: ID!) {
+      deleteObject(id: $id)
+  }
+`;
+
 export const FUNCTION = gql`
     query function($id: ID!){
         function (id: $id){
