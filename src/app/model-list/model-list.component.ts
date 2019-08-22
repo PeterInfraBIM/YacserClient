@@ -129,7 +129,7 @@ export class ModelListComponent implements OnInit {
 
   onSaveClick(filePath: string): void {
     this.saveModel(filePath).subscribe((result) => {
-      console.log('Create model result: ' + result);
+      console.log('Save model result: ' + result);
       this.onLoadClick(filePath);
     });
   }

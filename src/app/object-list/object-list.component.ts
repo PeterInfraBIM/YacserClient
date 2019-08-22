@@ -53,7 +53,11 @@ export class ObjectListComponent implements OnInit, OnChanges {
   }
 
   onDeleteClick(object: YacserObject): void {
-    alert('Not yet implemented!');
+    if (confirm('Are you sure to delete ' + object.name + '?')) {
+      this.objectListService.deleteObject(object.id).subscribe((result) => {
+        console.log('Delete object: ' + result);
+      });
+    }
   }
 
   createObject(): void {

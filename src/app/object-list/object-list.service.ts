@@ -188,12 +188,14 @@ export class ObjectListService {
   }
 
   public deleteObject(id: string): Observable<boolean> {
+    const modelId = id.substring(0, id.indexOf('#'));
     return this.apollo.mutate<Mutation>(
       {
         mutation: DELETE_OBJECT,
         variables: {
           id
-        }
+        },
+        refetchQueries: [{query: ALL_OBJECTS, variables: {modelId}}]
       }
     ).pipe(map(
       (result) => result.data.deleteObject));
