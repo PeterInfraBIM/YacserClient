@@ -841,6 +841,13 @@ export abstract class Node extends Shape {
     return WidgetFactory.exists(this.context, this.id, relation);
   }
 
+  edit = () => {
+    document.getElementById('dropdown').classList.toggle('show');
+    const object = this.context.objectMap.get(this.id);
+    this.context.objectListService.setSelectedObject(object);
+    const modal = this.context.modal.open(ObjectDetailsComponent);
+  }
+
   remove = () => {
     document.getElementById('dropdown').classList.toggle('show');
     this.context.canvas.removeEventListener('mousedown', this._mousedown, true);
@@ -883,6 +890,7 @@ export class FunctionWidget extends Node {
       this.addMenuItem(dropDown, 'input', this.getInput, this.isEnabled('input'));
       this.addMenuItem(dropDown, 'output', this.getOutput, this.isEnabled('output'));
       this.addMenuItem(dropDown, '---', null, false);
+      this.addMenuItem(dropDown, 'edit', this.edit, true);
       this.addMenuItem(dropDown, 'remove', this.remove, true);
       dropDown.classList.toggle('show');
     }
@@ -937,6 +945,7 @@ export class HamburgerWidget extends Node {
       this.addMenuItem(dropDown, 'technicalSolution', this.getTechnicalSolution, this.isEnabled('technicalSolution'));
       this.addMenuItem(dropDown, 'ports', this.getPorts, this.isEnabled('ports'));
       this.addMenuItem(dropDown, '---', null, false);
+      this.addMenuItem(dropDown, 'edit', this.edit, true);
       this.addMenuItem(dropDown, 'remove', this.remove, true);
       dropDown.classList.toggle('show');
     }
@@ -984,6 +993,7 @@ export class PerformanceWidget extends Node {
       this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
       this.addMenuItem(dropDown, 'value', this.getValue, this.isEnabled('value'));
       this.addMenuItem(dropDown, '---', null, false);
+      this.addMenuItem(dropDown, 'edit', this.edit, true);
       this.addMenuItem(dropDown, 'remove', this.remove, true);
       dropDown.classList.toggle('show');
     }
@@ -1023,6 +1033,7 @@ export class PortRealisationWidget extends Node {
       this.addMenuItem(dropDown, 'interface', this.getInterface, this.isEnabled('interface'));
       this.addMenuItem(dropDown, 'port', this.getPort, this.isEnabled('port'));
       this.addMenuItem(dropDown, '---', null, false);
+      this.addMenuItem(dropDown, 'edit', this.edit, true);
       this.addMenuItem(dropDown, 'remove', this.remove, true);
       dropDown.classList.toggle('show');
     }
@@ -1072,6 +1083,7 @@ export class RealisationModuleWidget extends Node {
       this.addMenuItem(dropDown, 'ports', this.getPorts, this.isEnabled('ports'));
       this.addMenuItem(dropDown, 'hamburgers', this.getHamburgers, this.isEnabled('hamburgers'));
       this.addMenuItem(dropDown, '---', null, false);
+      this.addMenuItem(dropDown, 'edit', this.edit, true);
       this.addMenuItem(dropDown, 'remove', this.remove, true);
       dropDown.classList.toggle('show');
     }
@@ -1125,6 +1137,7 @@ export class RealisationPortWidget extends Node {
       this.addMenuItem(dropDown, '---', null, false);
       this.addMenuItem(dropDown, 'rotate', this.rotate, true);
       this.addMenuItem(dropDown, '---', null, false);
+      this.addMenuItem(dropDown, 'edit', this.edit, true);
       this.addMenuItem(dropDown, 'remove', this.remove, true);
       dropDown.classList.toggle('show');
     }
@@ -1176,6 +1189,7 @@ export class RequirementWidget extends Node {
       this.addMenuItem(dropDown, 'minValue', this.getMinValue, this.isEnabled('minValue'));
       this.addMenuItem(dropDown, 'maxValue', this.getMaxValue, this.isEnabled('maxValue'));
       this.addMenuItem(dropDown, '---', null, false);
+      this.addMenuItem(dropDown, 'edit', this.edit, true);
       this.addMenuItem(dropDown, 'remove', this.remove, true);
       dropDown.classList.toggle('show');
     }
@@ -1221,6 +1235,7 @@ export class SystemInterfaceWidget extends Node {
       this.addMenuItem(dropDown, 'functionOutputs', this.getFunctionOutputs, this.isEnabled('functionOutputs'));
       this.addMenuItem(dropDown, 'portRealisations', this.getPortRealisations, this.isEnabled('portRealisations'));
       this.addMenuItem(dropDown, '---', null, false);
+      this.addMenuItem(dropDown, 'edit', this.edit, true);
       this.addMenuItem(dropDown, 'remove', this.remove, true);
       dropDown.classList.toggle('show');
     }
@@ -1280,6 +1295,7 @@ export class SystemSlotWidget extends Node {
       this.addMenuItem(dropDown, 'interfaces', this.getInterfaces, this.isEnabled('interfaces'));
       this.addMenuItem(dropDown, 'hamburgers', this.getHamburgers, this.isEnabled('hamburgers'));
       this.addMenuItem(dropDown, '---', null, false);
+      this.addMenuItem(dropDown, 'edit', this.edit, true);
       this.addMenuItem(dropDown, 'remove', this.remove, true);
       dropDown.classList.toggle('show');
     }
@@ -1323,7 +1339,8 @@ export class ValueWidget extends Node {
       dropDown.style.left = this.x * this.context.currentScale + this.context.windowX + 'px';
       dropDown.style.top = this.y * this.context.currentScale + this.context.windowY + 'px';
       this.clearMenu(dropDown);
-      this.addMenuItem(dropDown, '---', null, false);
+//      this.addMenuItem(dropDown, '---', null, false);
+      this.addMenuItem(dropDown, 'edit', this.edit, true);
       this.addMenuItem(dropDown, 'remove', this.remove, true);
       dropDown.classList.toggle('show');
     }
