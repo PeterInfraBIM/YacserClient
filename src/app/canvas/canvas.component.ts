@@ -166,6 +166,8 @@ export class CanvasComponent implements OnInit, OnChanges {
       for (const object of this.objectListService.allObjects) {
         this.stateService.objectMap.set(object.id, object);
       }
+    } else {
+      this.stateService.objectMap.clear();
     }
   }
 
@@ -934,8 +936,8 @@ export class HamburgerWidget extends Node {
 
   public contextmenu(event: MouseEvent): void {
     event.preventDefault();
+    const dropDown = document.getElementById('dropdown');
     if (this.isHit(event)) {
-      const dropDown = document.getElementById('dropdown');
       dropDown.style.left = this.x * this.context.currentScale + this.context.windowX + 'px';
       dropDown.style.top = this.y * this.context.currentScale + this.context.windowY + 'px';
       this.clearMenu(dropDown);
@@ -991,12 +993,18 @@ export class PerformanceWidget extends Node {
       this.clearMenu(dropDown);
       this.addMenuItem(dropDown, 'assembly', this.getAssembly, this.isEnabled('assembly'));
       this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
+      this.addMenuItem(dropDown, 'owner', this.getOwner, this.isEnabled('owner'));
       this.addMenuItem(dropDown, 'value', this.getValue, this.isEnabled('value'));
       this.addMenuItem(dropDown, '---', null, false);
       this.addMenuItem(dropDown, 'edit', this.edit, true);
       this.addMenuItem(dropDown, 'remove', this.remove, true);
       dropDown.classList.toggle('show');
     }
+  }
+
+  getOwner = () => {
+    this.showRelatedObject('owner');
+    document.getElementById('dropdown').classList.toggle('show');
   }
 
   getValue = () => {
@@ -1186,6 +1194,7 @@ export class RequirementWidget extends Node {
       this.clearMenu(dropDown);
       this.addMenuItem(dropDown, 'assembly', this.getAssembly, this.isEnabled('assembly'));
       this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
+      this.addMenuItem(dropDown, 'owner', this.getOwner, this.isEnabled('owner'));
       this.addMenuItem(dropDown, 'minValue', this.getMinValue, this.isEnabled('minValue'));
       this.addMenuItem(dropDown, 'maxValue', this.getMaxValue, this.isEnabled('maxValue'));
       this.addMenuItem(dropDown, '---', null, false);
@@ -1193,6 +1202,11 @@ export class RequirementWidget extends Node {
       this.addMenuItem(dropDown, 'remove', this.remove, true);
       dropDown.classList.toggle('show');
     }
+  }
+
+  getOwner = () => {
+    this.showRelatedObject('owner');
+    document.getElementById('dropdown').classList.toggle('show');
   }
 
   getMinValue = () => {
