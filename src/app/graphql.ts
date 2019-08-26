@@ -351,6 +351,8 @@ export const SYSTEM_INTERFACE = gql`
                 ...ObjectFields }
             systemSlot1 {
                 ...ObjectFields }
+            requirements {
+                ...ObjectFields }
             functionInputs {
                 ...ObjectFields }
             functionOutputs {
@@ -376,6 +378,10 @@ export const UPDATE_SYSTEM_INTERFACE = gql`
             systemSlot1 {
                 ...ObjectFields
                 interfaces {
+                    ...ObjectFields }}
+            requirements {
+                ...ObjectFields 
+                owner {
                     ...ObjectFields }}
             functionInputs {
                 ...ObjectFields
@@ -407,17 +413,17 @@ export const SYSTEM_SLOT = gql`
         systemSlot (id: $id){
             ...ObjectFields
             functions {
-                ...ObjectFields      }
+                ...ObjectFields }
+            requirements {
+                ...ObjectFields }
             interfaces {
-                ...ObjectFields      }
+                ...ObjectFields }
             hamburgers {
-                ...ObjectFields      }
+                ...ObjectFields }
             assembly {
-                ...ObjectFields
-            }
+                ...ObjectFields }
             parts {
-                ...ObjectFields
-            }
+                ...ObjectFields }
         }
     }
     ${OBJECT_FIELDS}
@@ -428,6 +434,10 @@ export const UPDATE_SYSTEM_SLOT = gql`
         updateSystemSlot (input: $input) {
             ...ObjectFields
             functions {
+                ...ObjectFields
+                owner {
+                    ...ObjectFields }}
+            requirements {
                 ...ObjectFields
                 owner {
                     ...ObjectFields }}

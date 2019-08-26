@@ -706,6 +706,22 @@ export class ObjectListService {
               });
             }
             break;
+          case 'requirements':
+            const oldRequirements = yacserSystemInterface.requirements;
+            const requirements = value as YacserRequirement[];
+            for (const requirement of requirements) {
+              if (oldRequirements && oldRequirements.includes(requirement)) {
+                removeList.push(requirement.id);
+              } else {
+                addList.push(requirement.id);
+              }
+            }
+            updateSystemInterfaceInput.addRequirements = addList;
+            updateSystemInterfaceInput.removeRequirements = removeList;
+            for (const requirement of requirements) {
+              refetchQueries.push({query: REQUIREMENT, variables: {id: requirement.id}});
+            }
+            break;
           case 'assembly':
             const oldAssembly = yacserSystemInterface.assembly;
             const newAssembly = value as YacserSystemInterface;
@@ -766,6 +782,22 @@ export class ObjectListService {
             updateSystemSlotInput.removeFunctions = removeList;
             for (const f of functions) {
               refetchQueries.push({query: FUNCTION, variables: {id: f.id}});
+            }
+            break;
+          case 'requirements':
+            const oldRequirements = yacserSystemSlot.requirements;
+            const requirements = value as YacserRequirement[];
+            for (const requirement of requirements) {
+              if (oldRequirements && oldRequirements.includes(requirement)) {
+                removeList.push(requirement.id);
+              } else {
+                addList.push(requirement.id);
+              }
+            }
+            updateSystemSlotInput.addRequirements = addList;
+            updateSystemSlotInput.removeRequirements = removeList;
+            for (const requirement of requirements) {
+              refetchQueries.push({query: REQUIREMENT, variables: {id: requirement.id}});
             }
             break;
           case 'assembly':

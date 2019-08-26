@@ -1245,6 +1245,7 @@ export class SystemInterfaceWidget extends Node {
       this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
       this.addMenuItem(dropDown, 'systemSlot0', this.getSystemSlot0, this.isEnabled('systemSlot0'));
       this.addMenuItem(dropDown, 'systemSlot1', this.getSystemSlot1, this.isEnabled('systemSlot1'));
+      this.addMenuItem(dropDown, 'requirements', this.getRequirements, this.isEnabled('requirements'));
       this.addMenuItem(dropDown, 'functionInputs', this.getFunctionInputs, this.isEnabled('functionInputs'));
       this.addMenuItem(dropDown, 'functionOutputs', this.getFunctionOutputs, this.isEnabled('functionOutputs'));
       this.addMenuItem(dropDown, 'portRealisations', this.getPortRealisations, this.isEnabled('portRealisations'));
@@ -1262,6 +1263,11 @@ export class SystemInterfaceWidget extends Node {
 
   getSystemSlot1 = () => {
     this.showRelatedObject('systemSlot1');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+
+  getRequirements = () => {
+    this.showRelatedObjects('requirements');
     document.getElementById('dropdown').classList.toggle('show');
   }
 
@@ -1306,6 +1312,7 @@ export class SystemSlotWidget extends Node {
       this.addMenuItem(dropDown, 'assembly', this.getAssembly, this.isEnabled('assembly'));
       this.addMenuItem(dropDown, 'parts', this.getParts, this.isEnabled('parts'));
       this.addMenuItem(dropDown, 'functions', this.getFunctions, this.isEnabled('functions'));
+      this.addMenuItem(dropDown, 'requirements', this.getRequirements, this.isEnabled('requirements'));
       this.addMenuItem(dropDown, 'interfaces', this.getInterfaces, this.isEnabled('interfaces'));
       this.addMenuItem(dropDown, 'hamburgers', this.getHamburgers, this.isEnabled('hamburgers'));
       this.addMenuItem(dropDown, '---', null, false);
@@ -1317,6 +1324,11 @@ export class SystemSlotWidget extends Node {
 
   getFunctions = () => {
     this.showRelatedObjects('functions');
+    document.getElementById('dropdown').classList.toggle('show');
+  }
+
+  getRequirements = () => {
+    this.showRelatedObjects('requirements');
     document.getElementById('dropdown').classList.toggle('show');
   }
 

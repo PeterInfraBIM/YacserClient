@@ -12,6 +12,12 @@
             "name": "SystemSlot"
           },
           {
+            "name": "Requirement"
+          },
+          {
+            "name": "Value"
+          },
+          {
             "name": "SystemInterface"
           },
           {
@@ -27,13 +33,7 @@
             "name": "Performance"
           },
           {
-            "name": "Value"
-          },
-          {
             "name": "RealisationPort"
-          },
-          {
-            "name": "Requirement"
           }
         ]
       }

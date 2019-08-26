@@ -159,6 +159,11 @@
                            (newValue)="onNewValue($event, 'systemSlot1')"></app-link-editor>
         </p>
         <p class="card-text">
+          <app-link-editor [object]="selectedObject" attribute="requirements" [isMultiple]="true"
+                           [links]="getLinks('Requirement')"
+                           (newValues)="onNewValues($event, 'requirements')"></app-link-editor>
+        </p>
+        <p class="card-text">
           <app-link-editor [object]="selectedObject" attribute="functionInputs" [isMultiple]="true"
                            [isEditable]="false"></app-link-editor>
         </p>
@@ -185,6 +190,11 @@
           <app-link-editor [object]="selectedObject" attribute="functions" [isMultiple]="true"
                            [links]="getLinks('Function')"
                            (newValues)="onNewValues($event, 'functions')"></app-link-editor>
+        </p>
+        <p class="card-text">
+          <app-link-editor [object]="selectedObject" attribute="requirements" [isMultiple]="true"
+                           [links]="getLinks('Requirement')"
+                           (newValues)="onNewValues($event, 'requirements')"></app-link-editor>
         </p>
         <p class="card-text">
           <app-link-editor [object]="selectedObject" attribute="interfaces" [isMultiple]="true"

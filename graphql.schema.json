@@ -410,14 +410,14 @@
         "possibleTypes": [
           { "kind": "OBJECT", "name": "Function", "ofType": null },
           { "kind": "OBJECT", "name": "SystemSlot", "ofType": null },
+          { "kind": "OBJECT", "name": "Requirement", "ofType": null },
+          { "kind": "OBJECT", "name": "Value", "ofType": null },
           { "kind": "OBJECT", "name": "SystemInterface", "ofType": null },
           { "kind": "OBJECT", "name": "PortRealisation", "ofType": null },
           { "kind": "OBJECT", "name": "Hamburger", "ofType": null },
           { "kind": "OBJECT", "name": "RealisationModule", "ofType": null },
           { "kind": "OBJECT", "name": "Performance", "ofType": null },
-          { "kind": "OBJECT", "name": "Value", "ofType": null },
-          { "kind": "OBJECT", "name": "RealisationPort", "ofType": null },
-          { "kind": "OBJECT", "name": "Requirement", "ofType": null }
+          { "kind": "OBJECT", "name": "RealisationPort", "ofType": null }
         ]
       },
       {
@@ -678,6 +678,22 @@
             "deprecationReason": null
           },
           {
+            "name": "requirements",
+            "description": "Related Requirements.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Requirement",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "interfaces",
             "description": "Related interfaces.",
             "args": [],
@@ -743,6 +759,174 @@
       },
       {
         "kind": "OBJECT",
+        "name": "Requirement",
+        "description": "YACSER Requirement instance.",
+        "fields": [
+          {
+            "name": "id",
+            "description": "URI of the object instance.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "name",
+            "description": "Optional name of the object.",
+            "args": [],
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "description",
+            "description": "Optional description of the object.",
+            "args": [],
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "type",
+            "description": "Type of the object instance.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "YacserObjectType",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "owner",
+            "description": "Owner Function, SystemSlot of SystemInterface.",
+            "args": [],
+            "type": {
+              "kind": "INTERFACE",
+              "name": "YacserObject",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "minValue",
+            "description": "Minimal value.",
+            "args": [],
+            "type": { "kind": "OBJECT", "name": "Value", "ofType": null },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "maxValue",
+            "description": "Maximal value.",
+            "args": [],
+            "type": { "kind": "OBJECT", "name": "Value", "ofType": null },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          { "kind": "INTERFACE", "name": "YacserObject", "ofType": null }
+        ],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "Value",
+        "description": "Value instance.",
+        "fields": [
+          {
+            "name": "id",
+            "description": "Value URI",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "name",
+            "description": "Optional name of the object.",
+            "args": [],
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "description",
+            "description": "Optional description of the object.",
+            "args": [],
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "type",
+            "description": "Type of the object instance",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "YacserObjectType",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "unit",
+            "description": "Unit string",
+            "args": [],
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "value",
+            "description": "Value float",
+            "args": [],
+            "type": { "kind": "SCALAR", "name": "Float", "ofType": null },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          { "kind": "INTERFACE", "name": "YacserObject", "ofType": null }
+        ],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "SCALAR",
+        "name": "Float",
+        "description": "The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point).",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "SystemInterface",
         "description": "YACSER System interface instance.",
         "fields": [
@@ -803,6 +987,22 @@
             "description": "Second SystemSlot.",
             "args": [],
             "type": { "kind": "OBJECT", "name": "SystemSlot", "ofType": null },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "requirements",
+            "description": "Related Requirements.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Requirement",
+                "ofType": null
+              }
+            },
             "isDeprecated": false,
             "deprecationReason": null
           },
@@ -1328,89 +1528,6 @@
       },
       {
         "kind": "OBJECT",
-        "name": "Value",
-        "description": "Value instance.",
-        "fields": [
-          {
-            "name": "id",
-            "description": "Value URI",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "name",
-            "description": "Optional name of the object.",
-            "args": [],
-            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "description",
-            "description": "Optional description of the object.",
-            "args": [],
-            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "type",
-            "description": "Type of the object instance",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "ENUM",
-                "name": "YacserObjectType",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "unit",
-            "description": "Unit string",
-            "args": [],
-            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "value",
-            "description": "Value float",
-            "args": [],
-            "type": { "kind": "SCALAR", "name": "Float", "ofType": null },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [
-          { "kind": "INTERFACE", "name": "YacserObject", "ofType": null }
-        ],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "SCALAR",
-        "name": "Float",
-        "description": "The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point).",
-        "fields": null,
-        "inputFields": null,
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "OBJECT",
         "name": "RealisationPort",
         "description": "YACSER Realisation port instance.",
         "fields": [
@@ -1511,91 +1628,6 @@
                 "ofType": null
               }
             },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [
-          { "kind": "INTERFACE", "name": "YacserObject", "ofType": null }
-        ],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "OBJECT",
-        "name": "Requirement",
-        "description": "YACSER Requirement instance.",
-        "fields": [
-          {
-            "name": "id",
-            "description": "URI of the object instance.",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "name",
-            "description": "Optional name of the object.",
-            "args": [],
-            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "description",
-            "description": "Optional description of the object.",
-            "args": [],
-            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "type",
-            "description": "Type of the object instance.",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "ENUM",
-                "name": "YacserObjectType",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "owner",
-            "description": "Owner Function, SystemSlot of SystemInterface.",
-            "args": [],
-            "type": {
-              "kind": "INTERFACE",
-              "name": "YacserObject",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "minValue",
-            "description": "Minimal value.",
-            "args": [],
-            "type": { "kind": "OBJECT", "name": "Value", "ofType": null },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "maxValue",
-            "description": "Maximal value.",
-            "args": [],
-            "type": { "kind": "OBJECT", "name": "Value", "ofType": null },
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -2621,6 +2653,26 @@
             "defaultValue": null
           },
           {
+            "name": "addRequirements",
+            "description": "If present: add requirements.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "removeRequirements",
+            "description": "If present: remove requirements.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
+          },
+          {
             "name": "updateAssembly",
             "description": "If present: update assembly.",
             "type": { "kind": "SCALAR", "name": "ID", "ofType": null },
@@ -2692,6 +2744,26 @@
           {
             "name": "removeFunctions",
             "description": "If present: remove functions.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "addRequirements",
+            "description": "If present: add requirements.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "removeRequirements",
+            "description": "If present: remove requirements.",
             "type": {
               "kind": "LIST",
               "name": null,

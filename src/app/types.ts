@@ -177,6 +177,7 @@ export class UpdateRequirementInput {
 export interface YacserSystemInterface extends YacserObject {
   systemSlot0: YacserSystemSlot;
   systemSlot1: YacserSystemSlot;
+  requirements: YacserRequirement[];
   functionInputs: YacserFunction[];
   functionOutputs: YacserFunction[];
   portRealisations: YacserPortRealisation[];
@@ -190,6 +191,8 @@ export class UpdateSystemInterfaceInput {
   updateDescription: string;
   updateSystemSlot0: string;
   updateSystemSlot1: string;
+  addRequirements: string[];
+  removeRequirements: string[];
   updateAssembly: string;
   addParts: string[];
   removeParts: string[];
@@ -201,6 +204,7 @@ export class UpdateSystemInterfaceInput {
 
 export interface YacserSystemSlot extends YacserObject {
   functions: YacserFunction[];
+  requirements: YacserRequirement[];
   interfaces: YacserSystemInterface;
   hamburgers: YacserHamburger[];
   assembly: YacserSystemSlot;
@@ -214,6 +218,8 @@ export class UpdateSystemSlotInput {
   updateDescription: string;
   addFunctions: string[];
   removeFunctions: string[];
+  addRequirements: string[];
+  removeRequirements: string[];
   updateAssembly: string;
   addParts: string[];
   removeParts: string[];

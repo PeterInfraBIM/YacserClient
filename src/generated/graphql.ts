@@ -393,6 +393,8 @@ export type SystemInterface = YacserObject & {
   systemSlot0?: Maybe<SystemSlot>;
   /** Second SystemSlot. */
   systemSlot1?: Maybe<SystemSlot>;
+  /** Related Requirements. */
+  requirements?: Maybe<Array<Maybe<Requirement>>>;
   /** Input to functions */
   functionInputs?: Maybe<Array<Maybe<Function>>>;
   /** Output from functions */
@@ -418,6 +420,8 @@ export type SystemSlot = YacserObject & {
   type: YacserObjectType;
   /** Specified functions. */
   functions?: Maybe<Array<Maybe<Function>>>;
+  /** Related Requirements. */
+  requirements?: Maybe<Array<Maybe<Requirement>>>;
   /** Related interfaces. */
   interfaces?: Maybe<Array<Maybe<SystemInterface>>>;
   /** Hamburger references */
@@ -574,6 +578,10 @@ export type UpdateSystemInterfaceInput = {
   updateSystemSlot0?: Maybe<Scalars["ID"]>;
   /** If present: update SystemSlot 1. */
   updateSystemSlot1?: Maybe<Scalars["ID"]>;
+  /** If present: add requirements. */
+  addRequirements?: Maybe<Array<Maybe<Scalars["ID"]>>>;
+  /** If present: remove requirements. */
+  removeRequirements?: Maybe<Array<Maybe<Scalars["ID"]>>>;
   /** If present: update assembly. */
   updateAssembly?: Maybe<Scalars["ID"]>;
   /** If present: add parts. */
@@ -594,6 +602,10 @@ export type UpdateSystemSlotInput = {
   addFunctions?: Maybe<Array<Maybe<Scalars["ID"]>>>;
   /** If present: remove functions. */
   removeFunctions?: Maybe<Array<Maybe<Scalars["ID"]>>>;
+  /** If present: add requirements. */
+  addRequirements?: Maybe<Array<Maybe<Scalars["ID"]>>>;
+  /** If present: remove requirements. */
+  removeRequirements?: Maybe<Array<Maybe<Scalars["ID"]>>>;
   /** If present: update assembly. */
   updateAssembly?: Maybe<Scalars["ID"]>;
   /** If present: add parts. */
@@ -716,14 +728,14 @@ export type ObjectFieldsFragment = {
   __typename?:
     | "Function"
     | "SystemSlot"
+    | "Requirement"
+    | "Value"
     | "SystemInterface"
     | "PortRealisation"
     | "Hamburger"
     | "RealisationModule"
     | "Performance"
-    | "Value"
-    | "RealisationPort"
-    | "Requirement";
+    | "RealisationPort";
 } & Pick<YacserObject, "id" | "name" | "description" | "type">;
 
 export type AllObjectsQueryVariables = {
@@ -738,14 +750,14 @@ export type AllObjectsQuery = { __typename?: "Query" } & {
           __typename?:
             | "Function"
             | "SystemSlot"
+            | "Requirement"
+            | "Value"
             | "SystemInterface"
             | "PortRealisation"
             | "Hamburger"
             | "RealisationModule"
             | "Performance"
-            | "Value"
-            | "RealisationPort"
-            | "Requirement";
+            | "RealisationPort";
         } & ObjectFieldsFragment
       >
     >
@@ -765,17 +777,26 @@ export type CreateObjectMutation = { __typename?: "Mutation" } & {
       __typename?:
         | "Function"
         | "SystemSlot"
+        | "Requirement"
+        | "Value"
         | "SystemInterface"
         | "PortRealisation"
         | "Hamburger"
         | "RealisationModule"
         | "Performance"
-        | "Value"
-        | "RealisationPort"
-        | "Requirement";
+        | "RealisationPort";
     } & ObjectFieldsFragment
   >;
 };
+
+export type DeleteObjectMutationVariables = {
+  id: Scalars["ID"];
+};
+
+export type DeleteObjectMutation = { __typename?: "Mutation" } & Pick<
+  Mutation,
+  "deleteObject"
+>;
 
 export type FunctionQueryVariables = {
   id: Scalars["ID"];
@@ -1173,14 +1194,14 @@ export type RequirementQuery = { __typename?: "Query" } & {
           __typename?:
             | "Function"
             | "SystemSlot"
+            | "Requirement"
+            | "Value"
             | "SystemInterface"
             | "PortRealisation"
             | "Hamburger"
             | "RealisationModule"
             | "Performance"
-            | "Value"
-            | "RealisationPort"
-            | "Requirement";
+            | "RealisationPort";
         } & ObjectFieldsFragment
       >;
       minValue: Maybe<{ __typename?: "Value" } & ObjectFieldsFragment>;
@@ -1201,14 +1222,14 @@ export type UpdateRequirementMutation = { __typename?: "Mutation" } & {
           __typename?:
             | "Function"
             | "SystemSlot"
+            | "Requirement"
+            | "Value"
             | "SystemInterface"
             | "PortRealisation"
             | "Hamburger"
             | "RealisationModule"
             | "Performance"
-            | "Value"
-            | "RealisationPort"
-            | "Requirement";
+            | "RealisationPort";
         } & ObjectFieldsFragment
       >;
       minValue: Maybe<{ __typename?: "Value" } & ObjectFieldsFragment>;
@@ -1521,6 +1542,21 @@ export class CreateObjectGQL extends Apollo.Mutation<
   CreateObjectMutationVariables
 > {
   document = CreateObjectDocument;
+}
+export const DeleteObjectDocument = gql`
+  mutation deleteObject($id: ID!) {
+    deleteObject(id: $id)
+  }
+`;
+
+@Injectable({
+  providedIn: "root"
+})
+export class DeleteObjectGQL extends Apollo.Mutation<
+  DeleteObjectMutation,
+  DeleteObjectMutationVariables
+> {
+  document = DeleteObjectDocument;
 }
 export const FunctionDocument = gql`
   query function($id: ID!) {
